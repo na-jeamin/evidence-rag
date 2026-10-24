@@ -1,5 +1,5 @@
 {
-  "scope": "单次用户真实运行与人工原文核对，非自动评分或整体准确率",
+  "scope": "同一问题 k=3/k=6 两次用户真实运行与人工原文核对，非自动评分或整体准确率",
   "observations": [
     {
       "date": "2026-10-24",
@@ -23,7 +23,46 @@
       ],
       "manual_assessment": "找到相关文档与部分上下文材料，但三块完整原文未直接包含重叠机制的作用说明。不能仅凭文件命中判断证据充分。",
       "full_text_check": "从原文件按每条预览的唯一开头与已返回正文长度读取完整片段，未重新计算嵌入或执行学习入口。",
-      "next_experiment": "保持问题/语料/切分/模型不变，仅将 k 从 3 改为 6，观察直接证据是否进入结果；待用户运行。"
+      "next_experiment": "已保持其他条件不变运行 k=6，对应下一条观察。"
+    },
+    {
+      "date": "2026-10-24",
+      "question": "文本切分为什么要设置重叠？",
+      "configuration": {
+        "retriever": "dense",
+        "embedding_model": "BAAI/bge-small-zh-v1.5",
+        "normalize_embeddings": true,
+        "chunk_size": 500,
+        "chunk_overlap": 100,
+        "document_count": 3,
+        "chunk_count": 71,
+        "k": 6
+      },
+      "expected_source": "05_text_chunking.md",
+      "observed_results": [
+        {"chunk_id": "C030", "source": "05_text_chunking.md", "characters": 488},
+        {"chunk_id": "C022", "source": "05_text_chunking.md", "characters": 415},
+        {"chunk_id": "C051", "source": "05_text_chunking.md", "characters": 242},
+        {"chunk_id": "C037", "source": "05_text_chunking.md", "characters": 339},
+        {"chunk_id": "C035", "source": "05_text_chunking.md", "characters": 478},
+        {"chunk_id": "C027", "source": "05_text_chunking.md", "characters": 422}
+      ],
+      "direct_evidence": {
+        "chunk_id": "C027",
+        "rank": 6,
+        "source_start": 1842,
+        "source_end": 2264,
+        "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+      },
+      "manual_assessment": "C027 完整正文包含重叠的直接说明，因前 300 字符预览截断而未在用户预览中显示。扩大返回范围补回直接证据；前三名次序未变，不能视作排序改善。",
+      "full_text_check": "只读原文，以唯一开头及返回长度定位完整 C027，未代跑学习脚本或模型。"
     }
-  ]
+  ],
+  "comparison": {
+    "changed_parameter": "k: 3 -> 6",
+    "direct_evidence_recovered": "本例从未直接覆盖到覆盖，证据仍排第 6",
+    "returned_text_characters": {"k3": 1145, "k6": 2384},
+    "not_measured": ["耗时", "生成 token", "其他问题的检索质量"],
+    "default_k": "保留 3 作为基线，6 仅为本次命令行实验值"
+  }
 }
