@@ -1,0 +1,29 @@
+{
+  "scope": "单次用户真实运行与人工原文核对，非自动评分或整体准确率",
+  "observations": [
+    {
+      "date": "2026-10-24",
+      "question": "文本切分为什么要设置重叠？",
+      "configuration": {
+        "retriever": "dense",
+        "embedding_model": "BAAI/bge-small-zh-v1.5",
+        "normalize_embeddings": true,
+        "chunk_size": 500,
+        "chunk_overlap": 100,
+        "document_count": 3,
+        "chunk_count": 71,
+        "k": 3
+      },
+      "expected_source": "05_text_chunking.md",
+      "direct_evidence_marker": "通过重叠机制（`chunk_overlap`）保持上下文连续性",
+      "observed_results": [
+        {"chunk_id": "C030", "source": "05_text_chunking.md", "characters": 488},
+        {"chunk_id": "C022", "source": "05_text_chunking.md", "characters": 415},
+        {"chunk_id": "C051", "source": "05_text_chunking.md", "characters": 242}
+      ],
+      "manual_assessment": "找到相关文档与部分上下文材料，但三块完整原文未直接包含重叠机制的作用说明。不能仅凭文件命中判断证据充分。",
+      "full_text_check": "从原文件按每条预览的唯一开头与已返回正文长度读取完整片段，未重新计算嵌入或执行学习入口。",
+      "next_experiment": "保持问题/语料/切分/模型不变，仅将 k 从 3 改为 6，观察直接证据是否进入结果；待用户运行。"
+    }
+  ]
+}

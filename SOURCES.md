@@ -29,3 +29,7 @@ ATLAS/C7 的反馈图仍为后续候选对照，此阶段未复制或集成其�
 ## 第二阶段：切分观察
 
 `inspect_chunks.py` 复用当前加载函数和 C1 的 RecursiveCharacterTextSplitter，将完整文档列表切成块；保留 source，补当前语料/配置内的 chunk_id，展示来源统计。初始 500/100 是本地实验配置，编号/统计为本地教学改动；不称上游原版，尚未用检索效果证明这些参数最优。
+
+## 第三阶段：Dense 基线（已有用户实际运行）
+
+`retrieve.py` 复用 C1 的 HuggingFaceEmbeddings / InMemoryVectorStore / add_documents / similarity_search 主流程，使用同名 BGE、CPU 和归一化。变化为复用当前多文档/500 字符切分、显式只读本地模型缓存、CLI 问题/Top-K 与编号来源预览；当前尚不生成回答。具体查询、语料和配置与上游原例不同，不称未经修改的原版或已获得优化提升。

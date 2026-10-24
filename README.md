@@ -7,7 +7,8 @@
 - 已写：三份原教程资料的目录加载、文档列表汇总、来源和正文预览、空目录报错。
 - 已验证：Python AST、资料 blob 一致性；2026-10-24 用户实际运行加载入口成功，共 3 份文档，正文分别为 7787、11303、6010 字符。
 - 已验证：2026-10-24 用户运行 chunk_size=500/chunk_overlap=100 的切分入口成功，3 文档共 71 块；数据加载 21 块、文本切分 32 块、向量嵌入 18 块。前 3 块为 C001/C002/C003，来源均为第一篇，长度为 317/226/453 字符。
-- 后续计划：Dense 基线、可核对引用、BM25/Hybrid、小评估、有预算的检索反馈。未完成项不作为现有能力或指标。
+- 已验证：2026-10-24 用户运行 BGE 本地缓存模型/内存向量库的 Dense 检索，3 文档/71 块，重叠问题的 Top-3 为 C030、C022、C051，来源均是文本切分教程。流程成功不等于证据充分，人工核对详见 evals/baseline_observations.json。
+- 后续计划：可核对引用、BM25/Hybrid、小评估、有预算的检索反馈。未完成项不作为现有能力或指标。
 
 ## 成品目标与验收（计划，尚未实现）
 
@@ -44,6 +45,30 @@ cd D:\tt\agent
 
 预期仍有 3 份完整文档，生成多个文本块，并显示各文件块数和前 3 块的编号/来源。具体块数以实际运行输出为准；500/100 是本项目实验基线，不声称优于旧示例或是最优参数。块编号仅对应当前语料和切分配置，资料或参数变化后需重新核对。
 
+## 第三阶段：向量检索（用户运行已验证）
+
+复用当前已有模型缓存和环境：
+
+```powershell
+cd D:\tt\agent
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\retrieve.py
+```
+
+默认问题“文本切分为什么要设置重叠？”，--k 默认 3；两个参数都可以在命令末尾更换。预期从 71 块中返回最多 3 个带编号和来源的原文片段，具体排序/能否提供依据以用户实际输出为准。问题和文本块均由嵌入模型编码；返回的结果为正文与 metadata，不是向量。
+
+此入口在本机计算嵌入，使用内存索引，退出后不持久保存；每次运行重建。它不读取密钥、不调用生成模型，也不把相似度排名当成答案正确性评估。
+
+### 第一个真实基线观察
+
+问题“文本切分为什么要设置重叠？”的 Top-3 命中了相关文件，但完整 C030/C022/C051 主要是示例代码/边界问题、模型长度限制和句子窗口，未直接取回原文“通过重叠机制保持上下文连续性”的说明。记录为部分相关、直接证据覆盖不足，不能视为完全无关或整体检索评估通过。
+
+原始配置、用户返回编号与人工判断见 [baseline_observations.json](evals/baseline_observations.json)。后续保持其他条件不变，将 --k 改为 6 做一次对照；实验尚待用户运行，不能预设增加 k 一定改善。
+
+```powershell
+cd D:\tt\agent
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\retrieve.py --k 6
+```
+
 ## 独立复现
 
 仓库克隆到任意目录后，在其根目录使用 Python 3.13：
@@ -55,6 +80,17 @@ python -m venv .venv
 ```
 
 后续新增依赖和配置时同步更新本节。当前加载资料不需要 .env。
+
+独立机器继续做检索时，由用户另行准备 CPU 环境和模型缓存（当前机器已满足，无需重复）：
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+.\.venv\Scripts\python.exe -m pip install -r requirements-retrieval.txt
+.\.venv\Scripts\python.exe -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-zh-v1.5', device='cpu')"
+.\.venv\Scripts\python.exe -X utf8 retrieve.py
+```
+
+首次准备缓存会下载模型权重；retrieve.py 本身设置 local_files_only=True。新机器从零安装尚未单独验证，当前证据来自已有环境；此处不宣称完成新环境复现。
 
 ## 来源与局限
 
