@@ -1,0 +1,25 @@
+{
+  "repository": "https://github.com/datawhalechina/all-in-rag",
+  "commit": "cec956e80ae28d6c0ca84c9d39dddcf61ad633fd",
+  "retrieved_on": "2026-10-24",
+  "files": [
+    {
+      "source": "docs/chapter2/04_data_load.md",
+      "local": "data/documents/04_data_load.md",
+      "git_blob_sha": "1684ed2b9940974a4c11cbdac54b9e5a9e7e1aad",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter2/04_data_load.md"
+    },
+    {
+      "source": "docs/chapter2/05_text_chunking.md",
+      "local": "data/documents/05_text_chunking.md",
+      "git_blob_sha": "59f513aacfd507b5348e8458b58ba68bf339c727",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter2/05_text_chunking.md"
+    },
+    {
+      "source": "docs/chapter3/06_vector_embedding.md",
+      "local": "data/documents/06_vector_embedding.md",
+      "git_blob_sha": "8691f63384de494d806370450d690ddb2fb9e567",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter3/06_vector_embedding.md"
+    }
+  ]
+}
