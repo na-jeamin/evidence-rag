@@ -9,6 +9,7 @@
 - 已验证：2026-10-24 用户运行 chunk_size=500/chunk_overlap=100 的切分入口成功，3 文档共 71 块；数据加载 21 块、文本切分 32 块、向量嵌入 18 块。前 3 块为 C001/C002/C003，来源均为第一篇，长度为 317/226/453 字符。
 - 已验证：2026-10-24 用户运行 BGE 本地缓存模型/内存向量库的 Dense 检索，3 文档/71 块，重叠问题的 Top-3 为 C030、C022、C051，来源均是文本切分教程。流程成功不等于证据充分，人工核对详见 evals/baseline_observations.json。
 - 后续计划：可核对引用、BM25/Hybrid、小评估、有预算的检索反馈。未完成项不作为现有能力或指标。
+- Day 9 已验证：用户已安装 jieba 0.42.1 / rank-bm25 0.2.2，并实际运行中文问题分词。原问题按空格拆为1项，中文分词/清理后为6项：文本、切分、为什么、要、设置、重叠。BM25索引和检索尚未接入。
 
 ## 当前已验证的数据流
 
@@ -84,6 +85,22 @@ cd D:\tt\agent
 cd D:\tt\agent
 .\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\retrieve.py --k 6
 ```
+
+## Day 9 第一阶段：中文分词（用户运行已验证）
+
+为后续关键词匹配准备一致的词项列表。当前 bm25_retrieve.py 只比较按空格拆分与中文分词，不改变原71块、Dense默认k或已有基线结果。
+
+在已有学习环境增加 rank-bm25（评分工具）和 jieba（中文分词工具），不新建环境，也不下载 BGE/生成模型：
+
+```powershell
+cd D:\tt\agent
+.\day05-basic-rag\.venv\Scripts\python.exe -m pip install -r .\projects\evidence-rag\requirements-bm25.txt
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\bm25_retrieve.py
+```
+
+预期看到原问题、按空格拆分列表与中文词列表，实际切词以用户运行输出为准；此阶段没有BM25排名，不把切词成功等同检索改善。问题/文本块后续会使用同一个 tokenize 函数，返回检索结果仍是原文块。
+
+已有 AST、模拟切词清理逻辑检查，以及上述用户真实安装/分词输出。评分库虽已安装，BM25评分与排名尚未运行，分词成功不等于检索效果已验证。
 
 ## 独立复现
 

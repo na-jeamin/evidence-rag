@@ -1,0 +1,4 @@
+-r requirements.txt
+# BM25 评分与中文分词；不需要嵌入模型或生成 API。
+rank-bm25==0.2.2
+jieba==0.42.1

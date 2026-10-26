@@ -33,3 +33,11 @@ ATLAS/C7 的反馈图仍为后续候选对照，此阶段未复制或集成其�
 ## 第三阶段：Dense 基线（已有用户实际运行）
 
 `retrieve.py` 复用 C1 的 HuggingFaceEmbeddings / InMemoryVectorStore / add_documents / similarity_search 主流程，使用同名 BGE、CPU 和归一化。变化为复用当前多文档/500 字符切分、显式只读本地模型缓存、CLI 问题/Top-K 与编号来源预览；当前尚不生成回答。具体查询、语料和配置与上游原例不同，不称未经修改的原版或已获得优化提升。
+
+## Day 9：BM25 关键词路线（分阶段准备）
+
+- 延续原三份教程与71块，不另换数据来比较。all-in-rag 为检索学习主线，本地BM25入口为适配代码，不称逐字运行C4原版；此前读过的C4 Milvus/BGE-M3稀疏检索示例不等于当前的BM25实现。
+- 使用作者发布的 [rank-bm25 0.2.2](https://pypi.org/project/rank-bm25/0.2.2/) 和 [jieba 0.42.1](https://pypi.org/project/jieba/0.42.1/)，2026-10-26 核对 PyPI 版本；用户随后已实际安装并运行jieba分词观察，BM25评分尚未接入/运行。
+- rank-bm25 作者示例要求传入词列表，并强调资料和问题使用一致预处理；jieba 官方 README 提供中文分词与 lcut 接口，见 [jieba](https://github.com/fxsjy/jieba)。
+- 本地 tokenize 负责切词、英文小写及空白/纯标点清理，保留包含字母/数字/中文的术语；当前未移除停用词，未证明该预处理最优。
+- 预先只读核对本机 langchain-community 0.4.2 的 retrievers/bm25.py：默认 text.split 不专门处理中文，可通过 preprocess_func 指定同一处理函数，from_documents 保留正文/metadata，调用时再处理查询。当前仅分词观察，尚未写入或运行此检索步骤。
