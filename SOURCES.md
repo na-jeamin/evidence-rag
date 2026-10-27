@@ -37,7 +37,7 @@ ATLAS/C7 的反馈图仍为后续候选对照，此阶段未复制或集成其�
 ## Day 9：BM25 关键词路线（分阶段准备）
 
 - 延续原三份教程与71块，不另换数据来比较。all-in-rag 为检索学习主线，本地BM25入口为适配代码，不称逐字运行C4原版；此前读过的C4 Milvus/BGE-M3稀疏检索示例不等于当前的BM25实现。
-- 使用作者发布的 [rank-bm25 0.2.2](https://pypi.org/project/rank-bm25/0.2.2/) 和 [jieba 0.42.1](https://pypi.org/project/jieba/0.42.1/)，2026-10-26 核对 PyPI 版本；用户随后已实际安装并运行jieba分词观察，BM25评分尚未接入/运行。
+- 使用作者发布的 [rank-bm25 0.2.2](https://pypi.org/project/rank-bm25/0.2.2/) 和 [jieba 0.42.1](https://pypi.org/project/jieba/0.42.1/)，2026-10-26 核对 PyPI 版本；用户已实际安装并运行jieba分词观察，2026-10-27进一步验证完整BM25检索及换问法实验。
 - rank-bm25 作者示例要求传入词列表，并强调资料和问题使用一致预处理；jieba 官方 README 提供中文分词与 lcut 接口，见 [jieba](https://github.com/fxsjy/jieba)。
 - 本地 tokenize 负责切词、英文小写及空白/纯标点清理，保留包含字母/数字/中文的术语；当前未移除停用词，未证明该预处理最优。
-- 预先只读核对本机 langchain-community 0.4.2 的 retrievers/bm25.py：默认 text.split 不专门处理中文，可通过 preprocess_func 指定同一处理函数，from_documents 保留正文/metadata，调用时再处理查询。当前仅分词观察，尚未写入或运行此检索步骤。
+- 核对本机 langchain-community 0.4.2 的 retrievers/bm25.py：默认 text.split 不专门处理中文，可通过 preprocess_func 指定同一处理函数，from_documents 保留正文/metadata，invoke接收字符串再处理查询。按此接入索引/查询代码后，先用人工三条文本做隔离接口与无匹配边界检查，再由用户实际运行71块课程语料。两问法结果见evals/bm25_observations.json，不称已获得整体检索提升。

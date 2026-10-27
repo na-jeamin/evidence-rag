@@ -1,0 +1,43 @@
+{
+  "scope": "同一意图两种问法的用户真实BM25运行与人工正文核对，不是整体准确率评估",
+  "date": "2026-10-27",
+  "question": "文本切分为什么要设置重叠？",
+  "configuration": {
+    "retriever": "BM25Retriever / BM25Okapi",
+    "preprocess": "jieba.lcut，清理空白和纯标点、英文小写",
+    "chunk_size": 500,
+    "chunk_overlap": 100,
+    "document_count": 3,
+    "chunk_count": 71,
+    "k": 3
+  },
+  "observed_results": [
+    {"chunk_id": "C052", "source": "05_text_chunking.md", "characters": 427},
+    {"chunk_id": "C029", "source": "05_text_chunking.md", "characters": 243},
+    {"chunk_id": "C020", "source": "04_data_load.md", "characters": 437}
+  ],
+  "direct_evidence": {
+    "chunk_id": "C029",
+    "rank": 2,
+    "quote": "每个块之间重叠10个字符，以缓解语义割裂",
+    "note": "原文示例参数10不代表本项目实际chunk_overlap=100。"
+  },
+  "manual_assessment": "C029直接解释重叠可缓解语义割裂；C052主要介绍工具与可视化，C020主要讨论PDF解析。前三块已含依据，但仍有噪声。",
+  "comparison": "同问题Dense k3未直接覆盖，Dense k6由C027提供依据；BM25 k3此次由另一块C029提供依据。不推广为总体优劣，不视作原C027排名提升。",
+  "returned_text_characters": 1107,
+  "not_measured": ["查询耗时", "生成token", "其他问题上的效果"],
+  "generation_called": false,
+  "question_variant_experiment": {
+    "question": "chunk_overlap 有什么作用？",
+    "changed_parameter": "仅更换问题，语料、切分、分词规则和k保持不变",
+    "query_terms": ["chunk", "overlap", "有", "什么", "作用"],
+    "observed_results": [
+      {"chunk_id": "C034", "source": "05_text_chunking.md", "characters": 266},
+      {"chunk_id": "C029", "source": "05_text_chunking.md", "characters": 243},
+      {"chunk_id": "C036", "source": "05_text_chunking.md", "characters": 419}
+    ],
+    "returned_text_characters": 928,
+    "manual_assessment": "三块都含chunk_overlap代码，C029仍排第2且直接说明缓解语义割裂；第1名C034仅展示参数使用，不能直接解释作用。返回内容变化，但直接依据排名未提高。",
+    "tokenization_note": "jieba先将chunk_overlap拆开；清理函数不保证保留完整标识符。资料和问题均使用同一规则，当前无需为本例改动分词行为。"
+  }
+}
