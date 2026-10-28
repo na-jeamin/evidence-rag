@@ -1,0 +1,85 @@
+{
+  "scope": "2026-10-28用户真实运行两路检索、合并与等权RRF排序，单问题人工证据核对",
+  "question": "文本切分为什么要设置重叠？",
+  "configuration": {"document_count": 3, "chunk_count": 71, "chunk_size": 500, "chunk_overlap": 100, "candidate_k_per_route": 3},
+  "dense_results": [
+    {"chunk_id": "C030", "source": "05_text_chunking.md", "characters": 488},
+    {"chunk_id": "C022", "source": "05_text_chunking.md", "characters": 415},
+    {"chunk_id": "C051", "source": "05_text_chunking.md", "characters": 242}
+  ],
+  "bm25_results": [
+    {"chunk_id": "C052", "source": "05_text_chunking.md", "characters": 427},
+    {"chunk_id": "C029", "source": "05_text_chunking.md", "characters": 243},
+    {"chunk_id": "C020", "source": "04_data_load.md", "characters": 437}
+  ],
+  "manual_assessment": "C029明确说明重叠以缓解语义割裂。用户进一步实际运行合并入口，6条去重后仍6块，编号保持首次出现顺序。本记录不视作融合排序成功。",
+  "merge_run": {
+    "date": "2026-10-28",
+    "input_count": 6,
+    "unique_count": 6,
+    "observed_ids": ["C030", "C022", "C051", "C052", "C029", "C020"],
+    "limitation": "本次实际候选无重复，只验证无重复路径；重复编号保留首份的路径通过独立人工语料离线检查，未冒充本次真实检索实验。"
+  },
+  "prior_interruption": "此前进程在jieba读取词典缓存时KeyboardInterrupt；重试后成功，未改代码/重装或删除缓存，不能据此前中断认定缓存损坏。",
+  "fusion_executed": true,
+  "fusion_run": {
+    "date": "2026-10-28",
+    "rank_constant": 60,
+    "weights": "两路等权",
+    "tie_break": "稳定排序，同分保留合并时首次出现顺序；本基线Dense优先",
+    "reported_rrf_scores": {"C030": 0.01639344, "C022": 0.01612903, "C051": 0.01587302, "C052": 0.01639344, "C029": 0.01612903, "C020": 0.01587302},
+    "all_ranked_ids": ["C030", "C052", "C022", "C029", "C051", "C020"],
+    "final_k": 3,
+    "final_ids": ["C030", "C052", "C022"],
+    "final_text_characters": 1330,
+    "direct_evidence_chunk": "C029",
+    "direct_evidence_rank": 4,
+    "direct_evidence_retained": false,
+    "manual_assessment": "BM25前三原本有C029直接说明，但融合前三将其丢掉；C022与C029均仅有一路第2名贡献，同分后按固定顺序C022先。流程正确执行，不代表证据覆盖改善；本例融合对比BM25单路退化，不推广为总体结论。",
+    "next_experiment": "仅将每路candidate_k从3改为6，最终k仍3，问题/资料/切分/分词/RRF常数/同分规则保持不变；新增候选是否形成跨路共同命中及能否保留依据待用户实际验证。"
+  },
+  "candidate_window_experiment": {
+    "date": "2026-10-28",
+    "raw_output": "runs/2026-10-28-candidate6-k3.txt",
+    "changed_parameter": "candidate_k_per_route: 3 -> 6；最终k仍3，其余配置和规则不变",
+    "candidate_k_per_route": 6,
+    "dense_results": [
+      {"chunk_id": "C030", "characters": 488},
+      {"chunk_id": "C022", "characters": 415},
+      {"chunk_id": "C051", "characters": 242},
+      {"chunk_id": "C037", "characters": 339},
+      {"chunk_id": "C035", "characters": 478},
+      {"chunk_id": "C027", "characters": 422}
+    ],
+    "bm25_results": [
+      {"chunk_id": "C052", "characters": 427},
+      {"chunk_id": "C029", "characters": 243},
+      {"chunk_id": "C020", "characters": 437},
+      {"chunk_id": "C028", "characters": 448},
+      {"chunk_id": "C039", "characters": 367},
+      {"chunk_id": "C027", "characters": 422}
+    ],
+    "input_count": 12,
+    "unique_count": 11,
+    "shared_ids": ["C027"],
+    "reported_rrf_scores": {"C030": 0.01639344, "C022": 0.01612903, "C051": 0.01587302, "C037": 0.015625, "C035": 0.01538462, "C027": 0.03030303, "C052": 0.01639344, "C029": 0.01612903, "C020": 0.01587302, "C028": 0.015625, "C039": 0.01538462},
+    "all_ranked_ids": ["C027", "C030", "C052", "C022", "C029", "C051", "C020", "C037", "C028", "C035", "C039"],
+    "final_k": 3,
+    "final_ids": ["C027", "C030", "C052"],
+    "final_text_characters": 1337,
+    "direct_evidence": {
+      "chunk_id": "C027",
+      "source": "05_text_chunking.md",
+      "dense_rank": 6,
+      "bm25_rank": 6,
+      "rrf_calculation": "1/(60+6) + 1/(60+6) = 0.03030303...",
+      "fusion_rank": 1,
+      "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+    },
+    "direct_evidence_retained": true,
+    "manual_assessment": "扩大每路候选后共同命中C027，去重仅保留一份正文但保留两路贡献，升至融合第1并进入最终3块。本例修复此前未保留直接依据的失败；C029本次排第5，恢复依据来自C027，不是C029。其余最终块未直接解释作用，不能声称整体准确率提升。",
+    "not_measured": ["检索延迟", "生成token", "其他问题效果"],
+    "default_configuration": "默认每路3/最终3保留失败基线，6仅为本次CLI对照值，不据单例改全局默认。"
+  },
+  "generation_called": false
+}

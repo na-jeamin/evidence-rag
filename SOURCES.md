@@ -41,3 +41,9 @@ ATLAS/C7 的反馈图仍为后续候选对照，此阶段未复制或集成其�
 - rank-bm25 作者示例要求传入词列表，并强调资料和问题使用一致预处理；jieba 官方 README 提供中文分词与 lcut 接口，见 [jieba](https://github.com/fxsjy/jieba)。
 - 本地 tokenize 负责切词、英文小写及空白/纯标点清理，保留包含字母/数字/中文的术语；当前未移除停用词，未证明该预处理最优。
 - 核对本机 langchain-community 0.4.2 的 retrievers/bm25.py：默认 text.split 不专门处理中文，可通过 preprocess_func 指定同一处理函数，from_documents 保留正文/metadata，invoke接收字符串再处理查询。按此接入索引/查询代码后，先用人工三条文本做隔离接口与无匹配边界检查，再由用户实际运行71块课程语料。两问法结果见evals/bm25_observations.json，不称已获得整体检索提升。
+
+## Day 10：两路合并与RRF分数
+
+复用已有Dense/BM25路线，共用一次加载/切分和块编号。本地merge_candidates负责按编号保留首次出现的完整原文块，calculate_rrf_scores负责等权RRF累计；每路输入为各自不重复的原始排名列表。
+
+2026-10-28核对 [Elastic官方RRF说明](https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion)：每路按1/(rank_constant+rank)贡献分，rank从1起，同块多路贡献相加。本地固定常数60作基线，只参考算法原理、自行实现教学代码，不安装或依赖Elasticsearch，不称已复现其服务/API或得到同等效果。评分/排序已写待用户运行；同分保留首次出现顺序、最终--k截取属于本地明确的基线选择，不称与Elastic服务的同分排序一致。
