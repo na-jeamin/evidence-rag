@@ -1,5 +1,5 @@
 {
-  "scope": "Day11第一题Dense检索的标注依据检查；仅单题开发实验，不是3题整体或生成回答准确率",
+  "scope": "Day11开发集检索的标注依据检查；按各报告题目/标注快照区分3题与15题及标注版本，不是生成回答准确率。",
   "runs": [
     {
       "date": "2026-10-30",
@@ -469,6 +469,395 @@
       ],
       "manual_assessment": "同题/标注/最终k3，仅每路候选3→6后由2/3变3/3。Q001由两路各第6的C027累计2/66升至第一恢复依据，Q002/C002及Q003/C055保留；已只读全文核对。候选预算比单路k3大，不能宣称一般方法优胜或调参最优。",
       "generation_called": false
+    },
+    {
+      "date": "2026-10-30",
+      "report": "results/dense_k3_20261030T083717420943Z.json",
+      "strategy": "dense",
+      "annotation_version": "dev15-v1",
+      "k": 3,
+      "case_count": 15,
+      "hit_count": 11,
+      "results": [
+        {
+          "case_id": "Q001",
+          "returned_ids": [
+            "C030",
+            "C022",
+            "C051"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q002",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C045"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C002"
+          ]
+        },
+        {
+          "case_id": "Q003",
+          "returned_ids": [
+            "C055",
+            "C041",
+            "C040"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ]
+        },
+        {
+          "case_id": "Q004",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C068"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C001"
+          ]
+        },
+        {
+          "case_id": "Q005",
+          "returned_ids": [
+            "C002",
+            "C068",
+            "C009"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C009"
+          ]
+        },
+        {
+          "case_id": "Q006",
+          "returned_ids": [
+            "C020",
+            "C019",
+            "C031"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C020"
+          ]
+        },
+        {
+          "case_id": "Q007",
+          "returned_ids": [
+            "C020",
+            "C019",
+            "C070"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C019"
+          ]
+        },
+        {
+          "case_id": "Q008",
+          "returned_ids": [
+            "C023",
+            "C022",
+            "C024"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C022"
+          ]
+        },
+        {
+          "case_id": "Q009",
+          "returned_ids": [
+            "C046",
+            "C048",
+            "C037"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C037"
+          ]
+        },
+        {
+          "case_id": "Q010",
+          "returned_ids": [
+            "C033",
+            "C032",
+            "C031"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q011",
+          "returned_ids": [
+            "C051",
+            "C043",
+            "C034"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C051"
+          ]
+        },
+        {
+          "case_id": "Q012",
+          "returned_ids": [
+            "C064",
+            "C065",
+            "C023"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q013",
+          "returned_ids": [
+            "C055",
+            "C064",
+            "C038"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ]
+        },
+        {
+          "case_id": "Q014",
+          "returned_ids": [
+            "C025",
+            "C024",
+            "C046"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q015",
+          "returned_ids": [
+            "C058",
+            "C041",
+            "C025"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C058"
+          ]
+        }
+      ],
+      "manual_assessment": "自动11/15，未标注命中Q001/Q010/Q012/Q014。人工检查Q010返回C033已直接说明更细分隔符继续分割，C032也描述递归继续分割，是标注遗漏；其余三题返回片段未直接支持问题。保留旧11/15，不改写原报告，修订Q010依据后需要同版重测。",
+      "generation_called": false
+    },
+    {
+      "date": "2026-10-30",
+      "report": "results/dense_k3_20261030T084503794456Z.json",
+      "strategy": "dense",
+      "annotation_version": "dev15-v2",
+      "k": 3,
+      "case_count": 15,
+      "hit_count": 12,
+      "results": [
+        {
+          "case_id": "Q001",
+          "returned_ids": [
+            "C030",
+            "C022",
+            "C051"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q002",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C045"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C002"
+          ]
+        },
+        {
+          "case_id": "Q003",
+          "returned_ids": [
+            "C055",
+            "C041",
+            "C040"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ]
+        },
+        {
+          "case_id": "Q004",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C068"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C001"
+          ]
+        },
+        {
+          "case_id": "Q005",
+          "returned_ids": [
+            "C002",
+            "C068",
+            "C009"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C009"
+          ]
+        },
+        {
+          "case_id": "Q006",
+          "returned_ids": [
+            "C020",
+            "C019",
+            "C031"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C020"
+          ]
+        },
+        {
+          "case_id": "Q007",
+          "returned_ids": [
+            "C020",
+            "C019",
+            "C070"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C019"
+          ]
+        },
+        {
+          "case_id": "Q008",
+          "returned_ids": [
+            "C023",
+            "C022",
+            "C024"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C022"
+          ]
+        },
+        {
+          "case_id": "Q009",
+          "returned_ids": [
+            "C046",
+            "C048",
+            "C037"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C037"
+          ]
+        },
+        {
+          "case_id": "Q010",
+          "returned_ids": [
+            "C033",
+            "C032",
+            "C031"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C033",
+            "C032"
+          ]
+        },
+        {
+          "case_id": "Q011",
+          "returned_ids": [
+            "C051",
+            "C043",
+            "C034"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C051"
+          ]
+        },
+        {
+          "case_id": "Q012",
+          "returned_ids": [
+            "C064",
+            "C065",
+            "C023"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q013",
+          "returned_ids": [
+            "C055",
+            "C064",
+            "C038"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ]
+        },
+        {
+          "case_id": "Q014",
+          "returned_ids": [
+            "C025",
+            "C024",
+            "C046"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q015",
+          "returned_ids": [
+            "C058",
+            "C041",
+            "C025"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C058"
+          ]
+        }
+      ],
+      "manual_assessment": "15题检索设置和每题返回完整原文与v1逐项相同，只有Q010由False变True，C033/C032的支持性原文被补入标注。12/15是修正后的标注检查基线，不能把11→12当作检索算法改进。剩余Q001/Q012/Q014未命中。",
+      "generation_called": false
+    }
+  ],
+  "annotation_revisions": [
+    {
+      "date": "2026-10-30",
+      "from": "dev15-v1",
+      "to": "dev15-v2",
+      "case_id": "Q010",
+      "archive": "retrieval_cases_dev15_v1.json",
+      "trigger_report": "results/dense_k3_20261030T083717420943Z.json",
+      "change": "只新增C033/C032的两条同样支持原答案的依据，不改问题、原参考回答、其他题或检索/匹配规则。",
+      "reason": "原标注仅包含C036的表述，漏掉已返回的支持性段落，造成假阴性。",
+      "raw_original_hit_count": 11,
+      "revised_actual_hit_count": 12,
+      "next_step": "其他策略使用相同dev15-v2标注、最终k3，与此基线比较。",
+      "revised_report": "results/dense_k3_20261030T084503794456Z.json"
     }
   ]
 }

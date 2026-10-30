@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
+  "annotation_version": "dev15-v2",
   "status": "draft_for_review",
-  "scope": "当前三份教程资料上的检索开发集，先3题；不是独立测试集或端到端回答准确率评估。",
+  "scope": "当前三份教程资料上的15题检索开发集；保留原3题并补12题，均由原文编写，不是独立测试集或端到端回答准确率评估。历史3题结果保留各报告中的cases_snapshot，不能与新15题结果直接混算。",
   "label_author": "助手根据当前原文编写问题和参考依据，待用户带读确认；不是检索器或生成模型自动给出的标准答案。",
   "evidence_rule": "每题列出可支持答案的原文依据备选。后续检查返回块的来源与正文是否包含至少一条依据；字符串命中是可检查的代理指标，仍需人工复核，备选不保证穷尽。",
   "cases": [
@@ -30,6 +31,105 @@
       "reference_answer": "向量归一化后，两者等价。",
       "evidence_options": [
         {"source": "06_vector_embedding.md", "quote": "在向量归一化后，点积等价于余弦相似度。"}
+      ]
+    },
+    {
+      "id": "Q004",
+      "question": "一套RAG流程刚开始处理资料时，数据加载属于第几个步骤？",
+      "reference_answer": "数据加载是整个流水线的第一步。",
+      "evidence_options": [
+        {"source": "04_data_load.md", "quote": "**数据加载**是整个流水线的第一步"}
+      ]
+    },
+    {
+      "id": "Q005",
+      "question": "文中面向RAG和AI微调、负责非结构化资料预处理的专业文档库叫什么？",
+      "reference_answer": "Unstructured。",
+      "evidence_options": [
+        {"source": "04_data_load.md", "quote": "**Unstructured** [^1]是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。"}
+      ]
+    },
+    {
+      "id": "Q006",
+      "question": "自动识别出PDF文件后，partition会把处理转交给哪个专用函数？",
+      "reference_answer": "partition_pdf。",
+      "evidence_options": [
+        {"source": "04_data_load.md", "quote": "如PDF文件会调用`partition_pdf`"}
+      ]
+    },
+    {
+      "id": "Q007",
+      "question": "已经知道文档是PDF时，partition的哪个参数可以指定MIME类型并跳过自动格式检测？",
+      "reference_answer": "content_type，例如指定application/pdf。",
+      "evidence_options": [
+        {"source": "04_data_load.md", "quote": "`content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测"}
+      ]
+    },
+    {
+      "id": "Q008",
+      "question": "把超出输入长度限制的文本块交给嵌入模型，会造成什么问题？",
+      "reference_answer": "文本块会被截断，导致信息丢失，向量无法完整代表原文语义。",
+      "evidence_options": [
+        {"source": "05_text_chunking.md", "quote": "任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。"}
+      ]
+    },
+    {
+      "id": "Q009",
+      "question": "不按固定字数，而根据内容主题发生变化的位置切开，属于哪种分块方法？",
+      "reference_answer": "语义分块，在语义主题显著变化的地方切分。",
+      "evidence_options": [
+        {"source": "05_text_chunking.md", "quote": "语义分块（Semantic Chunking）是一种更智能的方法，这种方法不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。"}
+      ]
+    },
+    {
+      "id": "Q010",
+      "question": "递归字符分块按段落切完仍然太长，接着会怎样处理这个大块？",
+      "reference_answer": "继续应用下一优先级分隔符，例如句号，直到块满足大小限制。",
+      "evidence_options": [
+        {"source": "05_text_chunking.md", "quote": "如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。"},
+        {"source": "05_text_chunking.md", "quote": "递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求。"},
+        {"source": "05_text_chunking.md", "quote": "**有剩余分隔符**: 递归调用 `_split_text` 继续分割"}
+      ],
+      "annotation_note": "dev15-v2补充C033/C032中同样有效的原文依据；v1自动False遗漏支持性表述。只补标注，不改问题/检索/匹配规则，其他方法须用同版标注比较。"
+    },
+    {
+      "id": "Q011",
+      "question": "按单个句子检索时，SentenceWindowNodeParser把前后的上下文存在哪里？",
+      "reference_answer": "在每个句子节点的元数据中保存前后相邻N个句子，组成上下文窗口。",
+      "evidence_options": [
+        {"source": "05_text_chunking.md", "quote": "在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子"}
+      ]
+    },
+    {
+      "id": "Q012",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "reference_answer": "使用同一个Embedding模型，将问题转换为向量。",
+      "evidence_options": [
+        {"source": "06_vector_embedding.md", "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"}
+      ]
+    },
+    {
+      "id": "Q013",
+      "question": "用向量之间的直线距离比较语义时，距离越大还是越小表示更相似？",
+      "reference_answer": "欧氏距离越小，语义越相似。",
+      "evidence_options": [
+        {"source": "06_vector_embedding.md", "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"}
+      ]
+    },
+    {
+      "id": "Q014",
+      "question": "把文档块编码成向量并存入向量库，属于离线准备还是在线问题检索阶段？",
+      "reference_answer": "离线索引构建阶段。",
+      "evidence_options": [
+        {"source": "06_vector_embedding.md", "quote": "**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。"}
+      ]
+    },
+    {
+      "id": "Q015",
+      "question": "“苹果”分别指公司和水果时，为什么静态词向量难以区分这两种意思？",
+      "reference_answer": "静态词嵌入对同一个词使用与上下文无关的固定向量，无法处理一词多义；两个语境中的苹果向量相同。",
+      "evidence_options": [
+        {"source": "06_vector_embedding.md", "quote": "在“苹果公司发布了新手机”和“我吃了一个苹果”中，“苹果”的词向量是完全相同的"}
       ]
     }
   ]
