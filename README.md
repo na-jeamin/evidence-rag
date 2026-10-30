@@ -151,6 +151,31 @@ cd D:\tt\agent
 .\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\hybrid_retrieve.py --candidate-k 6 --k 3
 ```
 
+## Day 11：评估题读取与核对函数
+
+evals/retrieval_cases.json先准备3道开发题与原文依据，助手对照资料编写、逐条确认quote存在；备选不保证穷尽，也不是独立测试集。eval_retrieval.py读取段与Q001 Dense k3检索/核对已由用户实际运行：返回C030/C022/C051，标注命中False。当前未执行其他题或多策略对照，不称整组评估完成。
+
+```powershell
+cd D:\tt\agent
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\eval_retrieval.py --inspect-only
+```
+
+读取段已由用户实际运行，显示3题、Q001三条依据与Q002/Q003各一条；预设参考回答不是模型实际回答。has_labeled_evidence检查返回块来源文件名与标注source一致，正文包含任意一条quote则True，否则False，已有人工输入隔离检查。Q001 k3返回C030/C022/C051、结果False；仅改k6后新增C037/C035/C027，C027来源/正文包含标注依据，结果True，两次均与人工核对一致。记录见evals/retrieval_observations.json；没有3题整体指标，标注短语命中仍需人工复核。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\eval_retrieval.py --k 3
+```
+
+检索仍使用本机已缓存嵌入模型/现有依赖，无新下载或生成模型请求。--inspect-only只读题；--k控制第一题Dense返回数量，不是题目数量。
+
+同一第一题的k6对照命令：
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\eval_retrieval.py --k 6
+```
+
+本例扩大返回范围使单题标注命中False→True，直接依据仍第6，未改善排序。True只表示至少一块命中，不表示所有返回块都相关或回答正确；默认仍k3。当前未评估Q002/Q003或多策略，不称整套评估完成。
+
 ## 独立复现
 
 仓库克隆到任意目录后，在其根目录使用 Python 3.13：

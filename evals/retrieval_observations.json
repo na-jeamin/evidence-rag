@@ -1,0 +1,38 @@
+{
+  "scope": "Day11第一题Dense检索的标注依据检查；仅单题开发实验，不是3题整体或生成回答准确率",
+  "runs": [
+    {
+      "date": "2026-10-30",
+      "case_id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "configuration": {"retriever": "dense", "k": 3, "document_count": 3, "chunk_count": 71, "chunk_size": 500, "chunk_overlap": 100},
+      "returned_ids": ["C030", "C022", "C051"],
+      "labeled_evidence_hit": false,
+      "manual_assessment": "三个返回块均来自05_text_chunking.md，但正文未包含Q001三条标注quote中的任意一条，False与输出和人工正文核对一致。未判断整份资料无答案，也未将所有可能有效依据视作已穷尽。",
+      "generation_called": false,
+      "next_experiment": "已仅将k改6运行，对应下一条记录。"
+    },
+    {
+      "date": "2026-10-30",
+      "case_id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "configuration": {"retriever": "dense", "k": 6, "document_count": 3, "chunk_count": 71, "chunk_size": 500, "chunk_overlap": 100},
+      "returned_ids": ["C030", "C022", "C051", "C037", "C035", "C027"],
+      "labeled_evidence_hit": true,
+      "matched_evidence": {
+        "chunk_id": "C027",
+        "rank": 6,
+        "source": "05_text_chunking.md",
+        "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+      },
+      "manual_assessment": "C027完整正文包含标注quote且来源一致，True与人工核对相符。只改返回块数而未改善排序，直接依据仍排第6；True表示至少一块包含标注依据，不表示六块都相关或生成回答正确。",
+      "generation_called": false
+    }
+  ],
+  "comparison": {
+    "changed_parameter": "Dense k: 3 -> 6，题目、原资料、切分、嵌入和标注规则不变",
+    "outcome": "单题标注依据命中False→True，依据仍排第6",
+    "not_measured": ["3题整体指标", "其他检索策略本次评估结果", "查询耗时", "生成回答准确率"],
+    "default_k": "仍保留3；6是CLI对照值"
+  }
+}

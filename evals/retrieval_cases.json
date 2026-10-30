@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "status": "draft_for_review",
+  "scope": "当前三份教程资料上的检索开发集，先3题；不是独立测试集或端到端回答准确率评估。",
+  "label_author": "助手根据当前原文编写问题和参考依据，待用户带读确认；不是检索器或生成模型自动给出的标准答案。",
+  "evidence_rule": "每题列出可支持答案的原文依据备选。后续检查返回块的来源与正文是否包含至少一条依据；字符串命中是可检查的代理指标，仍需人工复核，备选不保证穷尽。",
+  "cases": [
+    {
+      "id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "reference_answer": "保留相邻块的部分上下文，缓解语义割裂、保持上下文连续性。",
+      "evidence_options": [
+        {"source": "05_text_chunking.md", "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"},
+        {"source": "05_text_chunking.md", "quote": "通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性"},
+        {"source": "05_text_chunking.md", "quote": "每个块之间重叠10个字符，以缓解语义割裂"}
+      ],
+      "note": "已有开发案例，不能当作从未见过的独立测试。C027/C028/C029在当前切分中都可能提供依据，不只认一个编号。"
+    },
+    {
+      "id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "evidence_options": [
+        {"source": "04_data_load.md", "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"}
+      ]
+    },
+    {
+      "id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "reference_answer": "向量归一化后，两者等价。",
+      "evidence_options": [
+        {"source": "06_vector_embedding.md", "quote": "在向量归一化后，点积等价于余弦相似度。"}
+      ]
+    }
+  ]
+}
