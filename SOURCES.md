@@ -47,3 +47,9 @@ ATLAS/C7 的反馈图仍为后续候选对照，此阶段未复制或集成其�
 复用已有Dense/BM25路线，共用一次加载/切分和块编号。本地merge_candidates负责按编号保留首次出现的完整原文块，calculate_rrf_scores负责等权RRF累计；每路输入为各自不重复的原始排名列表。
 
 2026-10-28核对 [Elastic官方RRF说明](https://www.elastic.co/docs/reference/elasticsearch/rest-apis/reciprocal-rank-fusion)：每路按1/(rank_constant+rank)贡献分，rank从1起，同块多路贡献相加。本地固定常数60作基线，只参考算法原理、自行实现教学代码，不安装或依赖Elasticsearch，不称已复现其服务/API或得到同等效果。评分/排序已写待用户运行；同分保留首次出现顺序、最终--k截取属于本地明确的基线选择，不称与Elastic服务的同分排序一致。
+
+## Day 11：本地标注依据检查
+
+retrieval_cases.json的开发题、参考回答和quote备选由助手对照本项目固定版本的三份原文编写，quote存在性已只读核对，不称官方评测集或独立测试。eval_retrieval.py的来源文件名+原文短语包含检查、逐题计数、报告保存为本地新增逻辑；指标只表示标注依据命中题数，不能直接当作一般检索准确率或生成回答准确率。
+
+Dense分支复用项目已有build_vectorstore，BM25分支复用已核对的BM25Retriever.from_documents/invoke与tokenize，未从新框架搬入评估平台。Hybrid分支直接调用Day10三个融合函数，不修改公式/同分规则。三题四配置均已有用户实际运行和报告核对（Dense2/3、BM253/3、Hybrid候选3为2/3、候选6为3/3，最终均3）；只限开发小集，扩充约15题和独立评估均未完成。

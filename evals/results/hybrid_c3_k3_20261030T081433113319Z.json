@@ -1,0 +1,216 @@
+{
+  "created_at_utc": "2026-10-30T08:14:33.113319+00:00",
+  "scope": "标注依据命中题数，开发集检查；不是独立测试或生成答案准确率。",
+  "configuration": {
+    "retriever": "hybrid",
+    "k": 3,
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "preprocess_func": "tokenize",
+    "candidate_k_per_route": 3,
+    "rank_constant": 60,
+    "tie_break": "同分保留首次出现顺序，Dense先",
+    "document_count": 3,
+    "chunk_count": 71,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "case_count": 3,
+  "hit_count": 2,
+  "cases_snapshot": [
+    {
+      "id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "reference_answer": "保留相邻块的部分上下文，缓解语义割裂、保持上下文连续性。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "每个块之间重叠10个字符，以缓解语义割裂"
+        }
+      ],
+      "note": "已有开发案例，不能当作从未见过的独立测试。C027/C028/C029在当前切分中都可能提供依据，不只认一个编号。"
+    },
+    {
+      "id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ]
+    },
+    {
+      "id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "reference_answer": "向量归一化后，两者等价。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在向量归一化后，点积等价于余弦相似度。"
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "labeled_evidence_hit": false,
+      "route_details": {
+        "dense_ids": [
+          "C030",
+          "C022",
+          "C051"
+        ],
+        "bm25_ids": [
+          "C052",
+          "C029",
+          "C020"
+        ],
+        "candidate_count_before": 6,
+        "unique_count": 6,
+        "rrf_scores": {
+          "C030": 0.01639344262295082,
+          "C022": 0.016129032258064516,
+          "C051": 0.015873015873015872,
+          "C052": 0.01639344262295082,
+          "C029": 0.016129032258064516,
+          "C020": 0.015873015873015872
+        },
+        "all_ranked_ids": [
+          "C030",
+          "C052",
+          "C022",
+          "C029",
+          "C051",
+          "C020"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C030",
+          "source": "05_text_chunking.md",
+          "page_content": "chunks = text_splitter.split_documents(docs)\n\nprint(f\"文本被切分为 {len(chunks)} 个块。\\n\")\nprint(\"--- 前5个块内容示例 ---\")\nfor i, chunk in enumerate(chunks[:5]):\n    print(\"=\" * 60)\n    # chunk 是一个 Document 对象，需要访问它的 .page_content 属性来获取文本\n    print(f'块 {i+1} (长度: {len(chunk.page_content)}): \"{chunk.page_content}\"')\n```\n\n这种方法的主要优势在于实现简单、处理速度快且计算开销小。劣势在于可能会在语义边界处切断文本，影响内容的完整性和连贯性。实际的固定大小分块实现（如LangChain的 `CharacterTextSplitter`）通常会结合分隔符来减少这种问题，在段落边界处优先切分，只有在必要时才会强制按大小切断。因此，这种方法在日志分析、数据预处理等场景中仍有其应用价值。"
+        },
+        {
+          "chunk_id": "C052",
+          "source": "05_text_chunking.md",
+          "page_content": "（2）**灵活的转换流水线**: 用户可以构建一个灵活的流水线，例如先用 `MarkdownNodeParser` 按章节切分文档，再对每个章节节点应用 `SentenceSplitter` 进行更细粒度的句子级切分。每个节点都携带丰富的元数据，记录着其来源和上下文关系。\n\n（3）**良好的互操作性**: LlamaIndex 提供了 `LangchainNodeParser`，可以方便地将任何 LangChain 的 `TextSplitter` 封装成 LlamaIndex 的节点解析器，无缝集成到其处理流程中。\n\n### 4.3 ChunkViz：简易的可视化分块工具\n\n在本文开头部分展示的分块图就是通过 [**ChunkViz**](https://chunkviz.up.railway.app/) 生成的。可以将你的文档、分块配置作为输入，用不同的颜色块展示每个 chunk 的边界和重叠部分，方便快速理解分块逻辑。\n\n## 参考文献"
+        },
+        {
+          "chunk_id": "C022",
+          "source": "05_text_chunking.md",
+          "page_content": "# 第二节 文本分块\n\n## 一、理解文本分块\n\n文本分块（Text Chunking）是构建 RAG 流程的关键步骤。它的原理是将加载后的长篇文档，切分成更小、更易于处理的单元。这些被切分出的文本块，是后续向量检索和模型处理的**基本单位**。\n\n![文本分块示意图](./images/2_2_1.webp)\n\n## 二、文本分块重要性\n\n### 2.1 满足模型上下文限制\n\n将文本分块的首要原因，是为了适应 RAG 系统中两个核心组件的硬性限制：\n\n-   **嵌入模型 (Embedding Model)**: 负责将文本块转换为向量。这类模型有严格的输入长度上限。例如，许多常用的嵌入模型（如 `bge-base-zh-v1.5`）的上下文窗口为512个token。任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。因此，文本块的大小**必须**小于等于嵌入模型的上下文窗口。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "labeled_evidence_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C002",
+          "C001",
+          "C045"
+        ],
+        "bm25_ids": [
+          "C002",
+          "C001",
+          "C011"
+        ],
+        "candidate_count_before": 6,
+        "unique_count": 4,
+        "rrf_scores": {
+          "C002": 0.03278688524590164,
+          "C001": 0.03225806451612903,
+          "C045": 0.015873015873015872,
+          "C011": 0.015873015873015872
+        },
+        "all_ranked_ids": [
+          "C002",
+          "C001",
+          "C045",
+          "C011"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C002",
+          "source": "04_data_load.md",
+          "page_content": "文档加载器在 RAG 的数据管道中一般需要完成三个核心任务，一是解析不同格式的原始文档，将 PDF、Word、Markdown 等内容提取为可处理的纯文本，二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据，三是把文本和元数据整理成统一的数据结构，方便后续进行切分、向量化和入库，其整体流程与传统数据工程中的抽取、转换、加载相似，目标都是把杂乱的原始文档清洗并对齐为适合检索和建模的标准化语料。\n\n### 1.2 当前主流RAG文档加载器"
+        },
+        {
+          "chunk_id": "C001",
+          "source": "04_data_load.md",
+          "page_content": "# 第一节 数据加载\n\n虽然本节内容在实际应用中非常重要，但是由于各种文档加载器的迭代更新，以及各类 AI 应用的不同需求，具体选择需要根据实际情况。本节仅作简单引入，但请务必**重视数据加载**环节，**“垃圾进，垃圾出 (Garbage In, Garbage Out)”** ——高质量输入是高质量输出的前提。\n\n## 一、文档加载器\n\n### 1.1 主要功能\n\nRAG 系统中，**数据加载**是整个流水线的第一步，也是不可或缺的一步。文档加载器负责将各种格式的非结构化文档（如PDF、Word、Markdown、HTML等）转换为程序可以处理的结构化数据。数据加载的质量会直接影响后续的索引构建、检索效果和最终的生成质量。"
+        },
+        {
+          "chunk_id": "C045",
+          "source": "05_text_chunking.md",
+          "page_content": "- **元数据注入的优势**: 这是此方法的主要特点。例如，对于一篇关于机器学习的文章，某个段落可能位于“第三章：模型评估”下的“3.2节：评估指标”中。经过分割后，这个段落形成的文本块，其元数据就会是 `{\"Header 1\": \"第三章：模型评估\", \"Header 2\": \"3.2节：评估指标\"}`。这种元数据为每个块提供了精确的“地址”，极大地增强了上下文的准确性，让大模型能更好地理解信息片段的来源和背景。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "labeled_evidence_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C055",
+          "C041",
+          "C040"
+        ],
+        "bm25_ids": [
+          "C055",
+          "C056",
+          "C063"
+        ],
+        "candidate_count_before": 6,
+        "unique_count": 5,
+        "rrf_scores": {
+          "C055": 0.03278688524590164,
+          "C041": 0.016129032258064516,
+          "C040": 0.015873015873015872,
+          "C056": 0.016129032258064516,
+          "C063": 0.015873015873015872
+        },
+        "all_ranked_ids": [
+          "C055",
+          "C041",
+          "C056",
+          "C040",
+          "C063"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C055",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        },
+        {
+          "chunk_id": "C041",
+          "source": "05_text_chunking.md",
+          "page_content": "-   `interquartile` (四分位距法):\n    -   **逻辑**: 使用统计学中的四分位距（IQR）来识别异常值。当一个差异值超过 `Q3 + N * IQR` 时，被视为断点。\n    -   **参数**: `breakpoint_threshold_amount` (默认为 `1.5`)，表示使用1.5倍的IQR。\n\n-   `gradient` (梯度法):\n    -   **逻辑**: 这是一种更复杂的方法。它首先计算差异值的变化率（梯度），然后对梯度应用百分位法。对于那些句子间语义联系紧密、差异值普遍较低的文本（如法律、医疗文档）特别有效，因为这种方法能更好地捕捉到语义变化的“拐点”。\n    -   **参数**: `breakpoint_threshold_amount` (默认为 `95`)。\n\n**具体示例如下**"
+        },
+        {
+          "chunk_id": "C056",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 1.2 Embedding 在 RAG 中的作用\n\n在RAG流程中，Embedding 扮演着无可替代的重要角色。\n\n#### 1.2.1 语义检索的基础\n\nRAG 的“检索”环节通常以基于 Embedding 的语义搜索为核心。通用流程如下：\n（1）**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。\n\n（2）**在线查询检索**：当用户提出问题时，使用**同一个** Embedding 模型将用户的问题也转换为一个向量。\n\n（3）**相似度计算**：在向量数据库中，计算“问题向量”与所有“文档块向量”的相似度。\n\n（4）**召回上下文**：选取相似度最高的 Top-K 个文档块，作为补充的上下文信息，与原始问题一同送给大语言模型（LLM）生成最终答案。\n\n#### 1.2.2 决定检索质量的关键"
+        }
+      ]
+    }
+  ],
+  "generation_called": false
+}

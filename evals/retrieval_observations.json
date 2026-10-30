@@ -5,8 +5,19 @@
       "date": "2026-10-30",
       "case_id": "Q001",
       "question": "文本切分为什么要设置重叠？",
-      "configuration": {"retriever": "dense", "k": 3, "document_count": 3, "chunk_count": 71, "chunk_size": 500, "chunk_overlap": 100},
-      "returned_ids": ["C030", "C022", "C051"],
+      "configuration": {
+        "retriever": "dense",
+        "k": 3,
+        "document_count": 3,
+        "chunk_count": 71,
+        "chunk_size": 500,
+        "chunk_overlap": 100
+      },
+      "returned_ids": [
+        "C030",
+        "C022",
+        "C051"
+      ],
       "labeled_evidence_hit": false,
       "manual_assessment": "三个返回块均来自05_text_chunking.md，但正文未包含Q001三条标注quote中的任意一条，False与输出和人工正文核对一致。未判断整份资料无答案，也未将所有可能有效依据视作已穷尽。",
       "generation_called": false,
@@ -16,8 +27,22 @@
       "date": "2026-10-30",
       "case_id": "Q001",
       "question": "文本切分为什么要设置重叠？",
-      "configuration": {"retriever": "dense", "k": 6, "document_count": 3, "chunk_count": 71, "chunk_size": 500, "chunk_overlap": 100},
-      "returned_ids": ["C030", "C022", "C051", "C037", "C035", "C027"],
+      "configuration": {
+        "retriever": "dense",
+        "k": 6,
+        "document_count": 3,
+        "chunk_count": 71,
+        "chunk_size": 500,
+        "chunk_overlap": 100
+      },
+      "returned_ids": [
+        "C030",
+        "C022",
+        "C051",
+        "C037",
+        "C035",
+        "C027"
+      ],
       "labeled_evidence_hit": true,
       "matched_evidence": {
         "chunk_id": "C027",
@@ -32,7 +57,12 @@
   "comparison": {
     "changed_parameter": "Dense k: 3 -> 6，题目、原资料、切分、嵌入和标注规则不变",
     "outcome": "单题标注依据命中False→True，依据仍排第6",
-    "not_measured": ["3题整体指标", "其他检索策略本次评估结果", "查询耗时", "生成回答准确率"],
+    "not_measured": [
+      "3题整体指标",
+      "其他检索策略本次评估结果",
+      "查询耗时",
+      "生成回答准确率"
+    ],
     "default_k": "仍保留3；6是CLI对照值"
   },
   "batch_runs": [
@@ -44,11 +74,400 @@
       "case_count": 3,
       "hit_count": 2,
       "results": [
-        {"case_id": "Q001", "returned_ids": ["C030", "C022", "C051"], "labeled_evidence_hit": false, "matching_ids": []},
-        {"case_id": "Q002", "returned_ids": ["C002", "C001", "C045"], "labeled_evidence_hit": true, "matching_ids": ["C002"]},
-        {"case_id": "Q003", "returned_ids": ["C055", "C041", "C040"], "labeled_evidence_hit": true, "matching_ids": ["C055"]}
+        {
+          "case_id": "Q001",
+          "returned_ids": [
+            "C030",
+            "C022",
+            "C051"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": []
+        },
+        {
+          "case_id": "Q002",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C045"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C002"
+          ]
+        },
+        {
+          "case_id": "Q003",
+          "returned_ids": [
+            "C055",
+            "C041",
+            "C040"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ]
+        }
       ],
       "manual_assessment": "已只读报告核对完整正文：C002包含加载器抽取来源/页码/作者的原文，C055包含归一化后点积等价余弦的原文；结果与标注检查相符。Q001仍未召回标注依据。2/3仅当前3题开发集上Dense k3的标注依据命中题数，不是回答准确率。",
+      "generation_called": false
+    },
+    {
+      "date": "2026-10-30",
+      "report": "results/bm25_k3_20261030T075950324028Z.json",
+      "strategy": "bm25",
+      "k": 3,
+      "case_count": 3,
+      "hit_count": 3,
+      "results": [
+        {
+          "case_id": "Q001",
+          "returned_ids": [
+            "C052",
+            "C029",
+            "C020"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C029"
+          ]
+        },
+        {
+          "case_id": "Q002",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C011"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C002"
+          ]
+        },
+        {
+          "case_id": "Q003",
+          "returned_ids": [
+            "C055",
+            "C056",
+            "C063"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ]
+        }
+      ],
+      "manual_assessment": "已只读报告核对C029/C002/C055原文分别支持三题，与Dense报告的题目/标注快照、语料维度/切分配置/k一致。当前小开发集BM25比Dense多命中Q001，不推广为一般优劣或生成准确率。",
+      "generation_called": false
+    },
+    {
+      "date": "2026-10-30",
+      "report": "results/hybrid_c3_k3_20261030T081433113319Z.json",
+      "strategy": "hybrid",
+      "candidate_k_per_route": 3,
+      "k": 3,
+      "case_count": 3,
+      "hit_count": 2,
+      "results": [
+        {
+          "case_id": "Q001",
+          "returned_ids": [
+            "C030",
+            "C052",
+            "C022"
+          ],
+          "labeled_evidence_hit": false,
+          "matching_ids": [],
+          "route_details": {
+            "dense_ids": [
+              "C030",
+              "C022",
+              "C051"
+            ],
+            "bm25_ids": [
+              "C052",
+              "C029",
+              "C020"
+            ],
+            "candidate_count_before": 6,
+            "unique_count": 6,
+            "rrf_scores": {
+              "C030": 0.01639344262295082,
+              "C022": 0.016129032258064516,
+              "C051": 0.015873015873015872,
+              "C052": 0.01639344262295082,
+              "C029": 0.016129032258064516,
+              "C020": 0.015873015873015872
+            },
+            "all_ranked_ids": [
+              "C030",
+              "C052",
+              "C022",
+              "C029",
+              "C051",
+              "C020"
+            ]
+          }
+        },
+        {
+          "case_id": "Q002",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C045"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C002"
+          ],
+          "route_details": {
+            "dense_ids": [
+              "C002",
+              "C001",
+              "C045"
+            ],
+            "bm25_ids": [
+              "C002",
+              "C001",
+              "C011"
+            ],
+            "candidate_count_before": 6,
+            "unique_count": 4,
+            "rrf_scores": {
+              "C002": 0.03278688524590164,
+              "C001": 0.03225806451612903,
+              "C045": 0.015873015873015872,
+              "C011": 0.015873015873015872
+            },
+            "all_ranked_ids": [
+              "C002",
+              "C001",
+              "C045",
+              "C011"
+            ]
+          }
+        },
+        {
+          "case_id": "Q003",
+          "returned_ids": [
+            "C055",
+            "C041",
+            "C056"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ],
+          "route_details": {
+            "dense_ids": [
+              "C055",
+              "C041",
+              "C040"
+            ],
+            "bm25_ids": [
+              "C055",
+              "C056",
+              "C063"
+            ],
+            "candidate_count_before": 6,
+            "unique_count": 5,
+            "rrf_scores": {
+              "C055": 0.03278688524590164,
+              "C041": 0.016129032258064516,
+              "C040": 0.015873015873015872,
+              "C056": 0.016129032258064516,
+              "C063": 0.015873015873015872
+            },
+            "all_ranked_ids": [
+              "C055",
+              "C041",
+              "C056",
+              "C040",
+              "C063"
+            ]
+          }
+        }
+      ],
+      "manual_assessment": "同一题组/标注/最终k3下，Hybrid为2/3。Q001两路无共同候选，C029与C022同分后排第4未入选；Q002共同C002和Q003共同C055加分后保留，原文与已核对BM25报告一致。与BM25比多漏Q001，不声称融合提升。",
+      "generation_called": false
+    },
+    {
+      "date": "2026-10-30",
+      "report": "results/hybrid_c6_k3_20261030T081903365021Z.json",
+      "strategy": "hybrid",
+      "candidate_k_per_route": 6,
+      "k": 3,
+      "case_count": 3,
+      "hit_count": 3,
+      "results": [
+        {
+          "case_id": "Q001",
+          "returned_ids": [
+            "C027",
+            "C030",
+            "C052"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C027"
+          ],
+          "route_details": {
+            "dense_ids": [
+              "C030",
+              "C022",
+              "C051",
+              "C037",
+              "C035",
+              "C027"
+            ],
+            "bm25_ids": [
+              "C052",
+              "C029",
+              "C020",
+              "C028",
+              "C039",
+              "C027"
+            ],
+            "candidate_count_before": 12,
+            "unique_count": 11,
+            "rrf_scores": {
+              "C030": 0.01639344262295082,
+              "C022": 0.016129032258064516,
+              "C051": 0.015873015873015872,
+              "C037": 0.015625,
+              "C035": 0.015384615384615385,
+              "C027": 0.030303030303030304,
+              "C052": 0.01639344262295082,
+              "C029": 0.016129032258064516,
+              "C020": 0.015873015873015872,
+              "C028": 0.015625,
+              "C039": 0.015384615384615385
+            },
+            "all_ranked_ids": [
+              "C027",
+              "C030",
+              "C052",
+              "C022",
+              "C029",
+              "C051",
+              "C020",
+              "C037",
+              "C028",
+              "C035",
+              "C039"
+            ]
+          }
+        },
+        {
+          "case_id": "Q002",
+          "returned_ids": [
+            "C002",
+            "C001",
+            "C009"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C002"
+          ],
+          "route_details": {
+            "dense_ids": [
+              "C002",
+              "C001",
+              "C045",
+              "C009",
+              "C030",
+              "C034"
+            ],
+            "bm25_ids": [
+              "C002",
+              "C001",
+              "C011",
+              "C009",
+              "C046",
+              "C045"
+            ],
+            "candidate_count_before": 12,
+            "unique_count": 8,
+            "rrf_scores": {
+              "C002": 0.03278688524590164,
+              "C001": 0.03225806451612903,
+              "C045": 0.031024531024531024,
+              "C009": 0.03125,
+              "C030": 0.015384615384615385,
+              "C034": 0.015151515151515152,
+              "C011": 0.015873015873015872,
+              "C046": 0.015384615384615385
+            },
+            "all_ranked_ids": [
+              "C002",
+              "C001",
+              "C009",
+              "C045",
+              "C011",
+              "C030",
+              "C046",
+              "C034"
+            ]
+          }
+        },
+        {
+          "case_id": "Q003",
+          "returned_ids": [
+            "C055",
+            "C064",
+            "C041"
+          ],
+          "labeled_evidence_hit": true,
+          "matching_ids": [
+            "C055"
+          ],
+          "route_details": {
+            "dense_ids": [
+              "C055",
+              "C041",
+              "C040",
+              "C039",
+              "C038",
+              "C064"
+            ],
+            "bm25_ids": [
+              "C055",
+              "C056",
+              "C063",
+              "C057",
+              "C064",
+              "C061"
+            ],
+            "candidate_count_before": 12,
+            "unique_count": 10,
+            "rrf_scores": {
+              "C055": 0.03278688524590164,
+              "C041": 0.016129032258064516,
+              "C040": 0.015873015873015872,
+              "C039": 0.015625,
+              "C038": 0.015384615384615385,
+              "C064": 0.030536130536130537,
+              "C056": 0.016129032258064516,
+              "C063": 0.015873015873015872,
+              "C057": 0.015625,
+              "C061": 0.015151515151515152
+            },
+            "all_ranked_ids": [
+              "C055",
+              "C064",
+              "C041",
+              "C056",
+              "C040",
+              "C063",
+              "C039",
+              "C057",
+              "C038",
+              "C061"
+            ]
+          }
+        }
+      ],
+      "manual_assessment": "同题/标注/最终k3，仅每路候选3→6后由2/3变3/3。Q001由两路各第6的C027累计2/66升至第一恢复依据，Q002/C002及Q003/C055保留；已只读全文核对。候选预算比单路k3大，不能宣称一般方法优胜或调参最优。",
       "generation_called": false
     }
   ]

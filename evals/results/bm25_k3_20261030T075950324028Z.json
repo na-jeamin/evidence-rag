@@ -1,0 +1,129 @@
+{
+  "created_at_utc": "2026-10-30T07:59:50.324028+00:00",
+  "scope": "标注依据命中题数，开发集检查；不是独立测试或生成答案准确率。",
+  "configuration": {
+    "retriever": "bm25",
+    "k": 3,
+    "embedding_model": null,
+    "preprocess_func": "tokenize",
+    "document_count": 3,
+    "chunk_count": 71,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "case_count": 3,
+  "hit_count": 3,
+  "cases_snapshot": [
+    {
+      "id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "reference_answer": "保留相邻块的部分上下文，缓解语义割裂、保持上下文连续性。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "每个块之间重叠10个字符，以缓解语义割裂"
+        }
+      ],
+      "note": "已有开发案例，不能当作从未见过的独立测试。C027/C028/C029在当前切分中都可能提供依据，不只认一个编号。"
+    },
+    {
+      "id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ]
+    },
+    {
+      "id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "reference_answer": "向量归一化后，两者等价。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在向量归一化后，点积等价于余弦相似度。"
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "labeled_evidence_hit": true,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C052",
+          "source": "05_text_chunking.md",
+          "page_content": "（2）**灵活的转换流水线**: 用户可以构建一个灵活的流水线，例如先用 `MarkdownNodeParser` 按章节切分文档，再对每个章节节点应用 `SentenceSplitter` 进行更细粒度的句子级切分。每个节点都携带丰富的元数据，记录着其来源和上下文关系。\n\n（3）**良好的互操作性**: LlamaIndex 提供了 `LangchainNodeParser`，可以方便地将任何 LangChain 的 `TextSplitter` 封装成 LlamaIndex 的节点解析器，无缝集成到其处理流程中。\n\n### 4.3 ChunkViz：简易的可视化分块工具\n\n在本文开头部分展示的分块图就是通过 [**ChunkViz**](https://chunkviz.up.railway.app/) 生成的。可以将你的文档、分块配置作为输入，用不同的颜色块展示每个 chunk 的边界和重叠部分，方便快速理解分块逻辑。\n\n## 参考文献"
+        },
+        {
+          "chunk_id": "C029",
+          "source": "05_text_chunking.md",
+          "page_content": "loader = TextLoader(\"../../data/C2/txt/蜂医.txt\")\ndocs = loader.load()\n\ntext_splitter = CharacterTextSplitter(\n    chunk_size=200,    # 每个块的目标大小为100个字符\n    chunk_overlap=10   # 每个块之间重叠10个字符，以缓解语义割裂\n)\n\nchunks = text_splitter.split_documents(docs)"
+        },
+        {
+          "chunk_id": "C020",
+          "source": "04_data_load.md",
+          "page_content": "`partition`函数使用自动文件类型检测，内部会根据文件类型路由到对应的专用函数（如PDF文件会调用`partition_pdf`）。如果需要更专业的PDF处理，可以直接使用`from unstructured.partition.pdf import partition_pdf`，它提供更多PDF特有的参数选项，如OCR语言设置、图像提取、表格结构推理等高级功能，同时性能更优。\n\n> 在实际应用中，针对 pdf 的处理，目前更多选用的是 PaddleOCR、MinerU 等模型或工具。\n\n## 练习\n\n- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。\n\n## 参考文献\n\n[^1]: [*Unstructured Open-Source Documentation*](https://docs.unstructured.io/open-source/)"
+        }
+      ]
+    },
+    {
+      "case_id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "labeled_evidence_hit": true,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C002",
+          "source": "04_data_load.md",
+          "page_content": "文档加载器在 RAG 的数据管道中一般需要完成三个核心任务，一是解析不同格式的原始文档，将 PDF、Word、Markdown 等内容提取为可处理的纯文本，二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据，三是把文本和元数据整理成统一的数据结构，方便后续进行切分、向量化和入库，其整体流程与传统数据工程中的抽取、转换、加载相似，目标都是把杂乱的原始文档清洗并对齐为适合检索和建模的标准化语料。\n\n### 1.2 当前主流RAG文档加载器"
+        },
+        {
+          "chunk_id": "C001",
+          "source": "04_data_load.md",
+          "page_content": "# 第一节 数据加载\n\n虽然本节内容在实际应用中非常重要，但是由于各种文档加载器的迭代更新，以及各类 AI 应用的不同需求，具体选择需要根据实际情况。本节仅作简单引入，但请务必**重视数据加载**环节，**“垃圾进，垃圾出 (Garbage In, Garbage Out)”** ——高质量输入是高质量输出的前提。\n\n## 一、文档加载器\n\n### 1.1 主要功能\n\nRAG 系统中，**数据加载**是整个流水线的第一步，也是不可或缺的一步。文档加载器负责将各种格式的非结构化文档（如PDF、Word、Markdown、HTML等）转换为程序可以处理的结构化数据。数据加载的质量会直接影响后续的索引构建、检索效果和最终的生成质量。"
+        },
+        {
+          "chunk_id": "C011",
+          "source": "04_data_load.md",
+          "page_content": "<td style=\"text-align: center;\">由多个完整句子组成的正文文本，不包括标题、页眉、页脚和说明文字</td>\n  </tr>\n  <tr>\n    <td style=\"text-align: center;\"><code>ListItem</code></td>\n    <td style=\"text-align: center;\">列表项，属于列表的正文文本元素</td>\n  </tr>\n  <tr>\n    <td style=\"text-align: center;\"><code>Table</code></td>\n    <td style=\"text-align: center;\">表格</td>\n  </tr>\n  <tr>\n    <td style=\"text-align: center;\"><code>Image</code></td>\n    <td style=\"text-align: center;\">图像元数据</td>\n  </tr>\n  <tr>"
+        }
+      ]
+    },
+    {
+      "case_id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "labeled_evidence_hit": true,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C055",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        },
+        {
+          "chunk_id": "C056",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 1.2 Embedding 在 RAG 中的作用\n\n在RAG流程中，Embedding 扮演着无可替代的重要角色。\n\n#### 1.2.1 语义检索的基础\n\nRAG 的“检索”环节通常以基于 Embedding 的语义搜索为核心。通用流程如下：\n（1）**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。\n\n（2）**在线查询检索**：当用户提出问题时，使用**同一个** Embedding 模型将用户的问题也转换为一个向量。\n\n（3）**相似度计算**：在向量数据库中，计算“问题向量”与所有“文档块向量”的相似度。\n\n（4）**召回上下文**：选取相似度最高的 Top-K 个文档块，作为补充的上下文信息，与原始问题一同送给大语言模型（LLM）生成最终答案。\n\n#### 1.2.2 决定检索质量的关键"
+        },
+        {
+          "chunk_id": "C063",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 3.2 效果增强策略\n\n虽然 MLM 和 NSP 赋予了模型强大的基础语义理解能力，但为了在检索任务中表现更佳，现代嵌入模型通常会引入更具针对性的训练策略。\n\n- **度量学习 (Metric Learning)** ：\n    - **思想**：直接以“相似度”作为优化目标。\n    - **方法**：收集大量相关的文本对（例如，（问题，答案）、（新闻标题，正文））。训练的目标是优化向量空间中的**相对距离**：让“正例对”的向量表示在空间中被“拉近”，而“负例对”的向量表示被“推远”。关键在于优化排序关系，而非追求绝对的相似度值（如 1 或 0），因为过度追求极端值可能导致模型过拟合。"
+        }
+      ]
+    }
+  ],
+  "generation_called": false
+}
