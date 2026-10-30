@@ -34,5 +34,22 @@
     "outcome": "单题标注依据命中False→True，依据仍排第6",
     "not_measured": ["3题整体指标", "其他检索策略本次评估结果", "查询耗时", "生成回答准确率"],
     "default_k": "仍保留3；6是CLI对照值"
-  }
+  },
+  "batch_runs": [
+    {
+      "date": "2026-10-30",
+      "report": "results/dense_k3_20261030T073406489663Z.json",
+      "strategy": "dense",
+      "k": 3,
+      "case_count": 3,
+      "hit_count": 2,
+      "results": [
+        {"case_id": "Q001", "returned_ids": ["C030", "C022", "C051"], "labeled_evidence_hit": false, "matching_ids": []},
+        {"case_id": "Q002", "returned_ids": ["C002", "C001", "C045"], "labeled_evidence_hit": true, "matching_ids": ["C002"]},
+        {"case_id": "Q003", "returned_ids": ["C055", "C041", "C040"], "labeled_evidence_hit": true, "matching_ids": ["C055"]}
+      ],
+      "manual_assessment": "已只读报告核对完整正文：C002包含加载器抽取来源/页码/作者的原文，C055包含归一化后点积等价余弦的原文；结果与标注检查相符。Q001仍未召回标注依据。2/3仅当前3题开发集上Dense k3的标注依据命中题数，不是回答准确率。",
+      "generation_called": false
+    }
+  ]
 }
