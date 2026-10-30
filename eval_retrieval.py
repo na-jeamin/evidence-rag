@@ -167,7 +167,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     tag = f"hybrid_c{args.candidate_k}_k{args.k}" if args.strategy == "hybrid" else f"{args.strategy}_k{args.k}"
     output_path = output_dir / f"{tag}_{now.strftime('%Y%m%dT%H%M%S%fZ')}.json"
-    output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
     print("报告已保存：", output_path)
     print(f"本次只检查{args.strategy}一种方式；结果限本题组和配置，未调用生成模型。")
 
