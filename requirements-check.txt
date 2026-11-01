@@ -1,0 +1,5 @@
+-r requirements-retrieval.txt
+# 复用现有学习环境版本，本机无需重复安装。
+openai==3.19.2
+python-dotenv==1.2.4
+pydantic==2.14.1

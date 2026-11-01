@@ -1,0 +1,49 @@
+{
+  "observed_on": "2026-11-01",
+  "evidence_source": "User-pasted terminal output from an explicit --check run; normalized below, not a raw API response or saved trace.",
+  "corpus": {
+    "documents": 3,
+    "chunks": 71,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "strategy": "dense",
+  "k": 3,
+  "question": "文本切分为什么要设置重叠？",
+  "retrieved_ids": [
+    "C030",
+    "C022",
+    "C051"
+  ],
+  "displayed_result": {
+    "sufficient": false,
+    "reason": "原文提到固定大小分块可能在语义边界处切断文本、影响连贯性，并提到SentenceWindow通过元数据存储前后句子来提升上下文质量，但没有直接解释设置重叠（overlap）的原因或机制。"
+  },
+  "manual_review": "The three displayed chunks cover splitting drawbacks, input limits and sentence windows, but do not directly explain overlap. The insufficiency judgment is reasonable for the requested evidence standard and these retrieved chunks only.",
+  "scope": "Two user-run real-model checks of the same question, Dense k3 and k6. Only returned chunk count changed. No automatic recovery or answer generation; no general accuracy or cost claims.",
+  "model_id": null,
+  "usage": null,
+  "latency_seconds": null,
+  "contrast_experiment": {
+    "change": "Dense k3 to k6; same question, corpus, model-call settings and check rules",
+    "k": 6,
+    "retrieved_ids_from_displayed_context": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "displayed_result": {
+      "sufficient": true,
+      "reason": "原文在固定大小分块部分明确提到通过重叠机制（chunk_overlap）保持上下文连续性，直接支持回答设置重叠的原因。"
+    },
+    "supporting_chunk_id": "C027",
+    "supporting_quote": "并通过重叠机制（`chunk_overlap`）保持上下文连续性",
+    "manual_review": "The displayed C027 explicitly supports the overlap rationale. Six blocks do not make all blocks relevant; this is a manual contrast, not an automatic recovery branch.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  }
+}

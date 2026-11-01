@@ -2,6 +2,10 @@
 
 ## 主参考
 
+2026-11-01资料检查第二段：模型客户端/配置与完整输出检查适配自本地Day 7教学原型`cited_rag.py`；新增EvidenceCheckResult严格字段模型和资料充分性请求。JSON模式`response_format`及空内容注意事项核对DeepSeek官方https://api-docs.deepseek.com/guides/json_mode/；Pydantic model_validate_json/ConfigDict核对本机2.14.1源码。未读取真实密钥内容；模型判断及效果待用户运行，不能以字段校验替代内容评估。
+
+2026-11-01新增`check_evidence.py`：本地教学适配，复用当前加载/切分/缓存嵌入与Dense检索；检查请求的正文拼接沿用此前Day 7教学原型的编号/正文整理思路，增加来源和资料充分性检查要求。不是上游检查模块的原样复现。当前只准备请求文字，未接模型判断、恢复或回答生成，真实运行待用户验证。
+
 - 上游：[Datawhale all-in-rag](https://github.com/datawhalechina/all-in-rag)。
 - 固定版本：`cec956e80ae28d6c0ca84c9d39dddcf61ad633fd`。
 - 基础代码：`code/C1/01_langchain_example.py`，保留于 `reference/01_langchain_example.py`，供对照。
