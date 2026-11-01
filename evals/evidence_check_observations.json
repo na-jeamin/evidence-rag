@@ -20,7 +20,7 @@
     "reason": "原文提到固定大小分块可能在语义边界处切断文本、影响连贯性，并提到SentenceWindow通过元数据存储前后句子来提升上下文质量，但没有直接解释设置重叠（overlap）的原因或机制。"
   },
   "manual_review": "The three displayed chunks cover splitting drawbacks, input limits and sentence windows, but do not directly explain overlap. The insufficiency judgment is reasonable for the requested evidence standard and these retrieved chunks only.",
-  "scope": "Two user-run real-model checks of the same question, Dense k3 and k6. Only returned chunk count changed. No automatic recovery or answer generation; no general accuracy or cost claims.",
+  "scope": "Five user-pasted checker runs preserved. With displayed k6 question/context and check criteria v2 unchanged, a prior True was followed by False. Answer v2 was not reached. Pause prompt-only retries; no claim of reliable repair or general performance.",
   "model_id": null,
   "usage": null,
   "latency_seconds": null,
@@ -45,5 +45,90 @@
     "model_id": null,
     "usage": null,
     "latency_seconds": null
-  }
+  },
+  "answer_attempt_false_negative": {
+    "k": 6,
+    "answer_requested": true,
+    "retrieved_ids_from_displayed_context": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "displayed_result": {
+      "sufficient": false,
+      "reason": "原文仅提到重叠机制(chunk_overlap)可保持上下文连续性，但没有解释设置重叠的目的或原因，缺少直接回答“为什么要设置重叠”的依据。"
+    },
+    "manual_expected_sufficient": true,
+    "manual_review": "C027 explicitly states the purpose/effect of overlap. Rejecting this solely for lacking a separate explanation of purpose is a checker false negative.",
+    "branch_observed": "Printed insufficiency and stopped; no answer or citation result produced.",
+    "prompt_revision": "Original criteria (v1); same displayed prompt and chunks as prior k6 run. Actual model identity/use/cost not captured.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "pending_prompt_revision": {
+    "revision": "v2",
+    "change": "Two generic criteria clarify purpose/effect vs implementation steps and faithful paraphrase without external facts. No gold or fixed chunk ID in prompt.",
+    "status": "One v2 k6 True followed by a v2 k6 false negative. Repair not reliable; k3 regression and broader evaluation pending. Pause further prompt-only retries."
+  },
+  "answer_attempt_after_check_revision": {
+    "k": 6,
+    "check_prompt_revision": "v2",
+    "answer_prompt_revision": "v1",
+    "retrieved_ids_from_displayed_context": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "displayed_check_result": {
+      "sufficient": true,
+      "reason": "原文[C027]明确指出固定大小分块通过重叠机制（chunk_overlap）保持上下文连续性，这直接回答了设置重叠的目的。"
+    },
+    "displayed_answer": "根据当前提供的检索原文，无法说明“文本切分为什么要设置重叠”。原文仅在固定大小分块的“智能合并”说明中提到“通过重叠机制（`chunk_overlap`）保持上下文连续性”，但未解释设置重叠的原因或作用。[C027] 其他片段未涉及重叠原因。",
+    "displayed_cited_ids": [
+      "C027"
+    ],
+    "citation_id_check_passed": true,
+    "answer_semantically_acceptable": false,
+    "manual_review": "The stated overlap effect answers the purpose question. The answer quotes that effect while denying that any purpose/effect is explained. ID membership alone cannot validate this claim.",
+    "observed_pipeline": "Real supported branch and second model request completed; semantic answer quality not accepted.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "pending_answer_prompt_revision": {
+    "revision": "v2",
+    "change": "Clarify faithful purpose/effect paraphrase and consistency between cited evidence and insufficiency claims. No fixed question, expected answer or chunk ID added.",
+    "status": "Not reached in latest run; actual repair unverified."
+  },
+  "repeated_checker_false_negative_v2": {
+    "k": 6,
+    "check_prompt_revision": "v2",
+    "answer_prompt_revision": "v2, not invoked",
+    "retrieved_ids_from_displayed_context": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "displayed_result": {
+      "sufficient": false,
+      "reason": "原文提到chunk_overlap用于保持上下文连续性，但只出现在固定大小分块的合并步骤描述中，没有明确解释设置重叠的原因或目的，缺少直接依据。"
+    },
+    "manual_expected_sufficient": true,
+    "manual_review": "The location in a merge-step description does not remove the explicit purpose/effect statement. This is another checker false negative; the prior same displayed context/criteria yielded True.",
+    "branch_observed": "Insufficient branch executed, no answer call or citation validation.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "next_step": "First teach/review evidence-based decision output and failure handling; consider a source/quote field for traceability and a small multi-case regression. Quote existence checks cannot guarantee semantic support. Do not bypass the checker or hardcode the known answer."
 }
