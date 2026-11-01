@@ -1,0 +1,28 @@
+{
+  "observed_on": "2026-11-01",
+  "evidence_source": "Normalized from user-pasted terminal output; not a raw API response or automatic trace.",
+  "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+  "strategy": "dense",
+  "k": 3,
+  "retrieved_ids": ["C002", "C001", "C045"],
+  "check_result": {
+    "sufficient": true,
+    "reason": "原文明确说明文档加载器在解析过程中会抽取文档来源、页码、作者等关键信息作为元数据，可直接回答用户问题。",
+    "evidence": [
+      {"chunk_id": "C002", "quote": "二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据"}
+    ]
+  },
+  "quote_existence_check_passed": true,
+  "displayed_answer": "文档加载器在解析过程中会同时抽取**文档来源、页码、作者**等关键信息作为元数据。[C002]",
+  "displayed_cited_ids": ["C002"],
+  "citation_id_check_passed": true,
+  "manual_review": {
+    "check_judgment_reasonable": true,
+    "answer_supported_by_cited_source": true,
+    "explanation": "C002 explicitly lists the same metadata fields. The answer faithfully summarizes that sentence and cites the supplied chunk."
+  },
+  "scope": "One user-run supported-answer case: check, quote validation, positive branch, second model call, citation ID validation and manual support review. P001 false negatives and prior answer failure remain unresolved. No automatic evidence recovery or general accuracy claim.",
+  "model_id": null,
+  "usage": null,
+  "latency_seconds": null
+}
