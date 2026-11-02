@@ -160,5 +160,61 @@
     "model_id": null,
     "usage": null,
     "latency_seconds": null
+  },
+  "hybrid_preview_run": {
+    "evidence_source": "User-pasted terminal output, normalized, not an automatic API trace.",
+    "question": "文本切分为什么要设置重叠？",
+    "strategy": "hybrid",
+    "per_route_k": 6,
+    "candidate_pool_limit": 6,
+    "initial_k": 3,
+    "dense_ids": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "bm25_ids": [
+      "C052",
+      "C029",
+      "C020",
+      "C028",
+      "C039",
+      "C027"
+    ],
+    "combined_count_before_dedup": 12,
+    "unique_count": 11,
+    "ranked_ids": [
+      "C027",
+      "C030",
+      "C052",
+      "C022",
+      "C029",
+      "C051",
+      "C020",
+      "C037",
+      "C028",
+      "C035",
+      "C039"
+    ],
+    "candidate_ids": [
+      "C027",
+      "C030",
+      "C052",
+      "C022",
+      "C029",
+      "C051"
+    ],
+    "initial_ids": [
+      "C027",
+      "C030",
+      "C052"
+    ],
+    "manual_review": "C027 supplies a direct overlap-purpose statement and now enters the initial three. Common rank-six C027 receives both RRF contributions. This preview does not verify semantic checker quality or a Hybrid recovery/answer run.",
+    "checker_called": false,
+    "answer_called": false,
+    "automatic_recovery_performed": false
   }
 }

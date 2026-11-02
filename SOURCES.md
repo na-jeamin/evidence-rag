@@ -2,6 +2,8 @@
 
 ## 主参考
 
+2026-11-02混合候选接入检查入口：`build_hybrid_candidates`直接复用本项目此前已带读/验证的`merge_candidates/calculate_rrf_scores/rank_candidates`，中文分词/BM25规则不变。新增的是融合前若干块作为候选池、初始资料与有界补充的衔接，不将RRF或框架能力记作新算法。新接入真实运行尚待用户验证。
+
 2026-11-01引用回答接入：沿用本地Day 7教学原型的问题/编号原文/引用要求及正则编号核对，适配当前三份文档和统一模型客户端；新增检查门控与显式--answer，未复制其跨Day目录导入或密钥内容。当前仅离线验证，真实回答待用户运行，原平台/上游能力不据此称个人原创。
 
 2026-11-01资料检查第二段：模型客户端/配置与完整输出检查适配自本地Day 7教学原型`cited_rag.py`；新增EvidenceCheckResult严格字段模型和资料充分性请求。JSON模式`response_format`及空内容注意事项核对DeepSeek官方https://api-docs.deepseek.com/guides/json_mode/；Pydantic model_validate_json/ConfigDict核对本机2.14.1源码。未读取真实密钥内容；模型判断及效果待用户运行，不能以字段校验替代内容评估。

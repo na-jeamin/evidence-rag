@@ -173,13 +173,36 @@ def validate_citation_ids(answer: str, retrieved_docs: list[Document]) -> list[s
     return cited_ids
 
 
+def build_hybrid_candidates(question, chunks, vectorstore, candidate_k):
+    """复用已有两路检索/RRF，返回融合排名前candidate_k块作为备用候选。"""
+    from langchain_community.retrievers import BM25Retriever
+    from bm25_retrieve import tokenize
+    from hybrid_retrieve import merge_candidates, calculate_rrf_scores, rank_candidates
+
+    # 本最小入口让每路窗口与候选保留上限使用同一个数；两者用途不同。
+    dense_docs = vectorstore.similarity_search(question, k=candidate_k)
+    bm25_retriever = BM25Retriever.from_documents(
+        chunks, preprocess_func=tokenize, k=candidate_k
+    )
+    bm25_docs = bm25_retriever.invoke(question)
+    print("向量一路编号：", [doc.metadata["chunk_id"] for doc in dense_docs])
+    print("BM25一路编号：", [doc.metadata["chunk_id"] for doc in bm25_docs])
+
+    merged_docs = merge_candidates(dense_docs, bm25_docs)
+    scores = calculate_rrf_scores(dense_docs, bm25_docs)
+    ranked_docs = rank_candidates(merged_docs, scores)
+    print("完整融合排名：", [doc.metadata["chunk_id"] for doc in ranked_docs])
+    return ranked_docs[:candidate_k]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="默认预览资料检查请求，--check调用模型。")
     parser.add_argument("--question", default="文本切分为什么要设置重叠？")
+    parser.add_argument("--strategy", choices=["dense", "hybrid"], default="dense", help="候选来源：向量，或向量+BM25融合。")
     parser.add_argument("--k", type=int, default=3, help="初次交给检查模型的原文块数。")
     parser.add_argument(
         "--candidate-k", type=int, default=None,
-        help="预留的候选块数，不能小于--k；不指定时与--k相同。",
+        help="候选保留上限；hybrid每路也取同样数量。不能小于--k，默认与--k相同。",
     )
     parser.add_argument("--check", action="store_true", help="调用模型判断，消耗账号额度。")
     parser.add_argument("--recover", action="store_true", help="首次不足时补入剩余候选，最多复查一次，需--check。")
@@ -208,10 +231,15 @@ def main() -> None:
         raise ValueError("没有文本块，无法检索。")
     print(f"文档数：{len(docs)}，文本块数：{len(chunks)}", flush=True)
 
-    print("[2/3] 复用缓存嵌入模型，按问题做向量检索。", flush=True)
+    print("[2/3] 复用缓存嵌入模型，准备检索候选。", flush=True)
     vectorstore = build_vectorstore(chunks)
+    print(f"策略：{args.strategy}，候选保留上限：{candidate_k}，初次使用：{args.k}")
     # 候选原文先完整保留；当前检查只使用其中前k块。
-    candidate_docs = vectorstore.similarity_search(args.question, k=candidate_k)
+    if args.strategy == "hybrid":
+        print(f"两路各取{candidate_k}块，融合后最多保留{candidate_k}块。")
+        candidate_docs = build_hybrid_candidates(args.question, chunks, vectorstore, candidate_k)
+    else:
+        candidate_docs = vectorstore.similarity_search(args.question, k=candidate_k)
     retrieved_docs = candidate_docs[:args.k]
     print("保留候选编号：", [doc.metadata["chunk_id"] for doc in candidate_docs])
     print("当前使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
