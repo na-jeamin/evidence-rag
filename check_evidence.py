@@ -176,8 +176,13 @@ def validate_citation_ids(answer: str, retrieved_docs: list[Document]) -> list[s
 def main() -> None:
     parser = argparse.ArgumentParser(description="默认预览资料检查请求，--check调用模型。")
     parser.add_argument("--question", default="文本切分为什么要设置重叠？")
-    parser.add_argument("--k", type=int, default=3, help="本次向量检索返回的块数。")
+    parser.add_argument("--k", type=int, default=3, help="初次交给检查模型的原文块数。")
+    parser.add_argument(
+        "--candidate-k", type=int, default=None,
+        help="预留的候选块数，不能小于--k；不指定时与--k相同。",
+    )
     parser.add_argument("--check", action="store_true", help="调用模型判断，消耗账号额度。")
+    parser.add_argument("--recover", action="store_true", help="首次不足时补入剩余候选，最多复查一次，需--check。")
     parser.add_argument("--answer", action="store_true", help="检查通过后再调用模型生成回答，需配合--check。")
     parser.add_argument(
         "--env-file", type=Path, default=Path(__file__).with_name(".env"),
@@ -190,6 +195,11 @@ def main() -> None:
         parser.error("--k必须为正整数。")
     if args.answer and not args.check:
         parser.error("--answer需要配合--check，先检查资料。")
+    if args.recover and not args.check:
+        parser.error("--recover需要配合--check，先检查资料。")
+    candidate_k = args.candidate_k if args.candidate_k is not None else args.k
+    if candidate_k < args.k:
+        parser.error("--candidate-k不能小于--k。")
 
     print("[1/3] 复用当前资料、切分和编号。", flush=True)
     docs = load_documents(DATA_DIR)
@@ -200,8 +210,11 @@ def main() -> None:
 
     print("[2/3] 复用缓存嵌入模型，按问题做向量检索。", flush=True)
     vectorstore = build_vectorstore(chunks)
-    retrieved_docs = vectorstore.similarity_search(args.question, k=args.k)
-    print("返回编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
+    # 候选原文先完整保留；当前检查只使用其中前k块。
+    candidate_docs = vectorstore.similarity_search(args.question, k=candidate_k)
+    retrieved_docs = candidate_docs[:args.k]
+    print("保留候选编号：", [doc.metadata["chunk_id"] for doc in candidate_docs])
+    print("当前使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
 
     print("[3/3] 将问题和原文交给build_check_prompt，接回请求文字。", flush=True)
     check_prompt = build_check_prompt(args.question, retrieved_docs)
@@ -221,10 +234,28 @@ def main() -> None:
     validate_evidence_quotes(result, retrieved_docs)
     print("原句存在性核对通过；这些原句是否足够支持判断，仍需人工复核。")
 
-    # 资料不足先结束，避免后面接入生成后仍无依据地继续回答。
+    # 只在正常判不足、启用补充且有更多原文时复查。异常会在前面直接报错。
+    if not result.sufficient and args.recover:
+        if len(candidate_docs) > len(retrieved_docs):
+            print("\n[补充一次] 当前资料不足，加入已经保留的其余候选。", flush=True)
+            retrieved_docs = candidate_docs
+            print("补充后使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
+            check_prompt = build_check_prompt(args.question, retrieved_docs)
+            result = check_evidence(check_prompt, args.env_file)
+            print("\n--- 补充后的资料判断 ---")
+            print("资料是否足够：", result.sufficient)
+            print("理由：", result.reason)
+            for item in result.evidence:
+                print(f"依据[{item.chunk_id}]：{item.quote}")
+            validate_evidence_quotes(result, retrieved_docs)
+            print("原句存在性核对通过；判断是否合理仍需人工复核。")
+        else:
+            print("\n[未补充] 没有更多候选原文，本次不重复相同请求。")
+
+    # 上面的复查只写一次；仍不足则结束，不会再回到补充分支。
     if not result.sufficient:
         print("\n[分支] 当前检索资料不足，停止本次回答。")
-        print("本阶段尚未接入自动补救。")
+        print("本次检查流程结束，不再继续补充资料。")
         return
 
     # 只有检查通过才会走到这里；--check仍只检查，不自动增加第二次调用。
@@ -234,7 +265,7 @@ def main() -> None:
         return
 
     answer_prompt = build_answer_prompt(args.question, retrieved_docs)
-    print("\n[回答] 将同一问题和原文交给模型，进行第二次调用。", flush=True)
+    print("\n[回答] 将同一问题和当前原文交给模型，生成回答。", flush=True)
     answer = request_model_text(answer_prompt, args.env_file)
     cited_ids = validate_citation_ids(answer, retrieved_docs)
     print("\n--- 模型回答（引用内容仍需人工核对）---")
@@ -243,7 +274,7 @@ def main() -> None:
         print("\n编号核对通过，本次引用：", cited_ids)
     else:
         print("\n没有识别到标准[C数字]引用，需核对是资料不足还是漏引。")
-    print("编号存在不等于原文支持说法；当前尚未执行自动证据恢复。")
+    print("编号存在不等于原文支持说法。")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,164 @@
+{
+  "observed_on": "2026-11-02",
+  "scope": "User-run preview plus three recovery control paths: initial sufficiency skips expansion; insufficient with more candidates expands once and stops if still False; no extra candidates skips repetition and stops. A semantically successful recovery and reliability improvement remain unverified.",
+  "evidence_source": "User-pasted terminal output, not an automatically saved execution trace.",
+  "question": "文本切分为什么要设置重叠？",
+  "documents": 3,
+  "chunks": 71,
+  "candidate_k": 6,
+  "initial_k": 3,
+  "candidate_ids": [
+    "C030",
+    "C022",
+    "C051",
+    "C037",
+    "C035",
+    "C027"
+  ],
+  "initial_ids": [
+    "C030",
+    "C022",
+    "C051"
+  ],
+  "preview_contains_only_initial_docs": true,
+  "checker_called": false,
+  "answer_called": false,
+  "automatic_recovery_verified": true,
+  "automatic_run": {
+    "evidence_source": "User-pasted terminal output, normalized, not raw API responses.",
+    "candidate_ids": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "initial_ids": [
+      "C030",
+      "C022",
+      "C051"
+    ],
+    "initial_result": {
+      "sufficient": false,
+      "reason": "原文说明了文本分块的目的（满足嵌入模型上下文限制、便于检索处理）以及固定大小分块可能在语义边界切断文本的劣势，但没有直接说明设置重叠（overlap）的目的或原因，缺少回答“为什么要设置重叠”的直接依据。",
+      "evidence": [
+        {
+          "chunk_id": "C022",
+          "quote": "文本分块（Text Chunking）是构建 RAG 流程的关键步骤。它的原理是将加载后的长篇文档，切分成更小、更易于处理的单元。"
+        },
+        {
+          "chunk_id": "C030",
+          "quote": "劣势在于可能会在语义边界处切断文本，影响内容的完整性和连贯性。"
+        }
+      ]
+    },
+    "expanded_ids": [
+      "C030",
+      "C022",
+      "C051",
+      "C037",
+      "C035",
+      "C027"
+    ],
+    "recheck_result": {
+      "sufficient": false,
+      "reason": "原文在固定大小分块的合并阶段提到通过重叠机制（chunk_overlap）保持上下文连续性，但这只是对重叠作用的简略提及，未明示重叠设计的目的或原因（如避免语义切断、保留边界上下文等）；其他片段也未说明设置重叠的原因，缺少直接依据。",
+      "evidence": [
+        {
+          "chunk_id": "C027",
+          "quote": "该方法会监控累积长度，当超过 `chunk_size` 时形成新块，并通过重叠机制（`chunk_overlap`）保持上下文连续性，同时在必要时发出超长块的警告。"
+        }
+      ]
+    },
+    "observed_check_stages": 2,
+    "quote_existence_checks_passed": true,
+    "stopped_after_recheck": true,
+    "answer_called": false,
+    "manual_review": {
+      "initial_judgment": "reasonable insufficiency for direct overlap evidence",
+      "recheck_judgment": "false negative: C027 states the purpose/effect; extra detail is not necessary to answer the question"
+    },
+    "scope": "Verifies candidate expansion and bounded stop, not reliable semantic recovery or generated answer quality.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "initial_sufficient_run": {
+    "evidence_source": "User-pasted terminal output, normalized, not raw API response.",
+    "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+    "candidate_k": 6,
+    "initial_k": 3,
+    "candidate_ids": [
+      "C002",
+      "C001",
+      "C045",
+      "C009",
+      "C030",
+      "C034"
+    ],
+    "initial_ids": [
+      "C002",
+      "C001",
+      "C045"
+    ],
+    "result": {
+      "sufficient": true,
+      "reason": "原文C002明确说明解析过程中会同时抽取文档来源、页码、作者等关键信息作为元数据，足以回答问题。",
+      "evidence": [
+        {
+          "chunk_id": "C002",
+          "quote": "二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ]
+    },
+    "quote_existence_check_passed": true,
+    "observed_check_stages": 1,
+    "recovery_skipped": true,
+    "answer_enabled": false,
+    "answer_called": false,
+    "manual_review": "C002 directly supports the metadata question; first-pass sufficiency and skipping expansion are reasonable. No final-answer citation check was performed in this check-only run.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "no_more_candidates_run": {
+    "evidence_source": "User-pasted terminal output, normalized, not raw API response.",
+    "question": "文本切分为什么要设置重叠？",
+    "candidate_k": 3,
+    "initial_k": 3,
+    "candidate_ids": [
+      "C030",
+      "C022",
+      "C051"
+    ],
+    "initial_ids": [
+      "C030",
+      "C022",
+      "C051"
+    ],
+    "result": {
+      "sufficient": false,
+      "reason": "原文仅提到分块可能切断语义边界以及句子窗口存储相邻句子的做法，但未直接说明设置重叠的目的或原因，缺少问题所需的依据。",
+      "evidence": [
+        {
+          "chunk_id": "C030",
+          "quote": "劣势在于可能会在语义边界处切断文本，影响内容的完整性和连贯性。"
+        },
+        {
+          "chunk_id": "C051",
+          "quote": "该方法将文档切分成单个的句子，但在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子（即“窗口”）。"
+        }
+      ]
+    },
+    "quote_existence_check_passed": true,
+    "observed_check_stages": 1,
+    "expansion_skipped_for_no_new_docs": true,
+    "stopped": true,
+    "answer_called": false,
+    "manual_review": "Returned excerpts lack a direct overlap-purpose statement. Candidate count equals current count, so no new evidence can be added; the no-repeat/stop branch is appropriate.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  }
+}
