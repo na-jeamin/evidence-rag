@@ -141,7 +141,7 @@
     "usage": null,
     "latency_seconds": null
   },
-  "scope": "Paired user-run Hybrid comparison of a known development failure. Retained/initial IDs match. Added C056 supports False to True evidence-check recovery, at the cost of one additional checker request. No generated answer, token-use/latency measurements or general accuracy claim.",
+  "scope": "One paired known-development Q012 comparison plus a recovery-enabled unavailable-CPU control. Evidence recovery and bounded stop have user-run evidence. No answer generation, measured token/latency costs, general semantic-accuracy estimate or repair of prior P001 false negatives.",
   "comparison": {
     "question_and_retrieval_configuration_match": true,
     "candidate_and_initial_ids_match": true,
@@ -150,5 +150,81 @@
     "extra_observed_check_stages": 1,
     "generation_calls_observed_in_both_runs": 0,
     "scope": "One known development case. Semantic improvement is manually supported here. Other questions and known P001 checker errors require separate evaluation."
+  },
+  "insufficient_control_with_recovery": {
+    "question": "这些教程的演示实验使用的电脑CPU完整型号是什么？",
+    "strategy": "hybrid",
+    "per_route_k": 6,
+    "candidate_pool_limit": 6,
+    "initial_k": 3,
+    "dense_ids": [
+      "C061",
+      "C066",
+      "C069",
+      "C050",
+      "C062",
+      "C049"
+    ],
+    "bm25_ids": [
+      "C061",
+      "C022",
+      "C046",
+      "C016",
+      "C040",
+      "C054"
+    ],
+    "ranked_ids": [
+      "C061",
+      "C066",
+      "C022",
+      "C069",
+      "C046",
+      "C050",
+      "C016",
+      "C062",
+      "C040",
+      "C049",
+      "C054"
+    ],
+    "candidate_ids": [
+      "C061",
+      "C066",
+      "C022",
+      "C069",
+      "C046",
+      "C050"
+    ],
+    "initial_ids": [
+      "C061",
+      "C066",
+      "C022"
+    ],
+    "initial_result": {
+      "sufficient": false,
+      "reason": "所有原文片段均未提及演示实验使用的电脑CPU型号，缺少直接依据。",
+      "evidence": []
+    },
+    "expanded_ids": [
+      "C061",
+      "C066",
+      "C022",
+      "C069",
+      "C046",
+      "C050"
+    ],
+    "recheck_result": {
+      "sufficient": false,
+      "reason": "全部原文均未提及演示实验所用电脑的CPU型号，缺少回答该问题所需的信息。",
+      "evidence": []
+    },
+    "quote_checks_reported_passed": true,
+    "quote_check_interpretation": "Empty evidence arrays have no items to compare. The passed message alone does not establish semantic insufficiency.",
+    "observed_check_stages": 2,
+    "answer_called": false,
+    "stopped_after_one_expansion": true,
+    "manual_review": "The current corpus discusses embedding models, chunking and loading, without the requested demonstration-computer CPU model. Both insufficiency judgments and the one-expansion stop are reasonable. Report wording about all source text is interpreted as the six supplied chunks.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
   }
 }
