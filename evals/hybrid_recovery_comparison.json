@@ -1,0 +1,154 @@
+{
+  "observed_on": "2026-11-03",
+  "evidence_source": "Normalized user-pasted terminal output, not raw API responses or an automatic trace.",
+  "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+  "configuration": {
+    "documents": 3,
+    "chunks": 71,
+    "strategy": "hybrid",
+    "per_route_k": 6,
+    "candidate_pool_limit": 6,
+    "initial_k": 3
+  },
+  "baseline_without_recovery": {
+    "dense_ids": [
+      "C064",
+      "C065",
+      "C023",
+      "C024",
+      "C012",
+      "C060"
+    ],
+    "bm25_ids": [
+      "C057",
+      "C056",
+      "C023",
+      "C051",
+      "C026",
+      "C052"
+    ],
+    "ranked_ids": [
+      "C023",
+      "C064",
+      "C057",
+      "C065",
+      "C056",
+      "C024",
+      "C051",
+      "C012",
+      "C026",
+      "C060",
+      "C052"
+    ],
+    "candidate_ids": [
+      "C023",
+      "C064",
+      "C057",
+      "C065",
+      "C056",
+      "C024"
+    ],
+    "initial_ids": [
+      "C023",
+      "C064",
+      "C057"
+    ],
+    "result": {
+      "sufficient": false,
+      "reason": "资料强调嵌入质量影响对问题的检索召回，但未说明在线提问时问题是否必须使用与资料相同的嵌入模型编码，也未说明能否换用其他模型，缺少直接依据。",
+      "evidence": [
+        {
+          "chunk_id": "C057",
+          "quote": "Embedding 的质量直接决定了 RAG 检索召回内容的准确性与相关性。一个优秀的 Embedding 模型能够精准捕捉问题和文档之间的深层语义联系，即使用户的提问和原文的表述不完全一致。"
+        }
+      ]
+    },
+    "quote_existence_check_passed": true,
+    "observed_check_stages": 1,
+    "recovery_enabled": false,
+    "answer_called": false,
+    "stopped_insufficient": true,
+    "manual_review": "The displayed three chunks do not directly state the shared embedding-model requirement. C056 was found in the retained pool at rank five but was not included in the checker request. The insufficiency judgment is reasonable for this context.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "with_recovery": {
+    "dense_ids": [
+      "C064",
+      "C065",
+      "C023",
+      "C024",
+      "C012",
+      "C060"
+    ],
+    "bm25_ids": [
+      "C057",
+      "C056",
+      "C023",
+      "C051",
+      "C026",
+      "C052"
+    ],
+    "candidate_ids": [
+      "C023",
+      "C064",
+      "C057",
+      "C065",
+      "C056",
+      "C024"
+    ],
+    "initial_ids": [
+      "C023",
+      "C064",
+      "C057"
+    ],
+    "initial_result": {
+      "sufficient": false,
+      "reason": "原文强调嵌入质量影响检索召回，并提及问题与文档需在向量空间比较，但没有说明在线提问时问题是否必须使用与资料相同的嵌入模型编码，也未说明能否随意更换模型。缺少直接依据。",
+      "evidence": [
+        {
+          "chunk_id": "C057",
+          "quote": "一个优秀的 Embedding 模型能够精准捕捉问题和文档之间的深层语义联系，即使用户的提问和原文的表述不完全一致。反之，一个劣质的 Embedding模型可能会因为无法理解语义而召回不相关或错误的信息，从而“污染”提供给 LLM 的上下文，导致最终生成的答案质量低下。"
+        }
+      ]
+    },
+    "expanded_ids": [
+      "C023",
+      "C064",
+      "C057",
+      "C065",
+      "C056",
+      "C024"
+    ],
+    "recheck_result": {
+      "sufficient": true,
+      "reason": "原文明确说明在线查询检索时须使用与离线索引构建相同的 Embedding 模型将问题转为向量，因此可回答“应该用同一模型”，不能随意更换。",
+      "evidence": [
+        {
+          "chunk_id": "C056",
+          "quote": "（2）**在线查询检索**：当用户提出问题时，使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        }
+      ]
+    },
+    "quote_checks_reported_passed": true,
+    "recheck_quote_confirmed_in_source": true,
+    "recovery_enabled": true,
+    "observed_check_stages": 2,
+    "answer_called": false,
+    "manual_review": "Initial excerpts lack the shared-model requirement. The added C056 explicitly provides it. Both judgments are reasonable and the added quote supports the positive recheck. This validates this development-case evidence recovery to the checking stage.",
+    "model_id": null,
+    "usage": null,
+    "latency_seconds": null
+  },
+  "scope": "Paired user-run Hybrid comparison of a known development failure. Retained/initial IDs match. Added C056 supports False to True evidence-check recovery, at the cost of one additional checker request. No generated answer, token-use/latency measurements or general accuracy claim.",
+  "comparison": {
+    "question_and_retrieval_configuration_match": true,
+    "candidate_and_initial_ids_match": true,
+    "without_recovery": "One check, insufficient, stopped.",
+    "with_recovery": "Initial insufficient, expanded to retained six, second check sufficient.",
+    "extra_observed_check_stages": 1,
+    "generation_calls_observed_in_both_runs": 0,
+    "scope": "One known development case. Semantic improvement is manually supported here. Other questions and known P001 checker errors require separate evaluation."
+  }
+}
