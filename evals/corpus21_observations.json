@@ -1,0 +1,249 @@
+{
+  "observed_on": "2026-11-04",
+  "evidence_source": "User-pasted terminal output from inspect_chunks.py --corpus full",
+  "corpus_id": "all-in-rag-21-cec956e",
+  "configuration": {
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "document_count": 21,
+  "chunk_count": 498,
+  "chunks_per_document": {
+    "01_RAG_intro.md": 24,
+    "02_preparation.md": 23,
+    "03_get_start_rag.md": 27,
+    "04_data_load.md": 21,
+    "05_text_chunking.md": 32,
+    "06_vector_embedding.md": 18,
+    "07_multimodal_embedding.md": 10,
+    "08_vector_db.md": 16,
+    "09_milvus.md": 50,
+    "10_index_optimization.md": 36,
+    "11_hybrid_search.md": 34,
+    "12_query_construction.md": 21,
+    "13_text2sql.md": 30,
+    "14_query_rewriting.md": 26,
+    "15_advanced_retrieval_techniques.md": 36,
+    "16_formatted_generation.md": 18,
+    "18_system_evaluation.md": 17,
+    "19_common_tools.md": 14,
+    "20_kg_rag.md": 17,
+    "21_agentic_rag.md": 24,
+    "virtualenv.md": 4
+  },
+  "first_chunks": [
+    {
+      "chunk_id": "C001",
+      "source": "01_RAG_intro.md",
+      "characters": 434
+    },
+    {
+      "chunk_id": "C002",
+      "source": "01_RAG_intro.md",
+      "characters": 441
+    },
+    {
+      "chunk_id": "C003",
+      "source": "01_RAG_intro.md",
+      "characters": 324
+    }
+  ],
+  "embedding_executed": false,
+  "retrieval_executed": false,
+  "generation_executed": false,
+  "quote_location_run": {
+    "evidence_source": "User-pasted terminal output from inspect_chunks.py --corpus full --find-quote",
+    "query_quote": "Embedding 模型将用户的问题也转换为一个向量",
+    "matched_blocks": [
+      {
+        "chunk_id": "C130",
+        "source": "06_vector_embedding.md"
+      }
+    ],
+    "baseline_chunk_id": "C056",
+    "interpretation": "The same source sentence has a different sequential chunk ID in the full corpus. This is exact-text location, not a retrieval quality measurement."
+  },
+  "execution_flag_scope": "The initial inspect_chunks.py run; later runs are separately named.",
+  "dense_run": {
+    "evidence_source": "User-pasted terminal output from retrieve.py --corpus full --k 3",
+    "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+    "strategy": "dense",
+    "k": 3,
+    "document_count": 21,
+    "chunk_count": 498,
+    "returned_blocks": [
+      {
+        "chunk_id": "C368",
+        "source": "14_query_rewriting.md",
+        "characters": 433,
+        "topic": "References and links"
+      },
+      {
+        "chunk_id": "C306",
+        "source": "12_query_construction.md",
+        "characters": 196,
+        "topic": "Temperature configuration"
+      },
+      {
+        "chunk_id": "C138",
+        "source": "06_vector_embedding.md",
+        "characters": 341,
+        "topic": "Contrastive learning and model selection"
+      }
+    ],
+    "known_evidence_chunk_id": "C130",
+    "known_evidence_chunk_returned": false,
+    "manual_review": "The returned material does not directly state the same-embedding-model requirement. This question also previously missed the labeled evidence in the original three-document Dense top 3.",
+    "embedding_executed": true,
+    "retrieval_executed": true,
+    "generation_executed": false,
+    "bm25_comparison": "See bm25_run: same corpus/config/question/k, alternate valid evidence in C002 at rank 3."
+  },
+  "bm25_run": {
+    "evidence_source": "User-pasted terminal output from bm25_retrieve.py --corpus full --k 3",
+    "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+    "strategy": "bm25",
+    "k": 3,
+    "document_count": 21,
+    "chunk_count": 498,
+    "returned_blocks": [
+      {
+        "chunk_id": "C353",
+        "source": "14_query_rewriting.md",
+        "characters": 461,
+        "topic": "HyDE hypothetical document generation and encoding"
+      },
+      {
+        "chunk_id": "C097",
+        "source": "05_text_chunking.md",
+        "characters": 368,
+        "topic": "Context window and chunk size"
+      },
+      {
+        "chunk_id": "C002",
+        "source": "01_RAG_intro.md",
+        "characters": 441,
+        "topic": "RAG retrieval uses the same embedding model for the query"
+      }
+    ],
+    "known_evidence_chunk_id": "C130",
+    "known_evidence_chunk_returned": false,
+    "additional_valid_evidence": {
+      "chunk_id": "C002",
+      "source": "01_RAG_intro.md",
+      "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+    },
+    "content_review_by_assistant": "C002 directly supports using the same embedding model for query encoding. C353 and C097 do not directly support that requirement.",
+    "review_status": "Assistant source-text review; not a model judge result or an automated full-corpus evaluation run.",
+    "embedding_executed": false,
+    "retrieval_executed": true,
+    "generation_executed": false,
+    "warning_observed": "langchain-community deprecation warning; the run completed and returned three blocks."
+  },
+  "comparison_scope": "One development question on the 21-document corpus. No overall accuracy claim. Existing three-document gold labels and reports are preserved; full-corpus labels must include new valid sources.",
+  "evidence_locations_run": {
+    "evidence_source": "User terminal output and saved report read by assistant",
+    "report_path": "evals/results/evidence_locations_full_20261104T104431025638Z.json",
+    "case_count": 15,
+    "located_case_count": 15,
+    "locations": [
+      {
+        "case_id": "Q001",
+        "chunk_ids": [
+          "C101",
+          "C102",
+          "C103"
+        ]
+      },
+      {
+        "case_id": "Q002",
+        "chunk_ids": [
+          "C076"
+        ]
+      },
+      {
+        "case_id": "Q003",
+        "chunk_ids": [
+          "C129"
+        ]
+      },
+      {
+        "case_id": "Q004",
+        "chunk_ids": [
+          "C075"
+        ]
+      },
+      {
+        "case_id": "Q005",
+        "chunk_ids": [
+          "C083"
+        ]
+      },
+      {
+        "case_id": "Q006",
+        "chunk_ids": [
+          "C094"
+        ]
+      },
+      {
+        "case_id": "Q007",
+        "chunk_ids": [
+          "C093"
+        ]
+      },
+      {
+        "case_id": "Q008",
+        "chunk_ids": [
+          "C096"
+        ]
+      },
+      {
+        "case_id": "Q009",
+        "chunk_ids": [
+          "C111"
+        ]
+      },
+      {
+        "case_id": "Q010",
+        "chunk_ids": [
+          "C106",
+          "C107",
+          "C110"
+        ]
+      },
+      {
+        "case_id": "Q011",
+        "chunk_ids": [
+          "C125"
+        ]
+      },
+      {
+        "case_id": "Q012",
+        "chunk_ids": [
+          "C130"
+        ]
+      },
+      {
+        "case_id": "Q013",
+        "chunk_ids": [
+          "C129"
+        ]
+      },
+      {
+        "case_id": "Q014",
+        "chunk_ids": [
+          "C130"
+        ]
+      },
+      {
+        "case_id": "Q015",
+        "chunk_ids": [
+          "C132"
+        ]
+      }
+    ],
+    "scope": "All-corpus source-and-quote location of existing labeled evidence. Additional valid evidence in new documents remains to be added to full-corpus annotations.",
+    "retrieval_called": false,
+    "generation_called": false
+  }
+}

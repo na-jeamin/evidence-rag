@@ -1,0 +1,136 @@
+{
+  "corpus_id": "all-in-rag-21-cec956e",
+  "repository": "https://github.com/datawhalechina/all-in-rag",
+  "commit": "cec956e80ae28d6c0ca84c9d39dddcf61ad633fd",
+  "prepared_on": "2026-11-04",
+  "license": "CC BY-NC-SA 4.0",
+  "scope": "docs/chapter1..7 Markdown",
+  "files": [
+    {
+      "source": "docs/chapter1/01_RAG_intro.md",
+      "local": "data/documents-full/01_RAG_intro.md",
+      "git_blob_sha": "d607125f6edab9933a6141e8fe22563a26c5bc9e",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter1/01_RAG_intro.md"
+    },
+    {
+      "source": "docs/chapter1/02_preparation.md",
+      "local": "data/documents-full/02_preparation.md",
+      "git_blob_sha": "15255cf01434d42081c6e1de64a3b6058d1b6673",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter1/02_preparation.md"
+    },
+    {
+      "source": "docs/chapter1/03_get_start_rag.md",
+      "local": "data/documents-full/03_get_start_rag.md",
+      "git_blob_sha": "3c97dddd23f0c2cd49badc0672a1ba9eb614b186",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter1/03_get_start_rag.md"
+    },
+    {
+      "source": "docs/chapter1/virtualenv.md",
+      "local": "data/documents-full/virtualenv.md",
+      "git_blob_sha": "44832b5a5694f8de7e4ed0ebd22ec3f9e2bb1d19",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter1/virtualenv.md"
+    },
+    {
+      "source": "docs/chapter2/04_data_load.md",
+      "local": "data/documents-full/04_data_load.md",
+      "git_blob_sha": "1684ed2b9940974a4c11cbdac54b9e5a9e7e1aad",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter2/04_data_load.md"
+    },
+    {
+      "source": "docs/chapter2/05_text_chunking.md",
+      "local": "data/documents-full/05_text_chunking.md",
+      "git_blob_sha": "59f513aacfd507b5348e8458b58ba68bf339c727",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter2/05_text_chunking.md"
+    },
+    {
+      "source": "docs/chapter3/06_vector_embedding.md",
+      "local": "data/documents-full/06_vector_embedding.md",
+      "git_blob_sha": "8691f63384de494d806370450d690ddb2fb9e567",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter3/06_vector_embedding.md"
+    },
+    {
+      "source": "docs/chapter3/07_multimodal_embedding.md",
+      "local": "data/documents-full/07_multimodal_embedding.md",
+      "git_blob_sha": "7c24f47005b53f6a49a2566b0268d4523590fcd8",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter3/07_multimodal_embedding.md"
+    },
+    {
+      "source": "docs/chapter3/08_vector_db.md",
+      "local": "data/documents-full/08_vector_db.md",
+      "git_blob_sha": "3059febcad1fabdd43bb7daf09303457b05d06e7",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter3/08_vector_db.md"
+    },
+    {
+      "source": "docs/chapter3/09_milvus.md",
+      "local": "data/documents-full/09_milvus.md",
+      "git_blob_sha": "ad4196bed844abafa5283154cec5277803f0b973",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter3/09_milvus.md"
+    },
+    {
+      "source": "docs/chapter3/10_index_optimization.md",
+      "local": "data/documents-full/10_index_optimization.md",
+      "git_blob_sha": "c9e8c0adbdfe00e32190812232ed3fde55395542",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter3/10_index_optimization.md"
+    },
+    {
+      "source": "docs/chapter4/11_hybrid_search.md",
+      "local": "data/documents-full/11_hybrid_search.md",
+      "git_blob_sha": "ad6ee88f32cf063565c559f273fea69bc26db21c",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter4/11_hybrid_search.md"
+    },
+    {
+      "source": "docs/chapter4/12_query_construction.md",
+      "local": "data/documents-full/12_query_construction.md",
+      "git_blob_sha": "4f29c715deb834306f8081bd44d97b4b380f5ea7",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter4/12_query_construction.md"
+    },
+    {
+      "source": "docs/chapter4/13_text2sql.md",
+      "local": "data/documents-full/13_text2sql.md",
+      "git_blob_sha": "f28c97f2646cdde5352565f8625f69b6b7e334fc",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter4/13_text2sql.md"
+    },
+    {
+      "source": "docs/chapter4/14_query_rewriting.md",
+      "local": "data/documents-full/14_query_rewriting.md",
+      "git_blob_sha": "967d96f19b390173b62ff5e419f8c126e380ea2f",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter4/14_query_rewriting.md"
+    },
+    {
+      "source": "docs/chapter4/15_advanced_retrieval_techniques.md",
+      "local": "data/documents-full/15_advanced_retrieval_techniques.md",
+      "git_blob_sha": "d2254a85af24f774e864362278adb8c76bd6365e",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter4/15_advanced_retrieval_techniques.md"
+    },
+    {
+      "source": "docs/chapter5/16_formatted_generation.md",
+      "local": "data/documents-full/16_formatted_generation.md",
+      "git_blob_sha": "1ccb5ac509a739ecdb712147517b5d209f29d714",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter5/16_formatted_generation.md"
+    },
+    {
+      "source": "docs/chapter6/18_system_evaluation.md",
+      "local": "data/documents-full/18_system_evaluation.md",
+      "git_blob_sha": "baba74b77758e983c23d02b0ec4c61f1b76ea30e",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter6/18_system_evaluation.md"
+    },
+    {
+      "source": "docs/chapter6/19_common_tools.md",
+      "local": "data/documents-full/19_common_tools.md",
+      "git_blob_sha": "e1b05e3f28687581fc5b4e911ffab9459181d5d0",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter6/19_common_tools.md"
+    },
+    {
+      "source": "docs/chapter7/20_kg_rag.md",
+      "local": "data/documents-full/20_kg_rag.md",
+      "git_blob_sha": "980306d93752bd5b5c681679b6e37abd2c9ed136",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter7/20_kg_rag.md"
+    },
+    {
+      "source": "docs/chapter7/21_agentic_rag.md",
+      "local": "data/documents-full/21_agentic_rag.md",
+      "git_blob_sha": "f3a14d405b675a83f23b4802749017badada2a32",
+      "url": "https://github.com/datawhalechina/all-in-rag/blob/cec956e80ae28d6c0ca84c9d39dddcf61ad633fd/docs/chapter7/21_agentic_rag.md"
+    }
+  ]
+}

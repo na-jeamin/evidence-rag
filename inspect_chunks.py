@@ -4,13 +4,14 @@
 本入口不建立向量索引，也不调用生成模型。
 """
 
+import argparse
 from collections import Counter
 from pathlib import Path
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from inspect_documents import DATA_DIR, load_documents
+from inspect_documents import CORPUS_DIRS, load_documents
 
 
 # 项目先用较短片段观察证据位置；这是实验起点，不代表最优配置。
@@ -33,8 +34,15 @@ def prepare_chunks(docs: list[Document]) -> list[Document]:
 
 
 def main() -> None:
-    docs = load_documents(DATA_DIR)
+    parser = argparse.ArgumentParser(description="切分所选资料，观察来源与本次块编号。")
+    parser.add_argument("--corpus", choices=CORPUS_DIRS, default="baseline", help="baseline为原三篇，full为固定版本21篇。")
+    parser.add_argument("--find-quote", help="按连续原句定位文本块，观察当前编号和来源。")
+    args = parser.parse_args()
+    if args.find_quote is not None and not args.find_quote.strip():
+        parser.error("--find-quote 需要非空的原文片段。")
+    docs = load_documents(CORPUS_DIRS[args.corpus])
     chunks = prepare_chunks(docs)
+    print(f"资料选择：{args.corpus}")
     print(f"配置：chunk_size={CHUNK_SIZE}，chunk_overlap={CHUNK_OVERLAP}")
     print(f"完整文档数：{len(docs)}，文本块总数：{len(chunks)}")
 
@@ -50,6 +58,19 @@ def main() -> None:
         print(f"\n{chunk.metadata['chunk_id']}，来源：{Path(chunk.metadata['source']).name}")
         print(f"字符数：{len(chunk.page_content)}")
         print(chunk.page_content[:100])
+
+    if args.find_quote:
+        print("\n--- 指定原句的位置 ---")
+        print("查找原句：", args.find_quote)
+        found = False
+        for chunk in chunks:
+            # 在每块完整正文中找同一原句，编号从匹配块的 metadata 读取。
+            if args.find_quote in chunk.page_content:
+                found = True
+                print(f"\n{chunk.metadata['chunk_id']}，来源：{Path(chunk.metadata['source']).name}")
+                print(chunk.page_content)
+        if not found:
+            print("当前切分结果中没有块包含这段连续原句。")
     print("\n当前完成切分与来源观察，尚未建立向量索引或生成回答。")
 
 

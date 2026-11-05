@@ -1,0 +1,403 @@
+{
+  "created_at_utc": "2026-11-04T10:44:31.025638+00:00",
+  "scope": "核对标注依据在全部文本块中的位置，评估资料准备检查。",
+  "configuration": {
+    "corpus": "full",
+    "document_count": 21,
+    "chunk_count": 498,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "case_count": 15,
+  "located_case_count": 15,
+  "cases_snapshot": [
+    {
+      "id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "reference_answer": "保留相邻块的部分上下文，缓解语义割裂、保持上下文连续性。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "每个块之间重叠10个字符，以缓解语义割裂"
+        }
+      ],
+      "note": "已有开发案例，不能当作从未见过的独立测试。C027/C028/C029在当前切分中都可能提供依据，不只认一个编号。"
+    },
+    {
+      "id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ]
+    },
+    {
+      "id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "reference_answer": "向量归一化后，两者等价。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在向量归一化后，点积等价于余弦相似度。"
+        }
+      ]
+    },
+    {
+      "id": "Q004",
+      "question": "一套RAG流程刚开始处理资料时，数据加载属于第几个步骤？",
+      "reference_answer": "数据加载是整个流水线的第一步。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "**数据加载**是整个流水线的第一步"
+        }
+      ]
+    },
+    {
+      "id": "Q005",
+      "question": "文中面向RAG和AI微调、负责非结构化资料预处理的专业文档库叫什么？",
+      "reference_answer": "Unstructured。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "**Unstructured** [^1]是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。"
+        }
+      ]
+    },
+    {
+      "id": "Q006",
+      "question": "自动识别出PDF文件后，partition会把处理转交给哪个专用函数？",
+      "reference_answer": "partition_pdf。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "如PDF文件会调用`partition_pdf`"
+        }
+      ]
+    },
+    {
+      "id": "Q007",
+      "question": "已经知道文档是PDF时，partition的哪个参数可以指定MIME类型并跳过自动格式检测？",
+      "reference_answer": "content_type，例如指定application/pdf。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "`content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测"
+        }
+      ]
+    },
+    {
+      "id": "Q008",
+      "question": "把超出输入长度限制的文本块交给嵌入模型，会造成什么问题？",
+      "reference_answer": "文本块会被截断，导致信息丢失，向量无法完整代表原文语义。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。"
+        }
+      ]
+    },
+    {
+      "id": "Q009",
+      "question": "不按固定字数，而根据内容主题发生变化的位置切开，属于哪种分块方法？",
+      "reference_answer": "语义分块，在语义主题显著变化的地方切分。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "语义分块（Semantic Chunking）是一种更智能的方法，这种方法不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。"
+        }
+      ]
+    },
+    {
+      "id": "Q010",
+      "question": "递归字符分块按段落切完仍然太长，接着会怎样处理这个大块？",
+      "reference_answer": "继续应用下一优先级分隔符，例如句号，直到块满足大小限制。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求。"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "**有剩余分隔符**: 递归调用 `_split_text` 继续分割"
+        }
+      ],
+      "annotation_note": "dev15-v2补充C033/C032中同样有效的原文依据；v1自动False遗漏支持性表述。只补标注，不改问题/检索/匹配规则，其他方法须用同版标注比较。"
+    },
+    {
+      "id": "Q011",
+      "question": "按单个句子检索时，SentenceWindowNodeParser把前后的上下文存在哪里？",
+      "reference_answer": "在每个句子节点的元数据中保存前后相邻N个句子，组成上下文窗口。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子"
+        }
+      ]
+    },
+    {
+      "id": "Q012",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "reference_answer": "使用同一个Embedding模型，将问题转换为向量。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        }
+      ]
+    },
+    {
+      "id": "Q013",
+      "question": "用向量之间的直线距离比较语义时，距离越大还是越小表示更相似？",
+      "reference_answer": "欧氏距离越小，语义越相似。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+        }
+      ]
+    },
+    {
+      "id": "Q014",
+      "question": "把文档块编码成向量并存入向量库，属于离线准备还是在线问题检索阶段？",
+      "reference_answer": "离线索引构建阶段。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。"
+        }
+      ]
+    },
+    {
+      "id": "Q015",
+      "question": "“苹果”分别指公司和水果时，为什么静态词向量难以区分这两种意思？",
+      "reference_answer": "静态词嵌入对同一个词使用与上下文无关的固定向量，无法处理一词多义；两个语境中的苹果向量相同。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在“苹果公司发布了新手机”和“我吃了一个苹果”中，“苹果”的词向量是完全相同的"
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C101",
+          "source": "05_text_chunking.md",
+          "page_content": "通过合理分块，可以有效提升检索的信噪比，确保了后续生成环节能得到最优质、最相关的上下文。\n\n## 三、基础分块策略\n\nLangChain 提供了丰富且易于使用的文本分割器（Text Splitters），下面将介绍几种最核心的策略。\n\n### 3.1 固定大小分块\n\n这是最简单直接的分块方法。根据LangChain源码，这种方法的工作原理分为两个主要阶段：\n\n（1）**按段落分割**：`CharacterTextSplitter` 采用默认分隔符 `\"\\n\\n\"`，使用正则表达式将文本按段落进行分割，通过 `_split_text_with_regex` 函数处理。\n\n（2）**智能合并**：调用继承自父类的 `_merge_splits` 方法，将分割后的段落依次合并。该方法会监控累积长度，当超过 `chunk_size` 时形成新块，并通过重叠机制（`chunk_overlap`）保持上下文连续性，同时在必要时发出超长块的警告。"
+        },
+        {
+          "chunk_id": "C102",
+          "source": "05_text_chunking.md",
+          "page_content": "需要注意，`CharacterTextSplitter` 实际实现的并非严格的固定大小分块。根据 `_merge_splits` 源码逻辑，这种方法会：\n\n- **优先保持段落完整性**：只有当添加新段落会导致总长度超过 `chunk_size` 时，才会结束当前块\n- **处理超长段落**：如果单个段落超过 `chunk_size`，系统会发出警告但仍将其作为完整块保留\n- **应用重叠机制**：通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性\n\n所以，LangChain 的实现更准确地应该称为\"段落感知的自适应分块\"，块大小会根据段落边界动态调整。\n\n下面的代码展示了如何配置一个固定大小分块器：\n\n```python\nfrom langchain.text_splitter import CharacterTextSplitter\nfrom langchain_community.document_loaders import TextLoader"
+        },
+        {
+          "chunk_id": "C103",
+          "source": "05_text_chunking.md",
+          "page_content": "loader = TextLoader(\"../../data/C2/txt/蜂医.txt\")\ndocs = loader.load()\n\ntext_splitter = CharacterTextSplitter(\n    chunk_size=200,    # 每个块的目标大小为100个字符\n    chunk_overlap=10   # 每个块之间重叠10个字符，以缓解语义割裂\n)\n\nchunks = text_splitter.split_documents(docs)"
+        }
+      ]
+    },
+    {
+      "case_id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C076",
+          "source": "04_data_load.md",
+          "page_content": "文档加载器在 RAG 的数据管道中一般需要完成三个核心任务，一是解析不同格式的原始文档，将 PDF、Word、Markdown 等内容提取为可处理的纯文本，二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据，三是把文本和元数据整理成统一的数据结构，方便后续进行切分、向量化和入库，其整体流程与传统数据工程中的抽取、转换、加载相似，目标都是把杂乱的原始文档清洗并对齐为适合检索和建模的标准化语料。\n\n### 1.2 当前主流RAG文档加载器"
+        }
+      ]
+    },
+    {
+      "case_id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C129",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        }
+      ]
+    },
+    {
+      "case_id": "Q004",
+      "question": "一套RAG流程刚开始处理资料时，数据加载属于第几个步骤？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C075",
+          "source": "04_data_load.md",
+          "page_content": "# 第一节 数据加载\n\n虽然本节内容在实际应用中非常重要，但是由于各种文档加载器的迭代更新，以及各类 AI 应用的不同需求，具体选择需要根据实际情况。本节仅作简单引入，但请务必**重视数据加载**环节，**“垃圾进，垃圾出 (Garbage In, Garbage Out)”** ——高质量输入是高质量输出的前提。\n\n## 一、文档加载器\n\n### 1.1 主要功能\n\nRAG 系统中，**数据加载**是整个流水线的第一步，也是不可或缺的一步。文档加载器负责将各种格式的非结构化文档（如PDF、Word、Markdown、HTML等）转换为程序可以处理的结构化数据。数据加载的质量会直接影响后续的索引构建、检索效果和最终的生成质量。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q005",
+      "question": "文中面向RAG和AI微调、负责非结构化资料预处理的专业文档库叫什么？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C083",
+          "source": "04_data_load.md",
+          "page_content": "## 二、Unstructured文档处理库\n\n### 2.1 Unstructured 的核心优势\n\n**Unstructured** [^1]是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。提供了统一的接口来处理多种文档格式，是目前应用较广泛的文档加载解决方案之一。Unstructured 在格式支持和内容解析方面具有明显优势，它一方面支持 PDF、Word、Excel、HTML、Markdown 等多种文档格式，并通过统一的 API 接口避免为不同格式分别编写代码，另一方面可以自动识别标题、段落、表格、列表等文档结构，同时保留相应的元数据信息。\n\n<div align=\"center\">\n  <img src=\"./images/2_1_1.png\" width=\"80%\" alt=\"Unstructured 官网界面\">\n  <p>图 2-1 Unstructured 官网界面</p>\n</div>\n\n### 2.2 支持的文档元素类型\n\nUnstructured 能够识别和分类以下文档元素 [^2]："
+        }
+      ]
+    },
+    {
+      "case_id": "Q006",
+      "question": "自动识别出PDF文件后，partition会把处理转交给哪个专用函数？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C094",
+          "source": "04_data_load.md",
+          "page_content": "`partition`函数使用自动文件类型检测，内部会根据文件类型路由到对应的专用函数（如PDF文件会调用`partition_pdf`）。如果需要更专业的PDF处理，可以直接使用`from unstructured.partition.pdf import partition_pdf`，它提供更多PDF特有的参数选项，如OCR语言设置、图像提取、表格结构推理等高级功能，同时性能更优。\n\n> 在实际应用中，针对 pdf 的处理，目前更多选用的是 PaddleOCR、MinerU 等模型或工具。\n\n## 练习\n\n- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。\n\n## 参考文献\n\n[^1]: [*Unstructured Open-Source Documentation*](https://docs.unstructured.io/open-source/)"
+        }
+      ]
+    },
+    {
+      "case_id": "Q007",
+      "question": "已经知道文档是PDF时，partition的哪个参数可以指定MIME类型并跳过自动格式检测？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C093",
+          "source": "04_data_load.md",
+          "page_content": "**partition 函数参数解析：**\n\n- `filename`: 文档文件路径，支持本地文件路径；\n- `content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测；\n- `file`: 可选参数，文件对象，与 filename 二选一使用；\n- `url`: 可选参数，远程文档 URL，支持直接处理网络文档；\n- `include_page_breaks`: 布尔值，是否在输出中包含页面分隔符；\n- `strategy`: 处理策略，可选 \"auto\"、\"fast\"、\"hi_res\" 等；\n- `encoding`: 文本编码格式，默认自动检测。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q008",
+      "question": "把超出输入长度限制的文本块交给嵌入模型，会造成什么问题？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C096",
+          "source": "05_text_chunking.md",
+          "page_content": "# 第二节 文本分块\n\n## 一、理解文本分块\n\n文本分块（Text Chunking）是构建 RAG 流程的关键步骤。它的原理是将加载后的长篇文档，切分成更小、更易于处理的单元。这些被切分出的文本块，是后续向量检索和模型处理的**基本单位**。\n\n![文本分块示意图](./images/2_2_1.webp)\n\n## 二、文本分块重要性\n\n### 2.1 满足模型上下文限制\n\n将文本分块的首要原因，是为了适应 RAG 系统中两个核心组件的硬性限制：\n\n-   **嵌入模型 (Embedding Model)**: 负责将文本块转换为向量。这类模型有严格的输入长度上限。例如，许多常用的嵌入模型（如 `bge-base-zh-v1.5`）的上下文窗口为512个token。任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。因此，文本块的大小**必须**小于等于嵌入模型的上下文窗口。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q009",
+      "question": "不按固定字数，而根据内容主题发生变化的位置切开，属于哪种分块方法？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C111",
+          "source": "05_text_chunking.md",
+          "page_content": "### 3.3 语义分块\n\n语义分块（Semantic Chunking）是一种更智能的方法，这种方法不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。其核心是：**在语义主题发生显著变化的地方进行切分**。这使得每个分块都具有高度的内部语义一致性。LangChain 提供了 `langchain_experimental.text_splitter.SemanticChunker` 来实现这一功能。\n\n**实现原理**\n\n`SemanticChunker` 的工作流程可以概括为以下几个步骤：\n\n（1）**句子分割 (Sentence Splitting)**：首先，使用标准的句子分割规则（例如，基于句号、问号、感叹号）将输入文本拆分成一个句子列表。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q010",
+      "question": "递归字符分块按段落切完仍然太长，接着会怎样处理这个大块？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C106",
+          "source": "05_text_chunking.md",
+          "page_content": "**算法流程**：\n（1）**寻找有效分隔符**: 从分隔符列表中从前到后遍历，找到第一个在当前文本中**存在**的分隔符。如果都不存在，使用最后一个分隔符（通常是空字符串 `\"\"`）。\n\n（2）**切分与分类处理**: 使用选定的分隔符切分文本，然后遍历所有片段：\n- **如果片段不超过块大小**: 暂存到 `_good_splits` 中，准备合并\n- **如果片段超过块大小**:\n    - 首先，将暂存的合格片段通过 `_merge_splits` 合并成块\n    - 然后，检查是否还有剩余分隔符：\n        - **有剩余分隔符**: 递归调用 `_split_text` 继续分割\n        - **无剩余分隔符**: 直接保留为超长块\n\n（3）**最终处理**: 将剩余的暂存片段合并成最后的块"
+        },
+        {
+          "chunk_id": "C107",
+          "source": "05_text_chunking.md",
+          "page_content": "（3）**最终处理**: 将剩余的暂存片段合并成最后的块\n\n**实现细节**：\n- **批处理机制**: 先收集所有合格片段（`_good_splits`），遇到超长片段时才触发合并操作。\n- **递归终止条件**: 关键在于 `if not new_separators` 判断。当分隔符用尽时（`new_separators` 为空），停止递归，直接保留超长片段。确保算法不会无限递归。\n\n**与固定大小分块的关键差异**：\n- 固定大小分块遇到超长段落时只能发出警告并保留。\n- 递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求。\n\n具体示例如下：\n\n```python\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\nfrom langchain_community.document_loaders import TextLoader\n\nloader = TextLoader(\"../../data/C2/txt/蜂医.txt\")\ndocs = loader.load()"
+        },
+        {
+          "chunk_id": "C110",
+          "source": "05_text_chunking.md",
+          "page_content": "```python\n# 针对代码文档的优化分隔符\nsplitter = RecursiveCharacterTextSplitter.from_language(\n    language=Language.PYTHON,  # 支持Python、Java、C++等\n    chunk_size=500,\n    chunk_overlap=50\n)\n```\n\n递归字符分块的原理是采用一组有层次结构的分隔符（如段落、句子、单词）进行递归分割，旨在有效平衡语义完整性与块大小控制。在 `RecursiveCharacterTextSplitter` 的实现中，该分块器首先尝试使用最高优先级的分隔符（如段落标记）来切分文本。如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。这种分层处理的机制，能够在尽可能保持高级语义结构完整性的同时，有效控制块大小。\n\n### 3.3 语义分块"
+        }
+      ]
+    },
+    {
+      "case_id": "Q011",
+      "question": "按单个句子检索时，SentenceWindowNodeParser把前后的上下文存在哪里？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C125",
+          "source": "05_text_chunking.md",
+          "page_content": "-   `SentenceWindowNodeParser`: 这是一种巧妙的方法。该方法将文档切分成单个的句子，但在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子（即“窗口”）。这使得在检索时，可以先用单个句子的嵌入进行精确匹配，然后将包含上下文“窗口”的完整文本送给LLM，极大地提升了上下文的质量。\n-   **常规型**: 如 `TokenTextSplitter`, `SentenceSplitter` 等，提供基于Token数量或句子边界的常规切分方法。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q012",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C130",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 1.2 Embedding 在 RAG 中的作用\n\n在RAG流程中，Embedding 扮演着无可替代的重要角色。\n\n#### 1.2.1 语义检索的基础\n\nRAG 的“检索”环节通常以基于 Embedding 的语义搜索为核心。通用流程如下：\n（1）**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。\n\n（2）**在线查询检索**：当用户提出问题时，使用**同一个** Embedding 模型将用户的问题也转换为一个向量。\n\n（3）**相似度计算**：在向量数据库中，计算“问题向量”与所有“文档块向量”的相似度。\n\n（4）**召回上下文**：选取相似度最高的 Top-K 个文档块，作为补充的上下文信息，与原始问题一同送给大语言模型（LLM）生成最终答案。\n\n#### 1.2.2 决定检索质量的关键"
+        }
+      ]
+    },
+    {
+      "case_id": "Q013",
+      "question": "用向量之间的直线距离比较语义时，距离越大还是越小表示更相似？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C129",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        }
+      ]
+    },
+    {
+      "case_id": "Q014",
+      "question": "把文档块编码成向量并存入向量库，属于离线准备还是在线问题检索阶段？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C130",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 1.2 Embedding 在 RAG 中的作用\n\n在RAG流程中，Embedding 扮演着无可替代的重要角色。\n\n#### 1.2.1 语义检索的基础\n\nRAG 的“检索”环节通常以基于 Embedding 的语义搜索为核心。通用流程如下：\n（1）**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。\n\n（2）**在线查询检索**：当用户提出问题时，使用**同一个** Embedding 模型将用户的问题也转换为一个向量。\n\n（3）**相似度计算**：在向量数据库中，计算“问题向量”与所有“文档块向量”的相似度。\n\n（4）**召回上下文**：选取相似度最高的 Top-K 个文档块，作为补充的上下文信息，与原始问题一同送给大语言模型（LLM）生成最终答案。\n\n#### 1.2.2 决定检索质量的关键"
+        }
+      ]
+    },
+    {
+      "case_id": "Q015",
+      "question": "“苹果”分别指公司和水果时，为什么静态词向量难以区分这两种意思？",
+      "labeled_evidence_located": true,
+      "matched_chunks": [
+        {
+          "chunk_id": "C132",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 2.1 静态词嵌入：上下文无关的表示\n\n- **代表模型**：Word2Vec (2013), GloVe (2014)\n- **主要原理**：为词汇表中的每个单词生成一个固定的、与上下文无关的向量。例如，`Word2Vec` 通过 Skip-gram 和 CBOW 架构，利用局部上下文窗口学习词向量，并验证了向量运算的语义能力（如 `国王 - 男人 + 女人 ≈ 王后`）。`GloVe` 则融合了全局词-词共现矩阵的统计信息。\n- **局限性**：无法处理一词多义问题。在“苹果公司发布了新手机”和“我吃了一个苹果”中，“苹果”的词向量是完全相同的，这限制了其在复杂语境下的语义表达能力。\n\n### 2.2 动态上下文嵌入"
+        }
+      ]
+    }
+  ],
+  "embedding_called": false,
+  "retrieval_called": false,
+  "generation_called": false
+}

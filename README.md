@@ -1,5 +1,45 @@
 # Evidence RAG（建设中）
 
+## 11/4 正式资料准备
+
+固定上游版本的21篇Markdown已放入`data/documents-full/`，逐文件Git blob核对通过，来源见`reference/corpus21_manifest.json`。原三篇及旧清单保留。资料选择已接入加载、切分、Dense、BM25及评估入口；独立检查/Hybrid入口仍默认原三篇。
+
+在学习工作区`D:\tt\agent`观察正式资料的加载与切分。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\inspect_chunks.py --corpus full
+```
+
+2026-11-04用户实际运行确认21篇共498块；原三篇仍分别21/32/18块，前3块来自01_RAG_intro.md，编号在本次资料内重新生成。详见`evals/corpus21_observations.json`。`inspect_documents.py --corpus full`可只看完整文档；两个入口省略参数均使用原三篇。当前仅验证加载和切分。
+
+同一入口新增可选原句定位，用户已实际验证相同原句由旧C056变为full的C130，来源仍为06_vector_embedding.md。这是位置核对，检索效果由单独运行验证。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\inspect_chunks.py --corpus full --find-quote "Embedding 模型将用户的问题也转换为一个向量"
+```
+
+原Dense流程检索正式资料，默认baseline兼容旧命令。11/4用户真实运行Q012/k3得到C368/C306/C138，已知直接依据C130未入前三；返回内容为参考文献、温度配置、对比学习，未直接支持同嵌入模型要求。流程已运行，本例发生漏检，不据此断定全部新资料或Dense均无效。记录见evals/corpus21_observations.json。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\retrieve.py --corpus full --question "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？" --k 3
+```
+
+同语料、问题、切分和k，用原BM25作单例对照。11/4用户真实运行返回C353/C097/C002，第三块01_RAG_intro.md/C002明确写“检索模块利用同样的嵌入模型将问题向量化”，支持本题答案。C130未返回，但有新增的有效依据；正式资料评估需补充这条来源/原句，旧三篇标注与报告保留。单题不能推断整体最优策略，尚未生成答案或自动运行正式资料题集评估，详情见evals/corpus21_observations.json。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\bm25_retrieve.py --corpus full --question "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？" --k 3
+```
+
+旧15题依据的位置核对已接入原评估脚本，复用来源文件名与原句包含规则。该模式逐题扫描所选资料的全部块，保存匹配块编号、来源、完整正文和题目快照。11/4用户真实运行15/15题均至少一条旧标注可定位，Q012/Q014对应C130，Q001对应C101/C102/C103；报告为evals/results/evidence_locations_full_20261104T104431025638Z.json。新增来源的有效依据还需在正式评估标注中补充。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\eval_retrieval.py --corpus full --locate-evidence --all-cases
+```
+
+输出“标注依据可定位题数”只表示旧标注能在全体块中定位。运行会打印逐题对应编号并保存带时间戳的`evidence_locations_full_*.json`，用于后续评估准备。
+
+## 此前进展
+
 目标：围绕一组相关资料，逐步完成带原文引用、混合检索、有限检索反馈及实际评估的问答系统。当前从 all-in-rag 选例持续迭代，已验证多文件加载与切分，尚不是完整 RAG 成品。
 
 2026-11-03新增Q012混合候选补充对照实际证据。同题、每路6/保留6/初用3，关闭补充时一次检查False后停止。开启补充时首次False，改用六块后以C056的“使用同一个Embedding模型”原句为依据转True。候选/初始编号一致，人工对照原文支持本例复查判断，额外一次检查请求，两次实验均停在资料检查阶段。详情见`evals/hybrid_recovery_comparison.json`。已知开发案例的单次对照，P001语义误拒仍保留，用量/耗时与其它问题效果待评估。

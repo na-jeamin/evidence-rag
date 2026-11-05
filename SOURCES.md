@@ -1,5 +1,13 @@
 # 来源、固定版本与本地改动
 
+## 正式21篇资料快照（2026-11-04）
+
+按PROJECT_BLUEPRINT中已固定的all-in-rag@cec956e80ae28d6c0ca84c9d39dddcf61ad633fd，准备docs/chapter1～chapter7中的21篇Markdown，放在`data/documents-full/`。其中3篇从原资料按字节复制，18篇从固定提交下载；全部文件均核对Git blob SHA-1和UTF-8可解码性。逐文件来源、版本和blob见`reference/corpus21_manifest.json`。许可沿用CC BY-NC-SA 4.0，署名及原上游许可声明见现有reference资料。
+
+原`data/documents/`三篇与`reference/manifest.json`保留，用于旧实验。加载/切分、Dense/BM25及评估入口增加`--corpus full`选新资料，默认baseline仍为旧三篇。独立检查/Hybrid入口目前沿用原三篇。评估入口新增--locate-evidence，复用has_labeled_evidence来源/原句规则对全体块逐题定位，保存报告用于标注对应检查；真实运行待用户反馈。新文档中出现的方法属于问答资料内容，各方法实现范围以实际代码为准。
+
+块编号仍是本次所选资料按文件名排序、切分后的顺序编号。扩库后旧编号不能跨资料快照定位；按来源文件和原句对应。11/4用户真实加载/切分得到21篇/498块，原句定位实际返回06_vector_embedding.md/C130，对应旧三篇中的C056；记录见evals/corpus21_observations.json。--find-quote通过连续原句包含检查展示匹配块的正文/来源/当前编号，沿用已有字符串核对方式。
+
 ## 主参考
 
 2026-11-02混合候选接入检查入口：`build_hybrid_candidates`直接复用本项目此前已带读/验证的`merge_candidates/calculate_rrf_scores/rank_candidates`，中文分词/BM25规则不变。新增的是融合前若干块作为候选池、初始资料与有界补充的衔接，不将RRF或框架能力记作新算法。新接入真实运行尚待用户验证。

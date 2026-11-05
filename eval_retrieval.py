@@ -1,6 +1,7 @@
 """Day 11：第一题或全部开发题的Dense/BM25/Hybrid标注依据检查。
 
 --inspect-only仅展示题目；Dense复用本地嵌入缓存，BM25不加载嵌入模型。
+--locate-evidence仅在所选资料的全部文本块中定位标注原句。
 """
 
 import argparse
@@ -38,7 +39,10 @@ def has_labeled_evidence(case: dict, retrieved_docs: list) -> bool:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Dense/BM25/Hybrid标注依据检查，默认Dense第一题。")
     parser.add_argument("--strategy", choices=["dense", "bm25", "hybrid"], default="dense", help="本次采用的检索方式。")
-    parser.add_argument("--inspect-only", action="store_true", help="只读取展示题目，不检索。")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--inspect-only", action="store_true", help="只读取展示题目，不检索。")
+    mode.add_argument("--locate-evidence", action="store_true", help="只在全部文本块中定位已标注依据，保存对应编号。")
+    parser.add_argument("--corpus", choices=["baseline", "full"], default="baseline", help="baseline为原三篇，full为固定版本21篇。")
     parser.add_argument("--k", type=int, default=3, help="每道题返回块数，须为正整数。")
     parser.add_argument("--all-cases", action="store_true", help="检查文件中的全部题目，默认只检查第一题。")
     parser.add_argument("--candidate-k", type=int, default=3, help="仅Hybrid使用：每路先取几块候选。")
@@ -65,14 +69,61 @@ def main() -> None:
         return
 
     # 只展示题目时不导入检索依赖；本实验仅复用已经验证过的本地索引构建。
-    from inspect_documents import DATA_DIR, load_documents
+    from inspect_documents import CORPUS_DIRS, load_documents
     from inspect_chunks import CHUNK_SIZE, CHUNK_OVERLAP, prepare_chunks
 
     selected_cases = cases if args.all_cases else cases[:1]
     print(f"\n[1/3] 加载原资料、切分；本次检查{len(selected_cases)}题。", flush=True)
-    docs = load_documents(DATA_DIR)
+    docs = load_documents(CORPUS_DIRS[args.corpus])
     chunks = prepare_chunks(docs)
+    print(f"资料选择：{args.corpus}", flush=True)
     print(f"文档数：{len(docs)}，文本块数：{len(chunks)}", flush=True)
+
+    if args.locate_evidence:
+        print("[2/3] 在全部文本块中，按来源和原句逐题定位标注依据。", flush=True)
+        located_count = 0
+        locations = []
+        for case in selected_cases:
+            matched_chunks = []
+            for chunk in chunks:
+                # 复用原来的匹配规则，每次核对一个块，保留所有匹配位置。
+                if has_labeled_evidence(case, [chunk]):
+                    matched_chunks.append({
+                        "chunk_id": chunk.metadata["chunk_id"],
+                        "source": Path(chunk.metadata["source"]).name,
+                        "page_content": chunk.page_content,
+                    })
+            located = bool(matched_chunks)
+            if located:
+                located_count += 1
+            print(f"\n{case['id']}：{case['question']}")
+            print("标注依据所在编号：", [item["chunk_id"] for item in matched_chunks])
+            print("至少一条标注依据可定位：", located)
+            locations.append({
+                "case_id": case["id"], "question": case["question"],
+                "labeled_evidence_located": located, "matched_chunks": matched_chunks,
+            })
+
+        now = datetime.now(timezone.utc)
+        report = {
+            "created_at_utc": now.isoformat(),
+            "scope": "核对标注依据在全部文本块中的位置，评估资料准备检查。",
+            "configuration": {"corpus": args.corpus, "document_count": len(docs),
+                              "chunk_count": len(chunks), "chunk_size": CHUNK_SIZE,
+                              "chunk_overlap": CHUNK_OVERLAP},
+            "case_count": len(selected_cases), "located_case_count": located_count,
+            "cases_snapshot": selected_cases, "results": locations,
+            "embedding_called": False, "retrieval_called": False, "generation_called": False,
+        }
+        output_dir = CASES_PATH.parent / "results"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_path = output_dir / f"evidence_locations_{args.corpus}_{now.strftime('%Y%m%dT%H%M%S%fZ')}.json"
+        output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+        print(f"\n标注依据可定位题数：{located_count}/{len(selected_cases)}")
+        print("[3/3] 定位报告已保存：", output_path)
+        print("当前只核对标注依据位置，尚未测试检索排名或生成回答；未定位的题需复核来源与原句。")
+        return
+
     if args.strategy in ("dense", "hybrid"):
         from retrieve import build_vectorstore
 
@@ -151,7 +202,7 @@ def main() -> None:
     report = {
         "created_at_utc": now.isoformat(),
         "scope": "标注依据命中题数，开发集检查；不是独立测试或生成答案准确率。",
-        "configuration": {"retriever": args.strategy, "k": args.k,
+        "configuration": {"corpus": args.corpus, "retriever": args.strategy, "k": args.k,
                           "embedding_model": "BAAI/bge-small-zh-v1.5" if args.strategy in ("dense", "hybrid") else None,
                           "preprocess_func": "tokenize" if args.strategy in ("bm25", "hybrid") else None,
                           "candidate_k_per_route": args.candidate_k if args.strategy == "hybrid" else None,
@@ -166,6 +217,8 @@ def main() -> None:
     output_dir = CASES_PATH.parent / "results"
     output_dir.mkdir(parents=True, exist_ok=True)
     tag = f"hybrid_c{args.candidate_k}_k{args.k}" if args.strategy == "hybrid" else f"{args.strategy}_k{args.k}"
+    if args.corpus != "baseline":
+        tag = f"{args.corpus}_{tag}"
     output_path = output_dir / f"{tag}_{now.strftime('%Y%m%dT%H%M%S%fZ')}.json"
     output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
     print("报告已保存：", output_path)

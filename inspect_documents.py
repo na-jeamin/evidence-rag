@@ -1,9 +1,10 @@
-"""第一阶段：加载参考仓库的三份 Markdown 资料，观察文档列表。
+"""加载参考仓库的 Markdown 资料，观察文档列表。
 
 沿用 all-in-rag C1 的加载步骤，扩展为多文件汇总；来源和差异见 SOURCES.md。
 本入口不切分、不加载嵌入模型，也不请求生成模型。
 """
 
+import argparse
 from pathlib import Path
 
 from langchain_community.document_loaders import TextLoader
@@ -11,6 +12,8 @@ from langchain_core.documents import Document
 
 
 DATA_DIR = Path(__file__).resolve().parent / "data" / "documents"
+FULL_DATA_DIR = Path(__file__).resolve().parent / "data" / "documents-full"
+CORPUS_DIRS = {"baseline": DATA_DIR, "full": FULL_DATA_DIR}
 
 
 def load_documents(data_dir: Path) -> list[Document]:
@@ -29,8 +32,14 @@ def load_documents(data_dir: Path) -> list[Document]:
 
 
 def main() -> None:
-    docs = load_documents(DATA_DIR)
-    print(f"资料目录：{DATA_DIR}")
+    parser = argparse.ArgumentParser(description="加载原三篇或正式21篇资料，观察正文与来源。")
+    parser.add_argument("--corpus", choices=CORPUS_DIRS, default="baseline", help="baseline为原三篇，full为固定版本21篇。")
+    args = parser.parse_args()
+    # 先选资料目录，后续仍复用同一个加载函数。
+    data_dir = CORPUS_DIRS[args.corpus]
+    docs = load_documents(data_dir)
+    print(f"资料选择：{args.corpus}")
+    print(f"资料目录：{data_dir}")
     print(f"加载的文档数：{len(docs)}")
     for number, doc in enumerate(docs, start=1):
         print(f"\n--- 文档 {number}：{Path(doc.metadata['source']).name} ---")

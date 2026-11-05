@@ -12,7 +12,7 @@ from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
 
 from inspect_chunks import prepare_chunks
-from inspect_documents import DATA_DIR, load_documents
+from inspect_documents import CORPUS_DIRS, load_documents
 
 
 def build_vectorstore(chunks: list[Document]) -> InMemoryVectorStore:
@@ -31,13 +31,16 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="本地向量检索，输出带编号与来源的原文片段。")
     parser.add_argument("--question", default="文本切分为什么要设置重叠？", help="本次检索的问题。")
     parser.add_argument("--k", type=int, default=3, help="返回的文本块数量，须为正整数。")
+    parser.add_argument("--corpus", choices=CORPUS_DIRS, default="baseline", help="baseline为原三篇，full为固定版本21篇。")
     args = parser.parse_args()
     if args.k <= 0:
         parser.error("--k 必须为正整数。")
 
     print("[1/3] 复用加载与切分，准备带编号和来源的文本块。", flush=True)
-    docs = load_documents(DATA_DIR)
+    # 先选择资料，后续切分、向量计算和检索复用原流程。
+    docs = load_documents(CORPUS_DIRS[args.corpus])
     chunks = prepare_chunks(docs)
+    print(f"资料选择：{args.corpus}", flush=True)
     print(f"完整文档数：{len(docs)}，文本块数：{len(chunks)}", flush=True)
 
     print("[2/3] 读取缓存的 CPU 嵌入模型，计算块向量并建立内存索引。", flush=True)
