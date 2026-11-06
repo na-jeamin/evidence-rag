@@ -1,5 +1,11 @@
 # 来源、固定版本与本地改动
 
+## 索引保存与加载（2026-11-06）
+
+build_index.py复用已有加载、切分与build_vectorstore，query_index.py通过本机langchain_core.vectorstores.InMemoryVectorStore的dump/load接口保存和恢复原文、向量及metadata。接口签名与存储字段已核对实际安装源码。create_embeddings由原build_vectorstore中的模型配置提取，供构建与问题编码共用；临时文件写完替换目标、加载前检查路径和逐步输出为本地适配。
+
+用户实际保存498记录，独立加载后同题返回相同排名，并验证缺文件提示；观察记录见evals/index_persistence_observations.json。当前按固定构建配置管理资料更新后的重建，检索质量问题继续通过后续评估处理。
+
 ## 正式21篇资料快照（2026-11-04）
 
 按PROJECT_BLUEPRINT中已固定的all-in-rag@cec956e80ae28d6c0ca84c9d39dddcf61ad633fd，准备docs/chapter1～chapter7中的21篇Markdown，放在`data/documents-full/`。其中3篇从原资料按字节复制，18篇从固定提交下载；全部文件均核对Git blob SHA-1和UTF-8可解码性。逐文件来源、版本和blob见`reference/corpus21_manifest.json`。许可沿用CC BY-NC-SA 4.0，署名及原上游许可声明见现有reference资料。

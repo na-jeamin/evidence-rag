@@ -1,5 +1,25 @@
 # Evidence RAG（建设中）
 
+## 11/6 索引保存第一步
+
+build_index.py复用现有加载、切分和CPU向量构建，默认选择full资料，将向量/正文/metadata保存到artifacts/indexes/full.json。可用--corpus baseline准备旧资料，或--output指定输出文件。保存先写同目录临时文件再替换目标，失败时保留已有目标。
+
+在学习工作区D:\tt\agent执行首次构建。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\build_index.py --corpus full
+```
+
+11/6用户首次真实构建成功，21篇/498块保存到artifacts/indexes/full.json。助手只读核对文件含498条记录、21个来源、498个唯一块编号，每条含id/vector/text/metadata，向量512维；文件约8.15MB，Git忽略已生效。实际配置和文件摘要见evals/index_persistence_observations.json。
+
+加载查询入口query_index.py使用InMemoryVectorStore.load恢复数据，再按问题检索。构建和查询共用retrieve.py中的create_embeddings配置，问题向量在查询时计算。11/6用户独立启动查询实际恢复498条，Q012/k3返回C368/C306/C138，与此前重新构建后的Dense排名一致；查询后索引SHA256与构建时相同。已走通真实保存与加载查询，Q012原有漏检保留。用户随后真实指定missing.json，程序打印找不到文件及构建/路径提示，在模型准备和文件加载前停止；记录见evals/index_persistence_observations.json。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\query_index.py --question "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？" --k 3
+```
+
+--index可指定已有索引路径，默认artifacts/indexes/full.json。资料新增/修改、切分大小/重叠或嵌入模型/编码配置变化后，通过build_index.py重新构建对应文件；每次提问或调整返回块数k，可加载原索引。当前由使用者按构建配置管理重建，实际构建配置记录在观察报告中。
+
 ## 11/4 正式资料准备
 
 固定上游版本的21篇Markdown已放入`data/documents-full/`，逐文件Git blob核对通过，来源见`reference/corpus21_manifest.json`。原三篇及旧清单保留。资料选择已接入加载、切分、Dense、BM25及评估入口；独立检查/Hybrid入口仍默认原三篇。

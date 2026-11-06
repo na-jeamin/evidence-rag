@@ -15,14 +15,18 @@ from inspect_chunks import prepare_chunks
 from inspect_documents import CORPUS_DIRS, load_documents
 
 
-def build_vectorstore(chunks: list[Document]) -> InMemoryVectorStore:
-    """让向量库调用嵌入模型计算各块向量，并对应保存正文与 metadata。"""
-    embeddings = HuggingFaceEmbeddings(
+def create_embeddings() -> HuggingFaceEmbeddings:
+    """构建和加载索引共用同一套嵌入模型配置。"""
+    return HuggingFaceEmbeddings(
         model_name="BAAI/bge-small-zh-v1.5",
         model_kwargs={"device": "cpu", "local_files_only": True},
         encode_kwargs={"normalize_embeddings": True},
     )
-    vectorstore = InMemoryVectorStore(embeddings)
+
+
+def build_vectorstore(chunks: list[Document]) -> InMemoryVectorStore:
+    """让向量库调用嵌入模型计算各块向量，并对应保存正文与 metadata。"""
+    vectorstore = InMemoryVectorStore(create_embeddings())
     vectorstore.add_documents(chunks)
     return vectorstore
 

@@ -1,0 +1,70 @@
+{
+  "observed_on": "2026-11-06",
+  "evidence_source": "User terminal output from build_index.py --corpus full and assistant read-only JSON inspection",
+  "build_run": {
+    "corpus": "full",
+    "document_count": 21,
+    "chunk_count": 498,
+    "saved_record_count": 498,
+    "index_path": "artifacts/indexes/full.json",
+    "configuration": {
+      "embedding_model": "BAAI/bge-small-zh-v1.5",
+      "device": "cpu",
+      "normalize_embeddings": true,
+      "chunk_size": 500,
+      "chunk_overlap": 100
+    },
+    "file_inspection": {
+      "bytes": 8154504,
+      "sha256": "aa3efef6c4e41122e69eac6222ccbc782665b2d17d4b8dafa72fcc66d1755cc4",
+      "record_count": 498,
+      "unique_sources": 21,
+      "unique_chunk_ids": 498,
+      "vector_dimensions": 512,
+      "record_fields": [
+        "id",
+        "vector",
+        "text",
+        "metadata"
+      ]
+    },
+    "generation_called": false
+  },
+  "load_and_query_run": {
+    "evidence_source": "User-pasted terminal output from query_index.py in a separate process",
+    "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+    "index_path": "artifacts/indexes/full.json",
+    "restored_record_count": 498,
+    "k": 3,
+    "returned_blocks": [
+      {
+        "chunk_id": "C368",
+        "source": "14_query_rewriting.md",
+        "characters": 433
+      },
+      {
+        "chunk_id": "C306",
+        "source": "12_query_construction.md",
+        "characters": 196
+      },
+      {
+        "chunk_id": "C138",
+        "source": "06_vector_embedding.md",
+        "characters": 341
+      }
+    ],
+    "matches_prior_full_dense_ranking": true,
+    "index_sha256_unchanged_after_query": true,
+    "observation": "Restored persisted data and repeated the prior ranking. Previously observed missing direct evidence in this question remains.",
+    "generation_called": false
+  },
+  "missing_index_experiment": {
+    "evidence_source": "User-pasted terminal output from query_index.py --index projects/evidence-rag/artifacts/indexes/missing.json",
+    "requested_index_path": "artifacts/indexes/missing.json",
+    "message": "找不到索引文件：D:\\tt\\agent\\projects\\evidence-rag\\artifacts\\indexes\\missing.json。请先用build_index.py构建，或检查--index路径。",
+    "observed_usage_and_error": true,
+    "observed_model_preparation_output": false,
+    "observed_index_restoration_output": false,
+    "normal_index_file_exists_after_experiment": true
+  }
+}
