@@ -1,5 +1,9 @@
 # 来源、固定版本与本地改动
 
+## 正式索引接完整流程（2026-11-07）
+
+check_evidence.py的--index复用昨日已验证的InMemoryVectorStore.load与共用create_embeddings配置；get_by_ids接口及其返回Document原文/metadata的行为核对本机源码。恢复后的全部原文供已有BM25/Hybrid函数使用，后续检查/补充/回答复用原实现，原句标注仅留评估文件中。该衔接为项目改动，效果按实际运行记录。
+
 ## 索引保存与加载（2026-11-06）
 
 build_index.py复用已有加载、切分与build_vectorstore，query_index.py通过本机langchain_core.vectorstores.InMemoryVectorStore的dump/load接口保存和恢复原文、向量及metadata。接口签名与存储字段已核对实际安装源码。create_embeddings由原build_vectorstore中的模型配置提取，供构建与问题编码共用；临时文件写完替换目标、加载前检查路径和逐步输出为本地适配。

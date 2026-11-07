@@ -1,5 +1,21 @@
 # Evidence RAG（建设中）
 
+## 11/7 正式索引接入检查和回答入口
+
+正式索引Hybrid的Q012预览及恢复回答已由用户实际完成。两路各6且无重复，共12块，融合前6为C368/C353/C306/C097/C138/C002，初始3块C368/C353/C306。随后--check --recover --answer实际首轮False，将当前资料扩为已有6块后复查True，摘录C002“利用同样的嵌入模型将问题向量化”原句并通过存在性核对，生成同模型编码回答且引用C002，编号核对通过，助手对照原文支持答案。该次检查2次、回答1次、补充1次，补充使用保留候选。记录见evals/persisted_hybrid_observations.json，限本开发案例。
+
+check_evidence.py增加--index读取已有索引。恢复库后，用get_by_ids取出同一索引的原文/metadata供Hybrid的BM25使用，沿用保存时的块编号，再接已有资料检查、摘录核对、一次补充和引用回答。模型配置复用create_embeddings。省略--index时，使用原三篇资料构建的旧命令继续有效。
+
+第一步从学习工作区D:\tt\agent预览元数据问题的检索原文和检查请求。
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -X utf8 .\projects\evidence-rag\check_evidence.py --index .\projects\evidence-rag\artifacts\indexes\full.json --question "文档加载器除了提取正文，还会抽取哪些信息作为元数据？" --candidate-k 6 --k 3
+```
+
+11/7用户实际预览成功，恢复21个来源/498块，候选C076/C368/C075/C241/C119/C240，当前3块C076/C368/C075。同配置--check实际判断True，摘录C076原句并通过本地核对；随后用户--check --answer新运行首次检查True，第二次请求生成“文档来源、页码、作者”等元数据回答并引用C076，编号核对通过，助手对照原文支持内容。完整回答这次1次检查+1次回答，未进入补充。记录见evals/persisted_rag_observations.json。新接入AST及5项合成文本/假向量隔离检查通过，覆盖旧默认预览、持久Dense/Hybrid预览、补充后回答衔接、缺索引停止。
+
+同日CPU型号控制例实际运行--strategy hybrid --check --recover --answer，初始C380/C164/C381判断False，补入C063/C020/C254后仍False，程序停止；两轮evidence均为空，检查2次、回答0次。助手对照6块正文，faiss-cpu和device=cpu只提供软件/执行设备说明，当前片段缺少演示机器的CPU完整型号。记录见evals/persisted_hybrid_observations.json。本轮正常回答、补后足够回答、补后仍不足停止均有开发案例输出，完整分组评估接后续阶段。
+
 ## 11/6 索引保存第一步
 
 build_index.py复用现有加载、切分和CPU向量构建，默认选择full资料，将向量/正文/metadata保存到artifacts/indexes/full.json。可用--corpus baseline准备旧资料，或--output指定输出文件。保存先写同目录临时文件再替换目标，失败时保留已有目标。

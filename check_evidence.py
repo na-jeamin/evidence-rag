@@ -5,11 +5,12 @@ import re
 from pathlib import Path
 
 from langchain_core.documents import Document
+from langchain_core.vectorstores import InMemoryVectorStore
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from inspect_chunks import prepare_chunks
 from inspect_documents import DATA_DIR, load_documents
-from retrieve import build_vectorstore
+from retrieve import build_vectorstore, create_embeddings
 
 
 class EvidenceQuote(BaseModel):
@@ -198,6 +199,7 @@ def build_hybrid_candidates(question, chunks, vectorstore, candidate_k):
 def main() -> None:
     parser = argparse.ArgumentParser(description="默认预览资料检查请求，--check调用模型。")
     parser.add_argument("--question", default="文本切分为什么要设置重叠？")
+    parser.add_argument("--index", type=Path, help="从已保存的索引读取资料，例如artifacts/indexes/full.json。")
     parser.add_argument("--strategy", choices=["dense", "hybrid"], default="dense", help="候选来源：向量，或向量+BM25融合。")
     parser.add_argument("--k", type=int, default=3, help="初次交给检查模型的原文块数。")
     parser.add_argument(
@@ -224,15 +226,33 @@ def main() -> None:
     if candidate_k < args.k:
         parser.error("--candidate-k不能小于--k。")
 
-    print("[1/3] 复用当前资料、切分和编号。", flush=True)
-    docs = load_documents(DATA_DIR)
-    chunks = prepare_chunks(docs)
-    if not chunks:
-        raise ValueError("没有文本块，无法检索。")
-    print(f"文档数：{len(docs)}，文本块数：{len(chunks)}", flush=True)
+    if args.index is not None:
+        index_path = args.index.resolve()
+        if not index_path.is_file():
+            parser.error(f"找不到索引文件：{index_path}。请先构建或检查--index路径。")
+        print("[1/3] 用同款嵌入模型准备查询，从文件恢复已保存的资料。", flush=True)
+        embeddings = create_embeddings()
+        try:
+            vectorstore = InMemoryVectorStore.load(str(index_path), embedding=embeddings)
+        except (OSError, ValueError, TypeError) as error:
+            parser.error(f"索引加载失败：{error}。请检查文件或重新构建。")
+        # 从同一索引取回全部原文记录，供BM25使用，沿用保存时的metadata编号。
+        chunks = vectorstore.get_by_ids(list(vectorstore.store))
+        if not chunks:
+            parser.error("索引没有文档记录，请先构建有效索引。")
+        print("读取索引：", index_path)
+        print(f"来源文档数：{len({chunk.metadata['source'] for chunk in chunks})}，恢复的块数：{len(chunks)}")
+        print("[2/3] 使用恢复的向量库和原文，准备检索候选。", flush=True)
+    else:
+        print("[1/3] 复用当前资料、切分和编号。", flush=True)
+        docs = load_documents(DATA_DIR)
+        chunks = prepare_chunks(docs)
+        if not chunks:
+            raise ValueError("没有文本块，无法检索。")
+        print(f"文档数：{len(docs)}，文本块数：{len(chunks)}", flush=True)
 
-    print("[2/3] 复用缓存嵌入模型，准备检索候选。", flush=True)
-    vectorstore = build_vectorstore(chunks)
+        print("[2/3] 复用缓存嵌入模型，准备检索候选。", flush=True)
+        vectorstore = build_vectorstore(chunks)
     print(f"策略：{args.strategy}，候选保留上限：{candidate_k}，初次使用：{args.k}")
     # 候选原文先完整保留；当前检查只使用其中前k块。
     if args.strategy == "hybrid":

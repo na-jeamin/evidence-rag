@@ -1,0 +1,249 @@
+{
+  "observed_on": "2026-11-07",
+  "evidence_source": "Normalized user-pasted saved-index Hybrid preview; source bodies checked against saved index",
+  "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+  "configuration": {
+    "index_path": "artifacts/indexes/full.json",
+    "document_count": 21,
+    "chunk_count": 498,
+    "strategy": "hybrid",
+    "per_route_k": 6,
+    "candidate_pool_limit": 6,
+    "initial_k": 3,
+    "rrf_constant": 60
+  },
+  "preview_run": {
+    "dense_ids": [
+      "C368",
+      "C306",
+      "C138",
+      "C150",
+      "C361",
+      "C063"
+    ],
+    "bm25_ids": [
+      "C353",
+      "C097",
+      "C002",
+      "C008",
+      "C154",
+      "C131"
+    ],
+    "unique_count": 12,
+    "all_ranked_ids": [
+      "C368",
+      "C353",
+      "C306",
+      "C097",
+      "C138",
+      "C002",
+      "C150",
+      "C008",
+      "C361",
+      "C154",
+      "C063",
+      "C131"
+    ],
+    "candidate_ids": [
+      "C368",
+      "C353",
+      "C306",
+      "C097",
+      "C138",
+      "C002"
+    ],
+    "used_ids": [
+      "C368",
+      "C353",
+      "C306"
+    ],
+    "initial_context": [
+      {
+        "chunk_id": "C368",
+        "source": "14_query_rewriting.md",
+        "page_content": "[^4]: [*使用假设性文档嵌入（HyDE）改进信息检索和 RAG*](https://zilliz.com.cn/blog/improve-rag-and-information-retrieval-with-hyde-hypothetical-document-embeddings).\n\n[^5]: [*How to route between sub-chains*](https://python.langchain.com/docs/how_to/routing/).\n\n[^6]: [*LangChain Expression Language*](https://python.langchain.com/docs/concepts/lcel/).\n\n[^7]: [*LlamaIndex Routing*](https://docs.llamaindex.ai/en/stable/module_guides/querying/router/)."
+      },
+      {
+        "chunk_id": "C353",
+        "source": "14_query_rewriting.md",
+        "page_content": "![HyDE](./images/4_4_2.webp)\n\nHyDE 通过一种巧妙的方式来“绕过”这个问题：它不直接使用用户的原始查询，而是先利用一个生成式大语言模型（LLM）来生成一个“假设性”的、能够完美回答该查询的文档。然后，HyDE 将这个内容详实的假设性文档进行向量化，用其生成的向量去数据库中寻找与之最相似的真实文档。HyDE 的工作流程可以分为三个步骤：\n\n（1）**生成**：当接收到用户查询时，首先调用一个生成式 LLM（例如，GPT-3.5）。提示该模型根据查询生成一个详细的、可能是理想答案的文档。这个文档不必完全符合事实，但它必须在语义上与一个好的答案高度相关。\n\n（2）**编码**：将上一步生成的假设性文档输入到一个对比编码器（如 Contriever）中，将其转换为一个高维向量嵌入。这个向量在语义上代表了一个“理想答案”的位置。\n\n（3）**检索**：使用这个假设性文档的向量，在向量数据库中执行相似性搜索，找出与这个“理想答案”最接近的真实文档。这些被检索出的文档将作为最终的上下文信息。"
+      },
+      {
+        "chunk_id": "C306",
+        "source": "12_query_construction.md",
+        "page_content": "> **提示**：在代码中可以看到 `temperature` 参数被设置为 `0`。这个值是用于控制模型输出的随机性。值越高（如 0.8），输出越随机、越有创意；值越低，输出越确定、越集中。设置为 `0` 可以让模型的输出变得完全确定，即对于相同的输入，总是生成完全相同的输出。在自查询这种需要精确地将自然语言转换为结构化查询的场景下，可以确保转换结果的稳定和可复现。\n\n**输出结果：**"
+      }
+    ],
+    "supporting_candidate_review_by_assistant": {
+      "chunk_id": "C002",
+      "fusion_rank": 6,
+      "source": "01_RAG_intro.md",
+      "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+    },
+    "initial_context_review_by_assistant": "References, HyDE steps, and temperature configuration do not directly state the same-embedding-model requirement.",
+    "checker_called": false,
+    "answer_called": false
+  },
+  "recovery_answer_run": {
+    "evidence_source": "Normalized user-pasted terminal output from saved-index Hybrid --check --recover --answer run",
+    "initial_ids": [
+      "C368",
+      "C353",
+      "C306"
+    ],
+    "initial_result": {
+      "sufficient": false,
+      "reason": "提供的原文只说明HyDE将假设性文档用对比编码器编码后检索，未涉及在线提问时问题应使用与资料相同还是可随意更换嵌入模型。",
+      "evidence": []
+    },
+    "initial_quote_validation": "No excerpts supplied; no excerpt violated the existence checks.",
+    "expanded_ids": [
+      "C368",
+      "C353",
+      "C306",
+      "C097",
+      "C138",
+      "C002"
+    ],
+    "expanded_result": {
+      "sufficient": true,
+      "reason": "原文明确说明当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化，直接回答了问题应用相同嵌入模型编码。",
+      "evidence": [
+        {
+          "chunk_id": "C002",
+          "quote": "**语义召回**：当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化，并通过**相似度搜索（Similarity Search）**，从海量数据中精准锁定与问题最相关的文档片段。"
+        }
+      ]
+    },
+    "expanded_quote_validation": "passed",
+    "answer_context_ids": [
+      "C368",
+      "C353",
+      "C306",
+      "C097",
+      "C138",
+      "C002"
+    ],
+    "answer": "在线提问时，应该使用与资料相同的嵌入模型编码，不能随意换。原文说明：知识入库时用嵌入模型将外部知识库编码为向量索引；用户发起查询时，检索模块“利用同样的嵌入模型将问题向量化”，再进行相似度搜索[C002]。",
+    "answer_citations": [
+      "C002"
+    ],
+    "citation_id_validation": "passed",
+    "content_review_by_assistant": "Initial three fragments lack the direct requirement. C002 in the expanded context explicitly supports same-model query encoding and the final answer.",
+    "observed_check_calls": 2,
+    "observed_answer_calls": 1,
+    "observed_supplementations": 1,
+    "retrieval_repeated_after_insufficiency": false,
+    "usage": null,
+    "latency": null,
+    "scope": "One previously known development question on the fixed 21-document corpus."
+  },
+  "insufficient_control_run": {
+    "evidence_source": "Normalized user-pasted terminal output; expanded source text read from saved index by assistant",
+    "question": "这些教程的演示实验使用的电脑CPU完整型号是什么？",
+    "configuration": {
+      "index_path": "artifacts/indexes/full.json",
+      "document_count": 21,
+      "chunk_count": 498,
+      "strategy": "hybrid",
+      "per_route_k": 6,
+      "candidate_pool_limit": 6,
+      "initial_k": 3,
+      "rrf_constant": 60
+    },
+    "dense_ids": [
+      "C380",
+      "C381",
+      "C020",
+      "C231",
+      "C395",
+      "C049"
+    ],
+    "bm25_ids": [
+      "C164",
+      "C063",
+      "C254",
+      "C339",
+      "C251",
+      "C193"
+    ],
+    "all_ranked_ids": [
+      "C380",
+      "C164",
+      "C381",
+      "C063",
+      "C020",
+      "C254",
+      "C231",
+      "C339",
+      "C395",
+      "C251",
+      "C049",
+      "C193"
+    ],
+    "initial_ids": [
+      "C380",
+      "C164",
+      "C381"
+    ],
+    "expanded_ids": [
+      "C380",
+      "C164",
+      "C381",
+      "C063",
+      "C020",
+      "C254"
+    ],
+    "expanded_context_from_index": [
+      {
+        "chunk_id": "C380",
+        "source": "15_advanced_retrieval_techniques.md",
+        "page_content": "5.  **参考与实现**：最后，参考 LangChain 中其他重排器的实现方式，通过继承 `BaseDocumentCompressor` 基类并实现其关键方法，创建自己的 `ColBERTReranker` 类。"
+      },
+      {
+        "chunk_id": "C164",
+        "source": "08_vector_db.md",
+        "page_content": "## 四、本地向量存储：以 FAISS 为例\n\nFAISS (Facebook AI Similarity Search) 是一个由 Facebook AI Research 开发的高性能库，专门用于高效的相似性搜索和密集向量聚类。当与 LangChain 结合使用时，它可以作为一个强大的本地向量存储方案，非常适合快速原型设计和中小型应用。\n\n与 ChromaDB 等数据库不同，FAISS 本质上是一个算法库，它将索引直接保存为本地文件（一个 `.faiss` 索引文件和一个 `.pkl` 映射文件），而非运行一个数据库服务。这种方式轻量且高效。\n\n### 4.1 环境准备\n\n在开始之前，请确保已安装所有必需的库：\n\n> 当前requirements.txt安装的 `faiss-cpu` 是 CPU 版本。如果你的机器有 GPU，可以安装 `faiss-gpu` 以获得更好的性能。\n\n### 4.2 基础示例(FAISS)\n\n下面的代码演示了使用 LangChain 和 FAISS 完成一个完整的“创建 -> 保存 -> 加载 -> 查询”流程。"
+      },
+      {
+        "chunk_id": "C381",
+        "source": "15_advanced_retrieval_techniques.md",
+        "page_content": "> PS：如果代码基础薄弱，想借助大模型帮你完成 `ColBERTReranker` ，需要提供给大模型的关键信息：`BaseDocumentCompressor` 的源码和 `ContextualCompressionRetriever` 的源码及其使用示例、你的明确目标（实现 ColBERT 重排逻辑）、以及 LangChain 中其他重排器的代码作为参考。信息越充分，模型生成的代码越准确。\n\n#### 代码示例\n\n自定义 `ColBERTReranker` 的代码实现：\n\n```python\nclass ColBERTReranker(BaseDocumentCompressor):\n    \"\"\"ColBERT重排器\"\"\"\n\n    def __init__(self, **kwargs):\n        super().__init__(**kwargs)\n\n        model_name = \"bert-base-uncased\""
+      },
+      {
+        "chunk_id": "C063",
+        "source": "03_get_start_rag.md",
+        "page_content": "- **初始化中文嵌入模型**: 使用`HuggingFaceEmbeddings`加载之前在初始化设置中下载的中文嵌入模型。配置模型在CPU上运行，并启用嵌入归一化 (`normalize_embeddings: True`)。\n    ```python\n    embeddings = HuggingFaceEmbeddings(\n        model_name=\"BAAI/bge-small-zh-v1.5\",\n        model_kwargs={'device': 'cpu'},\n        encode_kwargs={'normalize_embeddings': True}\n    )\n    ```\n- **构建向量存储**: 将分割后的文本块 (`texts`) 通过初始化好的嵌入模型转换为向量表示，然后使用`InMemoryVectorStore`将这些向量及其对应的原始文本内容添加进去，从而在内存中构建出一个向量索引。\n    ```python"
+      },
+      {
+        "chunk_id": "C020",
+        "source": "01_RAG_intro.md",
+        "page_content": "这些观点忽略了一个技术概念在演进过程中的普遍规律。正如我们可以轻易地为现代复杂的 RAG 系统起一个更精确、更唬人的名字，比如 **“大模型知识管理专家系统”（Large Language Model Knowledge Management Expert System，LKE）**。因为它早已超出了最初“检索-增强-生成”的简单范畴。但这种“换名游戏”，恰恰说明了“RAG 已死”论的表面化——这无异于在用一个新瓶子去装 RAG 这个不断陈化的老酒。\n\n> 笔者在此并非要创造一个新词，不过为什么要起 LKE 这个名字？它代表了三个核心要素：\n> -   **L（Large Language Model）**：强调系统的驱动力是大语言模型。\n> -   **K（Knowledge Management）**：寓意着系统就像一个知识管理员，精准地为我们找到（**检索**）所需要的知识，辅助我们后续利用大模型进行更高阶应用。\n> -   **E（Expert）**：说明系统能像专家一样，通过路由、分析、融合、修正等一系列步骤，最终给出答案（**生成**）、解决问题。"
+      },
+      {
+        "chunk_id": "C254",
+        "source": "10_index_optimization.md",
+        "page_content": "通过这种“先路由，后用元数据过滤检索”的方式，既实现了跨多个数据源的查询能力，又避免了执行代码的安全隐患。LlamaIndex 官方也提供了类似的结构化分层检索[^4]可以参考。\n\n> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/07_recursive_retrieval_v2.py)\n\n## 题外话：关于框架\n\n> **有些人可能疑惑，为什么本教程不专注于一个框架（如 LlamaIndex 或 LangChain），而是混合使用，甚至造轮子？**\n\n框架是加速开发的强大工具，是帮助我们快速跨越技术鸿沟的“桥梁”。但任何桥梁都有其设计边界和局限性。我们的目标不是成为一个熟练的“过桥者”，而是成为一个懂得如何设计和建造桥梁的“工程师”。\n\n因此，本教程选择的路径是："
+      }
+    ],
+    "initial_result": {
+      "sufficient": false,
+      "reason": "原文中没有提及演示实验所用电脑的CPU完整型号，仅提到faiss-cpu是CPU版本及可安装faiss-gpu，缺少所需的硬件型号信息。",
+      "evidence": []
+    },
+    "expanded_result": {
+      "sufficient": false,
+      "reason": "所有原文均未提及演示实验所用电脑CPU的完整型号，仅有关于在CPU上运行嵌入模型及faiss-cpu的笼统说明，缺少型号信息。",
+      "evidence": []
+    },
+    "local_quote_validation": "Both results have no excerpts; no excerpt violated the existence checks.",
+    "observed_checker_calls": 2,
+    "observed_answer_calls": 0,
+    "observed_supplementations": 1,
+    "answer_flag_enabled": true,
+    "stopped_after_insufficient_recheck": true,
+    "content_review_by_assistant": "The supplied six fragments do not give the demonstration computer CPU model. CPU execution settings and faiss-cpu package references are insufficient for that question.",
+    "usage": null,
+    "latency": null
+  }
+}
