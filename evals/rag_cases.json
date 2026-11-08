@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "annotation_version": "rag-seed-v1",
+  "corpus_manifest": "reference/corpus21_manifest.json",
+  "scope": "先用3个已有开发或资料不足例子准备完整问答评分输入，后续扩充规划的分组题单。",
+  "cases": [
+    {
+      "id": "Q002",
+      "split": "dev",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "expected_status": "answered",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "reference_facts": ["文档来源", "页码", "作者"],
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ]
+    },
+    {
+      "id": "Q012",
+      "split": "dev",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "expected_status": "answered",
+      "reference_answer": "应该使用同一个嵌入模型将问题转换成向量。",
+      "reference_facts": ["查询问题使用与资料相同的嵌入模型编码"],
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        },
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+        }
+      ]
+    },
+    {
+      "id": "N001",
+      "split": "insufficient",
+      "question": "这些教程的演示实验使用的电脑CPU完整型号是什么？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定演示实验电脑的CPU完整型号。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "固定资料中CPU相关说明为设备运行配置或软件版本，未给演示电脑完整型号；属于已有开发控制例。"
+    }
+  ]
+}

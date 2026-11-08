@@ -1,5 +1,9 @@
 # 来源、固定版本与本地改动
 
+## 完整问答评估记录起步（2026-11-08）
+
+eval_rag.py、rag_cases.json及run_checked_rag的结果记录为本地新增，复用已有检索、模型检查和回答逻辑，没有接入外部评估平台。起步题卡来自已有开发例/不足控制，Q012纳入01_RAG_intro.md的等价依据，不作为未见测试。当前仅比较预期行为、保留原文/回答以供复核，语义评分和用量采集待补；静态及隔离模拟检查不等于真实批量成绩。11/8用户已分别真实运行Q002/Q012/N001，新入口三条路径及原始报告见evals/rag_seed_observations.md，仅记为已知案例运行验证。
+
 ## 正式索引接完整流程（2026-11-07）
 
 check_evidence.py的--index复用昨日已验证的InMemoryVectorStore.load与共用create_embeddings配置；get_by_ids接口及其返回Document原文/metadata的行为核对本机源码。恢复后的全部原文供已有BM25/Hybrid函数使用，后续检查/补充/回答复用原实现，原句标注仅留评估文件中。该衔接为项目改动，效果按实际运行记录。

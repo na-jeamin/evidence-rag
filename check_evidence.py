@@ -196,6 +196,112 @@ def build_hybrid_candidates(question, chunks, vectorstore, candidate_k):
     return ranked_docs[:candidate_k]
 
 
+def run_checked_rag(
+    question: str,
+    candidate_docs: list[Document],
+    k: int,
+    env_file: Path,
+    *,
+    check: bool = False,
+    recover: bool = False,
+    generate_answer: bool = False,
+    run_record: dict | None = None,
+) -> dict:
+    """执行已有检查/补充/回答流程，将本次结果交给调用者记录。"""
+    if not question.strip() or k <= 0:
+        raise ValueError("问题须非空，初始块数须为正整数。")
+    if (recover or generate_answer) and not check:
+        raise ValueError("补充和生成回答需要先启用资料检查。")
+    if run_record is None:
+        run_record = {}
+    retrieved_docs = candidate_docs[:k]
+    run_record.update({
+        "question": question, "status": "prepared", "answer": None,
+        "candidate_ids": [doc.metadata["chunk_id"] for doc in candidate_docs],
+        "retrieved_docs": [doc.model_dump() for doc in retrieved_docs],
+        "checks": [], "citation_ids": [], "supplemented": False,
+        "check_calls": 0, "answer_calls": 0,
+    })
+    print("[3/3] 将问题和原文交给build_check_prompt，接回请求文字。", flush=True)
+    check_prompt = build_check_prompt(question, retrieved_docs)
+    print("\n--- 将来发给检查模型的完整文字 ---")
+    print(check_prompt)
+    if not check:
+        print("\n当前只预览请求文字；未调用生成模型，也没有资料充分性判断结果。")
+        return run_record
+
+    print("\n[检查] 将请求文字交给模型，此步骤消耗账号额度。", flush=True)
+    run_record["check_calls"] += 1
+    result = check_evidence(check_prompt, env_file)
+    run_record["checks"].append({
+        "used_ids": [doc.metadata["chunk_id"] for doc in retrieved_docs],
+        "result": result.model_dump(),
+    })
+    print("\n--- 模型的资料充分性判断（内容仍需人工核对）---")
+    print("资料是否足够：", result.sufficient)
+    print("理由：", result.reason)
+    for item in result.evidence:
+        print(f"依据[{item.chunk_id}]：{item.quote}")
+    validate_evidence_quotes(result, retrieved_docs)
+    print("原句存在性核对通过；这些原句是否足够支持判断，仍需人工复核。")
+
+    # 只在正常判不足、启用补充且有更多原文时复查。异常会在前面直接报错。
+    if not result.sufficient and recover:
+        if len(candidate_docs) > len(retrieved_docs):
+            print("\n[补充一次] 当前资料不足，加入已经保留的其余候选。", flush=True)
+            retrieved_docs = candidate_docs
+            run_record["supplemented"] = True
+            run_record["retrieved_docs"] = [doc.model_dump() for doc in retrieved_docs]
+            print("补充后使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
+            check_prompt = build_check_prompt(question, retrieved_docs)
+            run_record["check_calls"] += 1
+            result = check_evidence(check_prompt, env_file)
+            run_record["checks"].append({
+                "used_ids": [doc.metadata["chunk_id"] for doc in retrieved_docs],
+                "result": result.model_dump(),
+            })
+            print("\n--- 补充后的资料判断 ---")
+            print("资料是否足够：", result.sufficient)
+            print("理由：", result.reason)
+            for item in result.evidence:
+                print(f"依据[{item.chunk_id}]：{item.quote}")
+            validate_evidence_quotes(result, retrieved_docs)
+            print("原句存在性核对通过；判断是否合理仍需人工复核。")
+        else:
+            print("\n[未补充] 没有更多候选原文，本次不重复相同请求。")
+
+    # 上面的复查只写一次；仍不足则结束，不会再回到补充分支。
+    if not result.sufficient:
+        run_record["status"] = "insufficient"
+        print("\n[分支] 当前检索资料不足，停止本次回答。")
+        print("本次检查流程结束，不再继续补充资料。")
+        return run_record
+
+    # 只有检查通过才会走到这里；--check仍只检查，不自动增加第二次调用。
+    run_record["status"] = "checked"
+    print("\n[分支] 资料检查通过，可以进入回答流程。")
+    if not generate_answer:
+        print("本次只检查；增加--answer才生成回答。")
+        return run_record
+
+    answer_prompt = build_answer_prompt(question, retrieved_docs)
+    print("\n[回答] 将同一问题和当前原文交给模型，生成回答。", flush=True)
+    run_record["answer_calls"] += 1
+    answer = request_model_text(answer_prompt, env_file)
+    run_record["answer"] = answer
+    cited_ids = validate_citation_ids(answer, retrieved_docs)
+    run_record["citation_ids"] = cited_ids
+    run_record["status"] = "answered"
+    print("\n--- 模型回答（引用内容仍需人工核对）---")
+    print(answer)
+    if cited_ids:
+        print("\n编号核对通过，本次引用：", cited_ids)
+    else:
+        print("\n没有识别到标准[C数字]引用，需核对是资料不足还是漏引。")
+    print("编号存在不等于原文支持说法。")
+    return run_record
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="默认预览资料检查请求，--check调用模型。")
     parser.add_argument("--question", default="文本切分为什么要设置重叠？")
@@ -264,65 +370,10 @@ def main() -> None:
     print("保留候选编号：", [doc.metadata["chunk_id"] for doc in candidate_docs])
     print("当前使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
 
-    print("[3/3] 将问题和原文交给build_check_prompt，接回请求文字。", flush=True)
-    check_prompt = build_check_prompt(args.question, retrieved_docs)
-    print("\n--- 将来发给检查模型的完整文字 ---")
-    print(check_prompt)
-    if not args.check:
-        print("\n当前只预览请求文字；未调用生成模型，也没有资料充分性判断结果。")
-        return
-
-    print("\n[检查] 将请求文字交给模型，此步骤消耗账号额度。", flush=True)
-    result = check_evidence(check_prompt, args.env_file)
-    print("\n--- 模型的资料充分性判断（内容仍需人工核对）---")
-    print("资料是否足够：", result.sufficient)
-    print("理由：", result.reason)
-    for item in result.evidence:
-        print(f"依据[{item.chunk_id}]：{item.quote}")
-    validate_evidence_quotes(result, retrieved_docs)
-    print("原句存在性核对通过；这些原句是否足够支持判断，仍需人工复核。")
-
-    # 只在正常判不足、启用补充且有更多原文时复查。异常会在前面直接报错。
-    if not result.sufficient and args.recover:
-        if len(candidate_docs) > len(retrieved_docs):
-            print("\n[补充一次] 当前资料不足，加入已经保留的其余候选。", flush=True)
-            retrieved_docs = candidate_docs
-            print("补充后使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
-            check_prompt = build_check_prompt(args.question, retrieved_docs)
-            result = check_evidence(check_prompt, args.env_file)
-            print("\n--- 补充后的资料判断 ---")
-            print("资料是否足够：", result.sufficient)
-            print("理由：", result.reason)
-            for item in result.evidence:
-                print(f"依据[{item.chunk_id}]：{item.quote}")
-            validate_evidence_quotes(result, retrieved_docs)
-            print("原句存在性核对通过；判断是否合理仍需人工复核。")
-        else:
-            print("\n[未补充] 没有更多候选原文，本次不重复相同请求。")
-
-    # 上面的复查只写一次；仍不足则结束，不会再回到补充分支。
-    if not result.sufficient:
-        print("\n[分支] 当前检索资料不足，停止本次回答。")
-        print("本次检查流程结束，不再继续补充资料。")
-        return
-
-    # 只有检查通过才会走到这里；--check仍只检查，不自动增加第二次调用。
-    print("\n[分支] 资料检查通过，可以进入回答流程。")
-    if not args.answer:
-        print("本次只检查；增加--answer才生成回答。")
-        return
-
-    answer_prompt = build_answer_prompt(args.question, retrieved_docs)
-    print("\n[回答] 将同一问题和当前原文交给模型，生成回答。", flush=True)
-    answer = request_model_text(answer_prompt, args.env_file)
-    cited_ids = validate_citation_ids(answer, retrieved_docs)
-    print("\n--- 模型回答（引用内容仍需人工核对）---")
-    print(answer)
-    if cited_ids:
-        print("\n编号核对通过，本次引用：", cited_ids)
-    else:
-        print("\n没有识别到标准[C数字]引用，需核对是资料不足还是漏引。")
-    print("编号存在不等于原文支持说法。")
+    run_checked_rag(
+        args.question, candidate_docs, args.k, args.env_file,
+        check=args.check, recover=args.recover, generate_answer=args.answer,
+    )
 
 
 if __name__ == "__main__":
