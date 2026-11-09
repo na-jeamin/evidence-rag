@@ -1,0 +1,4 @@
+# These files are linked by SHA-256 of their original bytes. Preserve line endings.
+evals/results/*.json -text whitespace=cr-at-eol
+evals/reviews/*.json -text whitespace=cr-at-eol
+evals/experiments/*.json -text whitespace=cr-at-eol

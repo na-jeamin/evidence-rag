@@ -1,5 +1,29 @@
 # Evidence RAG（建设中）
 
+## 11/9 内容复核记录与汇总（已有用户运行）
+
+用户已实际运行Q002展示及复核保存、Q002/Q012汇总，以及离线漏答副本的保存和汇总。复核文件method=manual_labels、reviewer=assistant，表示当前聊天助手带读给出的结论，不是独立人类标注或程序自动判分。summarize_reviews.py按原报告摘要和题号配对最新复核，分别统计已复核/待复核/无答案。完整观察与文件链接见[复核实验记录](evals/review_observations.md)。
+
+`review_rag.py`读取已有运行报告，把同一题的参考要点、实际答案和所引用块的完整正文放在一起。默认只展示，不调用模型、不修改原始报告。显式`--record`并提供`--answer-complete yes/no`、`--citations-supported yes/no`、`--reason`后，另存至`evals/reviews/`。`--reviewer user/assistant`注明复核者，默认user；这只是来源声明，不是独立复核认证。
+
+记录包含两项外部输入的判断、理由、原报告摘要标识和题卡/运行快照，避免复核结论错配到另一份答卷。当前复核入口只处理已生成答案的结果；统计入口对停止/异常结果显示实际状态，不计答案内容评分。原始报告里的review空值保持不变，结论另存reviews。复核与统计函数已通过隔离离线检查，上述具体路径另有用户实际运行证据，不扩大为自动语义评分、正式题组成绩或全错误路径实测。
+
+在本项目仓库根目录、已有虚拟环境中，默认只展示对照材料：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 review_rag.py --report evals/results/rag_runs_dev_20261108T123039223518Z.json --case-id Q002
+```
+
+确认结论后可用`--record --answer-complete yes --citations-supported yes --reason "填写复核理由" --reviewer user`另存。参数是复核者给出的判断，不是让脚本自动检查内容。汇总已保存的记录：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 summarize_reviews.py --report evals/results/rag_runs_dev_20261108T123039223518Z.json
+```
+
+汇总目前只打印终端，不新增统计文件。缺少复核记录时列为待复核；显式False才计为该项不通过。重复复核仅取同一原始报告/题号中时间最新的一次。
+
+答卷、复核记录与实验JSON按原始字节保留，`.gitattributes`禁止Git自动转换这些文件的换行。复核配对使用文件SHA-256，格式化或改换行后也会成为不同答卷，应保留原文件并另存修改副本。
+
 ## 11/8 逐题运行记录与三条路径验证
 
 新增`eval_rag.py`，复用已有检查/一次补充/回答流程，保存预期行为对照、实际答案/原文/引用、调用尝试数及耗时。3张起步题卡分别由用户实际运行：Q002直接回答（检查1/回答1，5.74秒）、Q012补后回答（2/1，12.94秒）、N001补后仍不足停止（2/0，7.94秒）。每题耗时不含模型/索引准备。完整报告链接与口径见[三题运行记录](evals/rag_seed_observations.md)。
