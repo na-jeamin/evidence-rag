@@ -1,5 +1,48 @@
 # Evidence RAG（建设中）
 
+## T1第二步：POST /ask接回完整问答（正常与资料不足已有真实结果）
+
+用户已实际通过/ask提交元数据问题，响应answered，检查1次/回答1次、未补充，引用C076，原文为C076/C075/C241；助手对照响应正文确认答案三项有依据。见evals/api_observations.json。正常回答与下述不足停止已有实测，补后成功回答/上游模型异常的真实HTTP路径仍待，不将两个业务案例当作T1全部完成。
+
+随后CPU型号问题的真实/ask响应为insufficient、answer=null、supplemented=true、检查2次/回答0次、6块原文。说明已有一次补充/不足停止分支已接到HTTP并实际运行；C164的faiss-cpu和C063的device=cpu不是具体电脑型号。上游异常仍仅隔离检查，T1整体学习/配套验收继续按PROGRESS断点，不将停止计作模型或网络错误。
+
+api.py新增/ask，JSON仅包含question。服务端固定Hybrid候选6/初始3并允许一次候选补充，直接复用build_hybrid_candidates和run_checked_rag，不另写检查/回答算法。启动时恢复原文及向量库，问答请求不重算文档向量；BM25仍沿用已有最小构建逻辑。该路由会消耗配置账号模型额度。
+
+在学习工作区的同一终端先Ctrl+C停止旧服务，指定此前配置文件再启动：
+
+```powershell
+$env:RAG_ENV_FILE = (Resolve-Path .\day05-basic-rag\.env).Path
+.\day05-basic-rag\.venv\Scripts\python.exe -m uvicorn api:app --app-dir .\projects\evidence-rag --host 127.0.0.1 --port 8001
+```
+
+独立仓库默认用仓库根目录.env，也可通过RAG_ENV_FILE指定本机文件；路径只在后端配置，HTTP不接收env_file。刷新/docs后，用requests/ask_metadata.json测试。answered返回答案/引用及最终原文；insufficient返回answer=null、模型理由和调用次数，属于已完成资料检查的业务结果。配置文件缺失为503，检索失败500，模型超时504，模型服务或输出校验失败502，非法请求422；异常响应不暴露原始服务错误体，不冒充资料不足。
+
+当前用户已实际验证/retrieve的元数据问题、k从3改1、k=0校验失败，以及/ask正常回答和补后仍不足停止。HTTP 500/502/503/504等异常映射只由真实FastAPI TestClient+假向量库/假问答流程离线检查，未故意发真实模型故障请求，不声称这些异常路径全部完成端到端实测。T1整体学习/配套任务尚未整体验收。
+
+仓库独立运行时，在已按下文准备好RAG依赖、模型缓存和full.json索引后，安装requirements-api.txt，在本机.env或RAG_ENV_FILE中配置模型，再从仓库根目录运行：
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-api.txt
+.\.venv\Scripts\python.exe -m uvicorn api:app --host 127.0.0.1 --port 8001
+```
+
+访问/docs，用requests/ask_metadata.json检查正常回答、requests/ask_insufficient.json检查资料不足。前者通常两次模型调用，后者在既有案例中为两次检查/零次回答，以实际结果为准。evals/api_observations.json是根据用户在聊天提供的HTTP输出整理的观察记录；当前API只返回响应，尚不自动生成每次HTTP请求的完整报告或token/耗时统计。新机器从零复现仍待验证。
+
+## T1第一步：HTTP检索预览（已有用户真实结果）
+
+用户已在Day5环境安装FastAPI0.162.2/Uvicorn0.54.0（Starlette1.10.0），反馈启动完成。首次Swagger占位问题string返回C346/C203/C338；替换元数据问题后实际返回C076/C368/C075、returned=3及对应完整原文。C076直接支持问题，不能把所有候选当作正确依据。记录见evals/api_observations.json。此前另有真实FastAPI TestClient+假库的离线200/422/生命周期检查，未用它冒充持久索引HTTP实跑。
+
+GET /health与POST /retrieve为第一小步。启动生命周期沿用create_embeddings/InMemoryVectorStore.load，一次载入artifacts/indexes/full.json，每个进程内请求复用；同步路由调用已有Dense查询。/retrieve仅返回原文、来源和编号，不执行检查/回答；完整问答另走上文/ask。题目非空/k为1～10的整数，不符合请求格式由框架返回422；缺索引或空索引在启动时失败。
+
+学习工作区D:\tt\agent中，用户为现有Day5虚拟环境安装FastAPI/Uvicorn后启动：
+
+```powershell
+.\day05-basic-rag\.venv\Scripts\python.exe -m pip install fastapi==0.162.2 uvicorn==0.54.0
+.\day05-basic-rag\.venv\Scripts\python.exe -m uvicorn api:app --app-dir .\projects\evidence-rag --host 127.0.0.1 --port 8001
+```
+
+浏览http://127.0.0.1:8001/docs，用POST /retrieve发送requests/retrieve_metadata.json中的内容，返回原文，不请求生成模型。requirements-api.txt用于包含RAG依赖的后续独立环境安装，新机器完整安装尚未验证。第一步真实检索和参数修改/校验结果已记录，完整问答验证和代码带读继续按断点推进，不将此步当T1已完成。
+
 ## 11/9 内容复核记录与汇总（已有用户运行）
 
 用户已实际运行Q002展示及复核保存、Q002/Q012汇总，以及离线漏答副本的保存和汇总。复核文件method=manual_labels、reviewer=assistant，表示当前聊天助手带读给出的结论，不是独立人类标注或程序自动判分。summarize_reviews.py按原报告摘要和题号配对最新复核，分别统计已复核/待复核/无答案。完整观察与文件链接见[复核实验记录](evals/review_observations.md)。

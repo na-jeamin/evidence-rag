@@ -1,5 +1,13 @@
 # 来源、固定版本与本地改动
 
+## T1 HTTP检索与问答适配
+
+api.py为本地新增HTTP适配。/retrieve复用已有索引格式与create_embeddings/similarity_search，/ask复用build_hybrid_candidates/run_checked_rag，固定Hybrid候选6/初始3和一次补充；未修改模型提示词、检索算法或证据校验规则。启动/关闭资源按FastAPI官方lifespan说明核对：https://fastapi.tiangolo.com/advanced/events/ 。模型配置路径只在服务端设置，HTTP不接受客户端任意文件路径。
+
+2026-11-10按PyPI元数据选择FastAPI0.162.2/Uvicorn0.54.0（Python>=3.10）。用户已在Python3.13的Day5环境安装，日志含Starlette1.10.0；安装、服务启动及具体HTTP案例均有用户反馈。此证据限已有本地环境，不称新机器完整复现。
+
+验证分开记录：助手先做AST与真实FastAPI TestClient+假向量库/假模型流程检查，覆盖参数/返回、单次加载/清理和422/500/502/503/504映射，无服务器/网络/真实模型调用。用户随后实际启动服务，提交Dense检索/参数修改/非法参数、Hybrid正常回答和补后仍不足停止；结果见evals/api_observations.json。上游异常未做真实故障调用，补后成功回答的HTTP案例未实测。观察文件为用户提供响应的整理，不是API已经实现自动评估或完整请求报告持久化。
+
 ## 内容复核记录第一步（2026-11-09）
 
 review_rag.py为本地新增的离线报告读取与人工结论记录入口，复用eval_rag.save_report，不引入第三方评分平台或模型调用。参考与答卷取自同份报告，记录复核者/方式和原报告摘要，另存记录保持原始报告不变。summarize_reviews.py为本地新增的单报告结论计数，按原报告摘要/题号配对最新记录，将待复核与不通过分开。停止/错误案例不填答案完整性。Q002与离线漏答副本的标签来自当前聊天助手带读，不称独立人工评审；实际操作、合成检查和仍未实现的自动评分范围见evals/review_observations.md。

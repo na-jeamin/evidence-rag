@@ -1,0 +1,4 @@
+-r requirements-check.txt
+# 2026-11-10核对PyPI，用户Python 3.13环境已有具体HTTP运行记录。
+fastapi==0.162.2
+uvicorn==0.54.0

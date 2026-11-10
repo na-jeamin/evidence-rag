@@ -1,0 +1,137 @@
+{
+  "date": "2026-11-10",
+  "scope": "HTTP Dense检索预览和Hybrid完整问答的用户实际操作记录。",
+  "evidence_source": "用户在聊天中提供的安装日志、启动反馈与Response body",
+  "environment": {
+    "fastapi": "0.162.2",
+    "uvicorn": "0.54.0",
+    "starlette": "1.10.0"
+  },
+  "startup": "用户反馈已出现Application startup complete",
+  "route": "POST /retrieve",
+  "runs": [
+    {
+      "request_question": "string",
+      "returned": 3,
+      "chunk_ids": [
+        "C346",
+        "C203",
+        "C338"
+      ],
+      "note": "首次保留Swagger占位问题。链路返回成功，不当作元数据问题的检索结果；已指导替换请求正文。"
+    },
+    {
+      "request_question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "request_k": 3,
+      "returned": 3,
+      "chunks": [
+        {
+          "chunk_id": "C076",
+          "source": "04_data_load.md"
+        },
+        {
+          "chunk_id": "C368",
+          "source": "14_query_rewriting.md"
+        },
+        {
+          "chunk_id": "C075",
+          "source": "04_data_load.md"
+        }
+      ],
+      "assistant_content_review": "C076直接列出来源、页码、作者；C368为参考链接，C075为加载介绍，不能把返回3块视作3块均直接支持问题。"
+    },
+    {
+      "request_question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "request_k": 1,
+      "returned": 1,
+      "chunks": [
+        {
+          "chunk_id": "C076",
+          "source": "04_data_load.md"
+        }
+      ],
+      "note": "用户在同一运行服务中仅改k后提供Response body，验证数量由请求参数控制。"
+    },
+    {
+      "request_question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "request_k": 0,
+      "response_detail": {
+        "type": "greater_than_equal",
+        "loc": [
+          "body",
+          "k"
+        ],
+        "input": 0,
+        "ge": 1
+      },
+      "note": "用户实际提供参数校验错误正文，未进入检索。"
+    }
+  ],
+  "limitations": [
+    "retrieve正常、k改动及k=0错误输入已有用户实际响应。",
+    "ask正常回答、补后仍不足停止已有用户实际响应；补后成功回答及上游模型异常的真实HTTP响应尚未取得。",
+    "异常映射有TestClient假流程检查，不扩大成实际模型异常验证。",
+    "结果和调用次数是用户实际响应，内容复核为聊天助手对照原文；token采集、正式分组评估及T1配套任务仍未完成。"
+  ],
+  "ask_runs": [
+    {
+      "route": "POST /ask",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "status": "answered",
+      "answer": "文档加载器在解析过程中会抽取文档来源、页码、作者等关键信息作为元数据[C076]。",
+      "reason": "原文明确说明文档加载器在解析过程中会抽取文档来源、页码、作者等关键信息作为元数据，可直接回答问题。",
+      "citation_ids": [
+        "C076"
+      ],
+      "supplemented": false,
+      "check_calls": 1,
+      "answer_calls": 1,
+      "chunk_ids": [
+        "C076",
+        "C075",
+        "C241"
+      ],
+      "evidence_source": "用户在聊天提供的完整HTTP响应正文",
+      "assistant_content_review": "对照响应中的C076，来源/页码/作者三项完整且有支持；不是额外模型请求或自动语义判分。"
+    },
+    {
+      "route": "POST /ask",
+      "question": "这些教程的演示实验使用的电脑CPU完整型号是什么？",
+      "status": "insufficient",
+      "answer": null,
+      "reason": "原文只提到在CPU上运行嵌入模型和使用faiss-cpu版本，没有给出任何演示实验所用电脑CPU的完整型号。",
+      "citation_ids": [],
+      "supplemented": true,
+      "check_calls": 2,
+      "answer_calls": 0,
+      "chunks": [
+        {
+          "chunk_id": "C380",
+          "source": "15_advanced_retrieval_techniques.md"
+        },
+        {
+          "chunk_id": "C164",
+          "source": "08_vector_db.md"
+        },
+        {
+          "chunk_id": "C381",
+          "source": "15_advanced_retrieval_techniques.md"
+        },
+        {
+          "chunk_id": "C063",
+          "source": "03_get_start_rag.md"
+        },
+        {
+          "chunk_id": "C020",
+          "source": "01_RAG_intro.md"
+        },
+        {
+          "chunk_id": "C254",
+          "source": "10_index_optimization.md"
+        }
+      ],
+      "evidence_source": "用户在聊天提供的完整HTTP响应正文",
+      "assistant_content_review": "CPU软件版本/执行设备说明不能支持具体硬件型号；本次只对实际提供的6块判断，不将查不到外推为任意资料都无答案。"
+    }
+  ]
+}
