@@ -1,0 +1,565 @@
+{
+  "created_at_utc": "2026-11-14T06:18:17.090063+00:00",
+  "scope": "按预标注来源和原句计算命中、首次排名及必需依据组覆盖，语义支持与答案完整性另行复核。",
+  "configuration": {
+    "corpus": "full",
+    "retriever": "dense",
+    "k": 3,
+    "cases_file": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\rag_cases_full.json",
+    "split": "holdout",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "preprocess_func": null,
+    "candidate_k_per_route": null,
+    "rank_constant": null,
+    "tie_break": null,
+    "document_count": 21,
+    "chunk_count": 498,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "case_count": 10,
+  "hit_count": 9,
+  "hit_rate_at_k": 0.9,
+  "mrr_at_k": 0.6,
+  "all_evidence_groups_hit_rate_at_k": 0.8,
+  "cases_snapshot": [
+    {
+      "id": "H001",
+      "split": "holdout",
+      "question": "CLIP怎样分别处理图像和文本，让它们能够互相匹配？",
+      "expected_status": "answered",
+      "reference_answer": "采用图像编码器和文本编码器，将图像和文本映射到同一个共享向量空间。",
+      "reference_facts": [
+        "图像编码器和文本编码器",
+        "同一个共享向量空间"
+      ],
+      "evidence_options": [
+        {
+          "source": "07_multimodal_embedding.md",
+          "quote": "它采用**双编码器架构 (Dual-Encoder Architecture)**，包含一个图像编码器和一个文本编码器，分别将图像和文本映射到同一个共享的向量空间中。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H002",
+      "split": "holdout",
+      "question": "教程中的本地FAISS方案将索引和映射分别保存成什么扩展名的文件？",
+      "expected_status": "answered",
+      "reference_answer": "索引保存为.faiss文件，映射保存为.pkl文件。",
+      "reference_facts": [
+        ".faiss索引文件",
+        ".pkl映射文件"
+      ],
+      "evidence_options": [
+        {
+          "source": "08_vector_db.md",
+          "quote": "一个 `.faiss` 索引文件和一个 `.pkl` 映射文件"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H003",
+      "split": "holdout",
+      "question": "句子窗口检索找到句子节点后，MetadataReplacementPostProcessor怎样处理节点正文？",
+      "expected_status": "answered",
+      "reference_answer": "读取节点元数据，用其中的完整上下文窗口替换原来的单一句子内容。",
+      "reference_facts": [
+        "元数据中的完整上下文窗口替换单一句子内容"
+      ],
+      "evidence_options": [
+        {
+          "source": "10_index_optimization.md",
+          "quote": "用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H004",
+      "split": "holdout",
+      "question": "自查询检索器解析用户问题时，会得到哪两个用于检索的部分？",
+      "expected_status": "answered",
+      "reference_answer": "用于语义搜索的查询字符串，以及用于结构化过滤的元数据过滤器。",
+      "reference_facts": [
+        "查询字符串",
+        "元数据过滤器"
+      ],
+      "evidence_options": [
+        {
+          "source": "12_query_construction.md",
+          "quote": "**查询字符串（Query String）**：用于进行语义搜索的部分。\n    *   **元数据过滤器（Metadata Filter）**：从查询中提取出的结构化过滤条件。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H005",
+      "split": "holdout",
+      "question": "为了减少Text-to-SQL编造表名和字段，教程建议首先向模型提供什么数据库结构信息？",
+      "expected_status": "answered",
+      "reference_answer": "相关表的CREATE TABLE语句，帮助模型了解表名、列名、数据类型和外键关系。",
+      "reference_facts": [
+        "相关表的CREATE TABLE语句"
+      ],
+      "evidence_options": [
+        {
+          "source": "13_text2sql.md",
+          "quote": "我们需要向LLM提供数据库中相关表的 `CREATE TABLE` 语句。"
+        },
+        {
+          "source": "13_text2sql.md",
+          "quote": "DDL定义：完整的CREATE TABLE语句"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。 2026-11-14助手审核实际返回C336，补充其完整CREATE TABLE信息为有效替代依据。"
+    },
+    {
+      "id": "H006",
+      "split": "holdout",
+      "question": "HyDE生成假设性文档后，怎样用它寻找真实资料？",
+      "expected_status": "answered",
+      "reference_answer": "将假设性文档向量化，再用该向量寻找最相似的真实文档。",
+      "reference_facts": [
+        "假设性文档向量化",
+        "用该向量检索相似真实文档"
+      ],
+      "evidence_options": [
+        {
+          "source": "14_query_rewriting.md",
+          "quote": "HyDE 将这个内容详实的假设性文档进行向量化，用其生成的向量去数据库中寻找与之最相似的真实文档。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H007",
+      "split": "holdout",
+      "question": "检索上下文压缩中的内容提取和文档过滤，分别怎样处理检索结果？",
+      "expected_status": "answered",
+      "reference_answer": "内容提取保留相关句子或段落，文档过滤丢弃不相关的整个文档。",
+      "reference_facts": [
+        "提取相关句子或段落",
+        "过滤不相关整个文档"
+      ],
+      "evidence_options": [
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "从文档中只抽出与查询相关的句子或段落。"
+        },
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "内容提取",
+          "evidence_options": [
+            {
+              "source": "15_advanced_retrieval_techniques.md",
+              "quote": "从文档中只抽出与查询相关的句子或段落。"
+            }
+          ]
+        },
+        {
+          "reference_fact": "文档过滤",
+          "evidence_options": [
+            {
+              "source": "15_advanced_retrieval_techniques.md",
+              "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H008",
+      "split": "holdout",
+      "question": "教程介绍的哪一种输出解析器结合Pydantic模型来定义和验证输出格式？",
+      "expected_status": "answered",
+      "reference_answer": "PydanticOutputParser。",
+      "reference_facts": [
+        "PydanticOutputParser"
+      ],
+      "evidence_options": [
+        {
+          "source": "16_formatted_generation.md",
+          "quote": "**PydanticOutputParser**：通过与 Pydantic 模型结合，可以实现对输出格式最严格的定义和验证。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H009",
+      "split": "holdout",
+      "question": "RAG评估三元组的三个维度，分别检查上下文、答案依据和用户问题之间的什么关系？",
+      "expected_status": "answered",
+      "reference_answer": "上下文相关性检查资料与问题是否相关；忠实度检查答案是否基于上下文；答案相关性检查是否直接完整回答问题。",
+      "reference_facts": [
+        "上下文相关性",
+        "忠实度",
+        "答案相关性"
+      ],
+      "evidence_options": [
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+        },
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "生成的答案是否完全基于所提供的上下文信息？"
+        },
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "上下文相关性",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+            }
+          ]
+        },
+        {
+          "reference_fact": "忠实度",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "生成的答案是否完全基于所提供的上下文信息？"
+            }
+          ]
+        },
+        {
+          "reference_fact": "答案相关性",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H010",
+      "split": "holdout",
+      "question": "按教程比较GraphRAG与Agentic RAG：前者在图中寻找什么，后者怎样决定检索次数？",
+      "expected_status": "answered",
+      "reference_answer": "GraphRAG寻找相关实体、关系、路径或子图；Agentic RAG自主决定动态多次检索。",
+      "reference_facts": [
+        "图中的实体关系路径或子图",
+        "自主决定动态检索次数"
+      ],
+      "evidence_options": [
+        {
+          "source": "20_kg_rag.md",
+          "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+        },
+        {
+          "source": "21_agentic_rag.md",
+          "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+        },
+        {
+          "source": "20_kg_rag.md",
+          "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。 2026-11-14助手审核实际返回C464，补充局部子图与原文证据说明为图检索对象组的有效替代依据。",
+      "evidence_groups": [
+        {
+          "reference_fact": "图检索对象",
+          "evidence_options": [
+            {
+              "source": "20_kg_rag.md",
+              "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+            },
+            {
+              "source": "20_kg_rag.md",
+              "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+            }
+          ]
+        },
+        {
+          "reference_fact": "检索次数控制",
+          "evidence_options": [
+            {
+              "source": "21_agentic_rag.md",
+              "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "H001",
+      "question": "CLIP怎样分别处理图像和文本，让它们能够互相匹配？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C148",
+          "source": "07_multimodal_embedding.md",
+          "page_content": "为了让这两个编码器学会“对齐”不同模态的语义，CLIP 在训练时采用了**对比学习 (Contrastive Learning)** 策略。在处理一批图文数据时，模型的目标是：最大化正确图文对的向量相似度，同时最小化所有错误配对的相似度。通过这种“拉近正例，推远负例”的方式，模型从海量数据中学会了将语义相关的图像和文本在向量空间中拉近。\n\n这种大规模的对比学习赋予了 CLIP 有效的**零样本（Zero-shot）识别能力**。它能将一个传统的分类任务，转化为一个“图文检索”问题——例如，要判断一张图片是不是猫，只需计算图片向量与“a photo of a cat”文本向量的相似度即可。这使得 CLIP 无需针对特定任务进行微调，就能实现对视觉概念的泛化理解。\n\n## 三、常用多模态嵌入模型(以bge-visualized-m3为例)\n\n虽然 CLIP 为图文预训练提供了重要基础，但多模态领域的研究迅速发展，涌现了许多针对不同目标和场景进行优化的模型。例如，BLIP 系列专注于提升细粒度的图文理解与生成能力，而 ALIGN 则证明了利用海量噪声数据进行大规模训练的有效性。"
+        },
+        {
+          "chunk_id": "C147",
+          "source": "07_multimodal_embedding.md",
+          "page_content": "实现这一目标的关键，在于解决 **跨模态对齐 (Cross-modal Alignment)** 的挑战。以对比学习、视觉 Transformer (ViT) 等技术为代表的突破，让模型能够学习到不同模态数据之间的语义关联，最终催生了像 CLIP 这样的模型。\n\n## 二、CLIP 模型浅析\n\n在图文多模态领域，OpenAI 的 **CLIP (Contrastive Language-Image Pre-training)** 是一个很有影响力的模型，它为多模态嵌入定义了一个有效的范式。\n\nCLIP 的架构清晰简洁。它采用**双编码器架构 (Dual-Encoder Architecture)**，包含一个图像编码器和一个文本编码器，分别将图像和文本映射到同一个共享的向量空间中。\n\n![CLIP Architecture](./images/3_2_1.webp)\n*图：CLIP 的工作流程。(1) 通过对比学习训练双编码器，对齐图文向量空间。(2)和(3) 展示了如何利用该空间，通过图文相似度匹配实现零样本预测。*"
+        },
+        {
+          "chunk_id": "C155",
+          "source": "07_multimodal_embedding.md",
+          "page_content": "**运行结果：**\n\n```bash\n=== 相似度计算结果 ===\n纯图像 vs 纯图像: tensor([[0.8318]])\n图文结合1 vs 纯图像: tensor([[0.8291]])\n图文结合1 vs 纯文本: tensor([[0.7627]])\n图文结合1 vs 图文结合2: tensor([[0.9058]])\n```\n\n> [完整代码](https://github.com/datawhalechina/all-in-rag/blob/main/code/C3/01_bge_visualized.py)\n\n## 练习\n\n尝试把代码中的部分文本替换一下，比如将`datawhale开源组织的logo`替换为`blue whale`看看结果有什么不同。"
+        }
+      ]
+    },
+    {
+      "case_id": "H002",
+      "question": "教程中的本地FAISS方案将索引和映射分别保存成什么扩展名的文件？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 3,
+      "reciprocal_rank": 0.3333333333333333,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C170",
+          "source": "08_vector_db.md",
+          "page_content": "4.  **`__add` (填充数据)**:\n    *   真正执行数据添加操作的核心。它接收到向量、文本和元数据后，执行以下关键操作：\n        *   **添加向量**: 将向量列表转换为 FAISS 需要的 `numpy` 数组，并调用 `self.index.add(vector)` 将其批量添加到 FAISS 索引中。\n        *   **存储文档**: 将文本和元数据打包成 `Document` 对象，存入 `docstore`。\n        *   **建立映射**: 更新 `index_to_docstore_id` 字典，建立起 FAISS 内部的整数 ID（如 0, 1, 2...）到我们文档唯一 ID 的映射关系。\n\n\n## 练习"
+        },
+        {
+          "chunk_id": "C169",
+          "source": "08_vector_db.md",
+          "page_content": "3.  **`__from` (构建索引框架)**:\n    *   一个内部方法，负责搭建 FAISS 向量存储的“空框架”。\n    *   它会根据指定的距离策略（默认为 L2 欧氏距离）初始化一个空的 FAISS 索引结构（如 `faiss.IndexFlatL2`）。\n    *   同时，它也准备好了用于存储文档原文的 `docstore` 和用于连接 FAISS 索引与文档的 `index_to_docstore_id` 映射。\n    *   最后，它调用另一个内部方法 `__add` 来完成数据的填充。"
+        },
+        {
+          "chunk_id": "C164",
+          "source": "08_vector_db.md",
+          "page_content": "## 四、本地向量存储：以 FAISS 为例\n\nFAISS (Facebook AI Similarity Search) 是一个由 Facebook AI Research 开发的高性能库，专门用于高效的相似性搜索和密集向量聚类。当与 LangChain 结合使用时，它可以作为一个强大的本地向量存储方案，非常适合快速原型设计和中小型应用。\n\n与 ChromaDB 等数据库不同，FAISS 本质上是一个算法库，它将索引直接保存为本地文件（一个 `.faiss` 索引文件和一个 `.pkl` 映射文件），而非运行一个数据库服务。这种方式轻量且高效。\n\n### 4.1 环境准备\n\n在开始之前，请确保已安装所有必需的库：\n\n> 当前requirements.txt安装的 `faiss-cpu` 是 CPU 版本。如果你的机器有 GPU，可以安装 `faiss-gpu` 以获得更好的性能。\n\n### 4.2 基础示例(FAISS)\n\n下面的代码演示了使用 LangChain 和 FAISS 完成一个完整的“创建 -> 保存 -> 加载 -> 查询”流程。"
+        }
+      ]
+    },
+    {
+      "case_id": "H003",
+      "question": "句子窗口检索找到句子节点后，MetadataReplacementPostProcessor怎样处理节点正文？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C223",
+          "source": "10_index_optimization.md",
+          "page_content": "### 1.1 主要思路\n\n句子窗口检索的思想可以概括为：**为检索精确性而索引小块，为上下文丰富性而检索大块**。\n\n其工作流程如下：\n\n（1）**索引阶段**：在构建索引时，文档被分割成**单个句子**。每个句子都作为一个独立的“节点（Node）”存入向量数据库。同时，每个句子节点都会在元数据（metadata）中存储其**上下文窗口**，即该句子原文中的前N个和后N个句子。这个窗口内的文本不会被索引，仅仅是作为元数据存储。\n\n（2）**检索阶段**：当用户发起查询时，系统会在所有**单一句子节点**上执行相似度搜索。因为句子是表达完整语义的最小单位，所以这种方式可以非常精确地定位到与用户问题最相关的核心信息。\n\n（3）**后处理阶段**：在检索到最相关的句子节点后，系统会使用一个名为 `MetadataReplacementPostProcessor` 的后处理模块。该模块会读取到检索到的句子节点的元数据，并用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+        },
+        {
+          "chunk_id": "C225",
+          "source": "10_index_optimization.md",
+          "page_content": "# 2. 创建节点与构建索引\n# 2.1 句子窗口索引\nnode_parser = SentenceWindowNodeParser.from_defaults(\n    window_size=3,\n    window_metadata_key=\"window\",\n    original_text_metadata_key=\"original_text\",\n)\nsentence_nodes = node_parser.get_nodes_from_documents(documents)\nsentence_index = VectorStoreIndex(sentence_nodes)\n```\n\n根据 LlamaIndex 的底层源码，`SentenceWindowNodeParser` 的核心逻辑位于 `build_window_nodes_from_documents` 方法中。其实现过程可以分解为以下几个关键步骤："
+        },
+        {
+          "chunk_id": "C482",
+          "source": "21_agentic_rag.md",
+          "page_content": "### 4.2 核心节点实现\n\n**① analyze_query — Agent先分析，再检索**（vs 传统RAG直接检索）：\n\n```python\ndef _analyze_query(self, state):\n    prompt = f\"分析问题复杂度，决定检索策略。问题：{state['query']}\"\n    response = self.llm.invoke(prompt)\n    plan = json.loads(response.content)\n    # {\"complexity\": \"complex\", \"initial_query\": \"优化后的初始查询\", ...}\n    state[\"current_query\"] = plan[\"initial_query\"]\n    return state\n```\n\n**② critique — 检索质量自评**（Agentic RAG最具革命性的节点）："
+        }
+      ]
+    },
+    {
+      "case_id": "H004",
+      "question": "自查询检索器解析用户问题时，会得到哪两个用于检索的部分？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 3,
+      "reciprocal_rank": 0.3333333333333333,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C065",
+          "source": "03_get_start_rag.md",
+          "page_content": "### 3.4 查询与检索\n\n索引构建完毕后，便可以针对用户问题进行查询与检索："
+        },
+        {
+          "chunk_id": "C248",
+          "source": "10_index_optimization.md",
+          "page_content": "*   `retriever_dict`: 指定顶层的检索器，即在摘要节点中进行检索的 `vector_retriever`。\n    *   `query_engine_dict`: 提供一个从节点 ID（即工作表名称）到其对应查询引擎的映射。当顶层检索器匹配到某个摘要节点后，递归检索器就知道该调用哪个 `PandasQueryEngine` 来处理后续查询。"
+        },
+        {
+          "chunk_id": "C294",
+          "source": "12_query_construction.md",
+          "page_content": "**自查询检索器（Self-Query Retriever）** 是LangChain中实现这一功能的核心组件。它的工作流程如下：\n\n1.  **定义元数据结构**：首先，需要向LLM清晰地描述文档内容和每个元数据字段的含义及类型。\n2.  **查询解析**：当用户输入一个自然语言查询时，自查询检索器会调用LLM，将查询分解为两部分：\n    *   **查询字符串（Query String）**：用于进行语义搜索的部分。\n    *   **元数据过滤器（Metadata Filter）**：从查询中提取出的结构化过滤条件。\n3.  **执行查询**：检索器将解析出的查询字符串和元数据过滤器发送给向量数据库，执行一次同时包含语义搜索和元数据过滤的查询。\n\n例如，对于查询“关于2022年发布的机器学习的论文”，自查询检索器会将其解析为：\n*   **查询字符串**: \"机器学习的论文\"\n*   **元数据过滤器**: `year == 2022`\n\n### 代码示例\n\n接下来以B站视频为例来看看如何使用`SelfQueryRetriever`。"
+        }
+      ]
+    },
+    {
+      "case_id": "H005",
+      "question": "为了减少Text-to-SQL编造表名和字段，教程建议首先向模型提供什么数据库结构信息？",
+      "labeled_evidence_hit": false,
+      "first_labeled_evidence_rank": null,
+      "reciprocal_rank": 0.0,
+      "all_evidence_groups_hit": false,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C313",
+          "source": "13_text2sql.md",
+          "page_content": "# 第三节 文本到SQL\n\n继上一节探讨了如何为元数据和图数据构建查询后，本节将聚焦于结构化数据领域中一个常见的应用。在数据世界中，除了向量数据库能够处理的非结构化数据，关系型数据库（如 MySQL, PostgreSQL, SQLite）同样是存储和管理结构化数据的重点。**文本到SQL（Text-to-SQL）**[^1] 正是为了打破人与结构化数据之间的语言障碍而生。它利用大语言模型（LLM）将用户的自然语言问题，直接翻译成可以在数据库上执行的SQL查询语句。\n\n![](./images/4_3_1.webp)\n\n## 一、业务挑战\n\n- **“幻觉”问题**：LLM 可能会“想象”出数据库中不存在的表或字段，导致生成的SQL语句无效。\n- **对数据库结构理解不足**：LLM 需要准确理解表的结构、字段的含义以及表与表之间的关联关系，才能生成正确的 `JOIN` 和 `WHERE` 子句。\n- **处理用户输入的模糊性**：用户的提问可能存在拼写错误或不规范的表达（例如，“上个月的销售冠军是谁？”），模型需要具备一定的容错和推理能力。\n\n## 二、优化策略"
+        },
+        {
+          "chunk_id": "C339",
+          "source": "13_text2sql.md",
+          "page_content": "通过这个**语义理解 → 结构化查询 → 数据过滤 → 结果输出**的完整流程，框架成功将用户的自然语言问题转换为精确的数据库查询结果。\n\n### 3.5 代码运行\n\n如果你想测试这个Text2SQL框架，可以通过以下方式进行：\n\n**快速体验**：运行演示程序\n```bash\npython code/C4/03_text2sql_demo.py\n```\n> 完整演示代码：[03_text2sql_demo.py](https://github.com/datawhalechina/all-in-rag/blob/main/code/C4/03_text2sql_demo.py)\n\n**核心代码获取**：三个核心模块的完整实现\n- `knowledge_base.py` - 知识库模块\n- `sql_generator.py` - SQL生成模块  \n- `text2sql_agent.py` - 代理协调模块"
+        },
+        {
+          "chunk_id": "C320",
+          "source": "13_text2sql.md",
+          "page_content": "**数据加载策略：**\n\n```python\ndef load_data(self):\n    \"\"\"加载所有知识库数据\"\"\"\n    # 加载DDL数据 - 表结构定义\n    # 加载Q->SQL数据 - 问答示例\n    # 加载描述数据 - 表和字段的业务描述\n```\n\n框架支持三种类型的知识：\n- **DDL知识**[^3]：表的结构定义，包括字段类型、约束等\n- **Q-SQL知识**[^4]：历史问答对，为新问题提供参考模式\n- **描述知识**[^5]：表和字段的业务含义，帮助理解数据语义\n\n**检索机制：**"
+        }
+      ]
+    },
+    {
+      "case_id": "H006",
+      "question": "HyDE生成假设性文档后，怎样用它寻找真实资料？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C353",
+          "source": "14_query_rewriting.md",
+          "page_content": "![HyDE](./images/4_4_2.webp)\n\nHyDE 通过一种巧妙的方式来“绕过”这个问题：它不直接使用用户的原始查询，而是先利用一个生成式大语言模型（LLM）来生成一个“假设性”的、能够完美回答该查询的文档。然后，HyDE 将这个内容详实的假设性文档进行向量化，用其生成的向量去数据库中寻找与之最相似的真实文档。HyDE 的工作流程可以分为三个步骤：\n\n（1）**生成**：当接收到用户查询时，首先调用一个生成式 LLM（例如，GPT-3.5）。提示该模型根据查询生成一个详细的、可能是理想答案的文档。这个文档不必完全符合事实，但它必须在语义上与一个好的答案高度相关。\n\n（2）**编码**：将上一步生成的假设性文档输入到一个对比编码器（如 Contriever）中，将其转换为一个高维向量嵌入。这个向量在语义上代表了一个“理想答案”的位置。\n\n（3）**检索**：使用这个假设性文档的向量，在向量数据库中执行相似性搜索，找出与这个“理想答案”最接近的真实文档。这些被检索出的文档将作为最终的上下文信息。"
+        },
+        {
+          "chunk_id": "C352",
+          "source": "14_query_rewriting.md",
+          "page_content": "通过先检索或生成高层知识，再进行具体推理，退步提示能够帮助模型构建一个更坚实的逻辑基础，从而提高在复杂问答场景下的准确性。\n\n### 1.4 假设性文档嵌入 (HyDE)\n\n假设性文档嵌入（Hypothetical Document Embeddings, HyDE）是一种无需微调即可显著提升向量检索质量的查询改写技术，由 Luyu Gao 等人在其论文中首次提出[^3]。其核心是解决一个普遍存在于检索任务中的难题：用户的查询（Query）通常简短、关键词有限，而数据库中存储的文档则内容详实、上下文丰富，两者在语义向量空间中可能存在“鸿沟”，导致直接用查询向量进行搜索效果不佳。Zilliz 的一篇技术博客[^4]也对该技术进行了深入浅出的解读。\n\n![HyDE](./images/4_4_2.webp)"
+        },
+        {
+          "chunk_id": "C368",
+          "source": "14_query_rewriting.md",
+          "page_content": "[^4]: [*使用假设性文档嵌入（HyDE）改进信息检索和 RAG*](https://zilliz.com.cn/blog/improve-rag-and-information-retrieval-with-hyde-hypothetical-document-embeddings).\n\n[^5]: [*How to route between sub-chains*](https://python.langchain.com/docs/how_to/routing/).\n\n[^6]: [*LangChain Expression Language*](https://python.langchain.com/docs/concepts/lcel/).\n\n[^7]: [*LlamaIndex Routing*](https://docs.llamaindex.ai/en/stable/module_guides/querying/router/)."
+        }
+      ]
+    },
+    {
+      "case_id": "H007",
+      "question": "检索上下文压缩中的内容提取和文档过滤，分别怎样处理检索结果？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C378",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "LangChain 内置了多种 `DocumentCompressor`：\n\n*   `LLMChainExtractor`: 这是最直接的压缩方式。它会遍历每个文档，并利用一个 LLM Chain 来判断并提取出其中与查询相关的部分。这是一种“内容提取”。\n*   `LLMChainFilter`: 这种压缩器同样使用 LLM，但它做的是“文档过滤”。它会判断整个文档是否与查询相关，如果相关，则保留整个文档；如果不相关，则直接丢弃。\n*   `EmbeddingsFilter`: 这是一种更快速、成本更低的过滤方法。它会计算查询和每个文档的嵌入向量之间的相似度，只保留那些相似度超过预设阈值的文档。\n\n### 2.2 自定义重排器与压缩管道\n\n在前面我们就提到根据实际应用，需要自己进行一些功能的实现。这里以 ColBERT 为例，展示如何集成未被官方支持的功能。\n\n整个探索和实现过程如下："
+        },
+        {
+          "chunk_id": "C376",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "## 二、压缩 (Compression)\n\n“压缩”技术旨在解决一个常见问题：初步检索到的文档块（Chunks）虽然整体上与查询相关，但可能包含大量无关的“噪音”文本。将这些未经处理的、冗长的上下文直接提供给 LLM，不仅会增加 API 调用的成本和延迟，还可能因为信息过载而降低最终生成答案的质量。\n\n压缩的目标就是对检索到的内容进行“压缩”和“提炼”，只保留与用户查询最直接相关的信息。这可以通过两种主要方式实现：\n1.  **内容提取**：从文档中只抽出与查询相关的句子或段落。\n2.  **文档过滤**：完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。\n\n### 2.1 LangChain 的 ContextualCompressionRetriever"
+        },
+        {
+          "chunk_id": "C395",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "# 7.2 使用管道压缩器的最终结果\nprint(f\"\\n--- (2) 管道压缩后结果 (ColBERT重排 + LLM压缩) ---\")\nfinal_results = final_retriever.get_relevant_documents(query)\nfor i, doc in enumerate(final_results):\n    print(f\"  [{i+1}] {doc.page_content}\\n\")\n```\n\n这段代码展示了如何将各个组件串联起来，形成一个完整的检索流程："
+        }
+      ]
+    },
+    {
+      "case_id": "H008",
+      "question": "教程介绍的哪一种输出解析器结合Pydantic模型来定义和验证输出格式？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C408",
+          "source": "16_formatted_generation.md",
+          "page_content": "LangChain 提供了多种开箱即用的解析器，例如：\n\n- **StrOutputParser**：最基础的输出解析器，它简单地将 LLM 的输出作为字符串返回。\n- **JsonOutputParser**：可以解析包含嵌套结构和列表的复杂 JSON 字符串。\n- **PydanticOutputParser**：通过与 Pydantic 模型结合，可以实现对输出格式最严格的定义和验证。\n\n接下来通过一个具体的代码示例，重点分析 `PydanticOutputParser` 的工作原理。它通过将用户定义的 Pydantic 数据模型转换为详细的格式指令，并注入到提示词中，来引导 LLM 生成严格符合该数据结构的 JSON 输出。最后再将模型返回的 JSON 字符串安全地解析为 Pydantic 对象实例。\n\n```python\n# (此处省略了导入和 LLM 初始化代码)"
+        },
+        {
+          "chunk_id": "C410",
+          "source": "16_formatted_generation.md",
+          "page_content": "# 2. 基于 Pydantic 模型，创建解析器\nparser = PydanticOutputParser(pydantic_object=PersonInfo)\n\n# 3. 创建提示模板，注入格式指令\nprompt = PromptTemplate(\n    template=\"请根据以下文本提取信息。\\n{format_instructions}\\n{text}\\n\",\n    input_variables=[\"text\"],\n    partial_variables={\"format_instructions\": parser.get_format_instructions()},\n)\n\n# 4. 创建处理链 (假定 llm 已被初始化)\nchain = prompt | llm | parser\n\n# 5. 执行调用\ntext = \"张三今年30岁，他擅长Python和Go语言。\"\nresult = chain.invoke({\"text\": text})"
+        },
+        {
+          "chunk_id": "C415",
+          "source": "16_formatted_generation.md",
+          "page_content": "- **定义 Schema**：开发者首先定义一个 Pydantic 模型，明确所需输出的数据结构、字段和类型。\n- **引导生成**：LlamaIndex 会将这个 Pydantic 模型转换成 LLM 能理解的格式指令。如果底层的 LLM 支持 Function Calling，LlamaIndex 会优先使用该功能以获得更可靠的结构化输出。如果不支持，它会回退到将 JSON Schema 注入到提示词中的方法。\n- **解析验证**：最后，LLM 返回的输出会被自动解析并用 Pydantic 模型进行验证，确保其类型和结构完全正确，最终返回一个 Pydantic 对象实例。\n\n### 2.3 不依赖框架的简单实现思路\n\n如果不想依赖特定的框架，也可以通过提示工程的技巧来实现格式化生成。\n\n主要思路是在提示中给出清晰、明确的指令和示例。以下是一些实用技巧："
+        }
+      ]
+    },
+    {
+      "case_id": "H009",
+      "question": "RAG评估三元组的三个维度，分别检查上下文、答案依据和用户问题之间的什么关系？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C424",
+          "source": "18_system_evaluation.md",
+          "page_content": "![RAG Triad](./images/6_1_1.webp)\n\n## 一、RAG评估三元组\n\n该架构包含以下三个维度，并在 **TruLens** [^1]等工具中有深入的应用：\n\n（1）**上下文相关性 (Context Relevance)**\n- **评估目标：** 检索器（Retriever）的性能。\n- **核心问题：** 检索到的上下文内容，是否与用户的查询（Query）高度相关？\n- **重要性：** 检索是RAG应用在响应用户查询时的第一步。如果检索回来的上下文充满了噪声或无关信息，那么无论后续的生成模型多么强大，都没法做出正确答案。\n\n（2）**忠实度 / 可信度 (Faithfulness / Groundedness)**\n- **评估目标：** 生成器的可靠性。\n- **核心问题：** 生成的答案是否完全基于所提供的上下文信息？\n- **重要性：** 这个维度主要在于量化LLM的“幻觉”程度。一个高忠实度的回答意味着模型严格遵守了上下文，没有捏造或歪曲事实。如果忠实度得分低，说明LLM在回答时“自由发挥”过度，引入了外部知识或不实信息。"
+        },
+        {
+          "chunk_id": "C425",
+          "source": "18_system_evaluation.md",
+          "page_content": "（3）**答案相关性 (Answer Relevance)**\n- **评估目标：** 系统的端到端（End-to-End）表现。\n- **核心问题：** 最终生成的答案是否直接、完整且有效地回答了用户的原始问题？\n- **重要性：** 这是用户最直观的感受。一个答案可能完全基于上下文（高忠实度），但如果它答非所问，或者只回答了问题的一部分，那么这个答案的相关性就很低。例如，当用户问“法国在哪里，首都是哪里？”，如果答案只是“法国在西欧”，那么虽然忠实度高，但答案相关性很低。\n\n> 你可能觉得忠实度和答案相关性很相似，但它们的侧重点是不同的。忠实度更关注模型是否严格遵循了上下文，而答案相关性则更关注模型是否直接、完整且有效地回答了问题。\n\n通过对这三个维度进行评估，可以初步判断问题主要来自检索还是生成环节。\n\n> **需要注意：** RAG三元组是一种诊断视角，并不是完整的评估清单。实际项目通常还需要关注答案正确性与完整性、不可回答问题的拒答能力、鲁棒性，以及延迟、吞吐量和调用成本等系统指标。\n\n## 二、评估工作流"
+        },
+        {
+          "chunk_id": "C429",
+          "source": "18_system_evaluation.md",
+          "page_content": "评估数据至少要区分“输入数据”“系统运行结果”和“实验元数据”：\n\n| 数据类别 | 典型字段 | 主要用途 |\n| --- | --- | --- |\n| 输入与标注 | 问题、参考答案、相关文档ID、问题类型 | 定义测试目标和计算参考型指标 |\n| 系统运行结果 | 检索上下文、最终回答、延迟、异常信息 | 评估检索、生成和运行质量 |\n| 实验元数据 | 数据集版本、模型、提示词、检索参数、评估器版本 | 保证结果可追踪、可复现、可比较 |\n\n这套流程既适用于传统信息检索指标，也适用于Ragas等基于LLM的评估工具。工具负责计算和组织结果，但测试集质量、实验设计和失败归因仍需要开发者负责。\n\n### 2.2 检索评估\n\n检索评估聚焦于RAG三元组中的 **上下文相关性 (Context Relevance)**。评估时需要观察检索器返回的文档或文本块；若要计算传统的精确率、召回率等指标，还需要查询与真实相关文档之间的标注关系[^2]。"
+        }
+      ]
+    },
+    {
+      "case_id": "H010",
+      "question": "按教程比较GraphRAG与Agentic RAG：前者在图中寻找什么，后者怎样决定检索次数？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 3,
+      "reciprocal_rank": 0.3333333333333333,
+      "all_evidence_groups_hit": false,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C477",
+          "source": "21_agentic_rag.md",
+          "page_content": "**模式二：多Agent协作**。规划Agent分解问题，多个检索Agent并行检索不同来源，评判Agent评估质量，生成Agent合成答案。适用于超复杂任务。\n\n**模式三：Agent + 知识图谱协同**。Agent用`kg_query`查询知识图谱的实体关系，同时用`vector_search`检索非结构化文档，使两种RAG范式互补[^2]。\n\n> **实践要点**：不要为了Agentic而Agentic。简单问题用传统RAG即可，Agentic RAG的价值在于**需要多步推理、多源整合、动态决策**的复杂查询。\n\n---\n\n## 三、与传统RAG、Graph RAG的对比与协同\n\n### 3.1 三种范式核心差异"
+        },
+        {
+          "chunk_id": "C491",
+          "source": "21_agentic_rag.md",
+          "page_content": "**与第4章「检索优化」**：第4章的技术（Multi-Query、HyDE、查询路由）是Agentic RAG的**原子能力**——Agent用它来编排和执行，而非替代它。\n\n**与第6章「RAG评估」**：评估三元组（Context Relevance、Faithfulness、Answer Relevance）完全适用。Agentic RAG需要额外关注：检索效率（平均几轮达标）、决策准确性（是否过早停止或过度检索）、改写有效性（改写后质量是否显著提升）。\n\n**与§7.1「Graph RAG」**：两种互补的高级RAG范式。最强大的系统是二者的融合：Agent用`kg_query`调用知识图谱，需要结构化推理时走Graph RAG，需要灵活决策时走Agentic RAG。\n\n---\n\n## 六、总结"
+        },
+        {
+          "chunk_id": "C464",
+          "source": "20_kg_rag.md",
+          "page_content": "### 3.1 GraphRAG (Microsoft)\n\nGraphRAG是一个重量级的框架，其核心思想是“先构建全局知识，再按需检索”[^1][^2]。典型流程：\n\n- 文本→三元组/子图构建→图谱（属性图）；\n- 采用社区检测（如Leiden）进行图划分，按层级生成全局/社区/局部摘要；\n- 查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；\n- 根据需要返回“全局观”与“证据路径”并行的双视角答案。\n\n该方法的优势是提供强全局感知与良好可解释性，适合探索性分析、全景总结与多跳问答；但前期构建与分层摘要成本较高，对数据持续变更的场景需设计批处理/增量更新与缓存策略。\n\n### 3.2 LightRAG\n\n针对 GraphRAG 的“重量”问题，LightRAG 旨在实现轻量、高效、易扩展[^3][^4]：\n\n- 核心思路常见为“双层检索”与“图增强索引”，以较低构建成本获得全局-局部兼顾的检索能力；\n- 更强调将结构信号嵌入到文本索引与重排中，弱化复杂的社区发现流程；\n- 适用于资源受限、快速迭代与在线更新场景。\n\n### 3.3 FRAG (Flexible RAG)"
+        }
+      ]
+    }
+  ],
+  "generation_called": false
+}

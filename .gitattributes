@@ -2,3 +2,5 @@
 evals/results/*.json -text whitespace=cr-at-eol
 evals/reviews/*.json -text whitespace=cr-at-eol
 evals/experiments/*.json -text whitespace=cr-at-eol
+evals/rag_cases_full*.json -text whitespace=cr-at-eol
+evals/rag_generation_cases.json -text whitespace=cr-at-eol

@@ -1,0 +1,153 @@
+{
+  "created_at_utc": "2026-11-14T09:24:09.420695+00:00",
+  "source_report": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\results\\rag_runs_holdout_20261114T091248366827Z.json",
+  "source_report_sha256": "45e13dd125834bbb3ef4de28673c03bdef0d70fff1ee58690eecf1abd60bc4e4",
+  "case_id": "H007",
+  "method": "manual_labels",
+  "reviewer": "assistant",
+  "review": {
+    "answer_complete": true,
+    "citations_supported": true,
+    "reason": "助手对照C376与C378，确认内容提取与整文档过滤两要点齐备，新增EmbeddingsFilter阈值说明也由C378支持。"
+  },
+  "case_snapshot": {
+    "id": "H007",
+    "split": "holdout",
+    "question": "检索上下文压缩中的内容提取和文档过滤，分别怎样处理检索结果？",
+    "expected_status": "answered",
+    "reference_answer": "内容提取保留相关句子或段落，文档过滤丢弃不相关的整个文档。",
+    "reference_facts": [
+      "提取相关句子或段落",
+      "过滤不相关整个文档"
+    ],
+    "evidence_options": [
+      {
+        "source": "15_advanced_retrieval_techniques.md",
+        "quote": "从文档中只抽出与查询相关的句子或段落。"
+      },
+      {
+        "source": "15_advanced_retrieval_techniques.md",
+        "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+      }
+    ],
+    "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+    "evidence_groups": [
+      {
+        "reference_fact": "内容提取",
+        "evidence_options": [
+          {
+            "source": "15_advanced_retrieval_techniques.md",
+            "quote": "从文档中只抽出与查询相关的句子或段落。"
+          }
+        ]
+      },
+      {
+        "reference_fact": "文档过滤",
+        "evidence_options": [
+          {
+            "source": "15_advanced_retrieval_techniques.md",
+            "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+          }
+        ]
+      }
+    ]
+  },
+  "run_snapshot": {
+    "question": "检索上下文压缩中的内容提取和文档过滤，分别怎样处理检索结果？",
+    "status": "answered",
+    "answer": "在检索上下文压缩中，内容提取和文档过滤对检索结果的处理方式不同：\n\n- **内容提取**：遍历每个文档，利用 LLM Chain 判断并提取出其中与查询相关的部分，即只抽出相关句子或段落[C378][C376]。\n- **文档过滤**：判断整个文档是否与查询相关，相关则保留整个文档，不相关则直接丢弃[C378][C376]。此外，`EmbeddingsFilter` 通过计算查询与文档嵌入向量的相似度，只保留相似度超过预设阈值的文档[C378]。",
+    "candidate_ids": [
+      "C378",
+      "C376",
+      "C395",
+      "C397",
+      "C352",
+      "C099"
+    ],
+    "retrieved_docs": [
+      {
+        "id": "2024d013-b7ab-478f-ae56-b4ee091badfb",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\15_advanced_retrieval_techniques.md",
+          "start_index": 3229,
+          "chunk_id": "C378"
+        },
+        "page_content": "LangChain 内置了多种 `DocumentCompressor`：\n\n*   `LLMChainExtractor`: 这是最直接的压缩方式。它会遍历每个文档，并利用一个 LLM Chain 来判断并提取出其中与查询相关的部分。这是一种“内容提取”。\n*   `LLMChainFilter`: 这种压缩器同样使用 LLM，但它做的是“文档过滤”。它会判断整个文档是否与查询相关，如果相关，则保留整个文档；如果不相关，则直接丢弃。\n*   `EmbeddingsFilter`: 这是一种更快速、成本更低的过滤方法。它会计算查询和每个文档的嵌入向量之间的相似度，只保留那些相似度超过预设阈值的文档。\n\n### 2.2 自定义重排器与压缩管道\n\n在前面我们就提到根据实际应用，需要自己进行一些功能的实现。这里以 ColBERT 为例，展示如何集成未被官方支持的功能。\n\n整个探索和实现过程如下：",
+        "type": "Document"
+      },
+      {
+        "id": "0f3737dc-3b6e-48f6-9f15-76000b26dae0",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\15_advanced_retrieval_techniques.md",
+          "start_index": 2674,
+          "chunk_id": "C376"
+        },
+        "page_content": "## 二、压缩 (Compression)\n\n“压缩”技术旨在解决一个常见问题：初步检索到的文档块（Chunks）虽然整体上与查询相关，但可能包含大量无关的“噪音”文本。将这些未经处理的、冗长的上下文直接提供给 LLM，不仅会增加 API 调用的成本和延迟，还可能因为信息过载而降低最终生成答案的质量。\n\n压缩的目标就是对检索到的内容进行“压缩”和“提炼”，只保留与用户查询最直接相关的信息。这可以通过两种主要方式实现：\n1.  **内容提取**：从文档中只抽出与查询相关的句子或段落。\n2.  **文档过滤**：完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。\n\n### 2.1 LangChain 的 ContextualCompressionRetriever",
+        "type": "Document"
+      },
+      {
+        "id": "2aff40fb-8fd7-487b-b024-0e6717bc6aac",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\15_advanced_retrieval_techniques.md",
+          "start_index": 9671,
+          "chunk_id": "C395"
+        },
+        "page_content": "# 7.2 使用管道压缩器的最终结果\nprint(f\"\\n--- (2) 管道压缩后结果 (ColBERT重排 + LLM压缩) ---\")\nfinal_results = final_retriever.get_relevant_documents(query)\nfor i, doc in enumerate(final_results):\n    print(f\"  [{i+1}] {doc.page_content}\\n\")\n```\n\n这段代码展示了如何将各个组件串联起来，形成一个完整的检索流程：",
+        "type": "Document"
+      }
+    ],
+    "checks": [
+      {
+        "used_ids": [
+          "C378",
+          "C376",
+          "C395"
+        ],
+        "result": {
+          "sufficient": true,
+          "reason": "原文明确说明内容提取（LLMChainExtractor 提取查询相关部分）和文档过滤（LLMChainFilter 保留或丢弃整个文档；EmbeddingsFilter 按相似度阈值保留文档）分别如何处理检索结果。",
+          "evidence": [
+            {
+              "chunk_id": "C378",
+              "quote": "`LLMChainExtractor`: 这是最直接的压缩方式。它会遍历每个文档，并利用一个 LLM Chain 来判断并提取出其中与查询相关的部分。这是一种“内容提取”。"
+            },
+            {
+              "chunk_id": "C378",
+              "quote": "`LLMChainFilter`: 这种压缩器同样使用 LLM，但它做的是“文档过滤”。它会判断整个文档是否与查询相关，如果相关，则保留整个文档；如果不相关，则直接丢弃。"
+            },
+            {
+              "chunk_id": "C378",
+              "quote": "`EmbeddingsFilter`: 这是一种更快速、成本更低的过滤方法。它会计算查询和每个文档的嵌入向量之间的相似度，只保留那些相似度超过预设阈值的文档。"
+            },
+            {
+              "chunk_id": "C376",
+              "quote": "1.  **内容提取**：从文档中只抽出与查询相关的句子或段落。\n2.  **文档过滤**：完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+            }
+          ]
+        }
+      }
+    ],
+    "citation_ids": [
+      "C378",
+      "C376",
+      "C378",
+      "C376",
+      "C378"
+    ],
+    "supplemented": false,
+    "check_calls": 1,
+    "answer_calls": 1,
+    "model_usage": [
+      {
+        "prompt_tokens": 906,
+        "completion_tokens": 297,
+        "total_tokens": 1203
+      },
+      {
+        "prompt_tokens": 686,
+        "completion_tokens": 119,
+        "total_tokens": 805
+      }
+    ]
+  }
+}

@@ -1,5 +1,22 @@
 # Evidence RAG（建设中）
 
+## T2评估收尾（2026-11-14）
+
+固定21篇资料、498块，切分配置为500/100。本轮准备35题，包含20道开发题、10道留出题、5道资料不足题，完成三路检索对照和固定15题的完整问答对照。代码与标注由助手辅助实现和审校，实际检索、问答运行由用户操作。
+
+- [开发20题检索对照](evals/dev20_full_comparison.md)记录Dense、BM25、Hybrid的Hit@3、MRR@3和全部必需依据组覆盖。
+- [留出10题检索对照](evals/holdout10_full_comparison.md)同时保存初始冻结v2与事后补标v3口径，原始报告及冻结题卡可追溯。
+- [固定15题问答对照](evals/generation_subset_comparison.md)记录关闭/开启一次补充的状态、调用、Token和耗时，两轮状态符合均为14/15，调用24/31次，Token为24493/37106。H010补后答出，H001出现检查误拒。
+
+状态符合按实际终态与题卡预期比较。4份已答样本另有助手内容复核记录，其余已答样本的语义复核仍待。用量缺失及请求异常分支已做隔离离线检查，新机器完整安装复现仍待验证。
+
+在已准备依赖、固定语料、模型缓存和索引的仓库环境中，可按以下入口复现。第一条执行本地检索，第二条展示固定问答题卡。第二条追加`--run`会实际请求模型，追加`--recover`会开启一次候选补充。资料不足组将`--split`改为`insufficient`。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 .\eval_retrieval.py --cases .\evals\rag_cases_full.json --split holdout --corpus full --strategy hybrid --candidate-k 6 --k 3 --all-cases
+.\.venv\Scripts\python.exe -X utf8 .\eval_rag.py --cases .\evals\rag_generation_cases.json --split holdout --strategy hybrid --candidate-k 6 --k 3
+```
+
 ## T1第二步：POST /ask接回完整问答（正常与资料不足已有真实结果）
 
 用户已实际通过/ask提交元数据问题，响应answered，检查1次/回答1次、未补充，引用C076，原文为C076/C075/C241；助手对照响应正文确认答案三项有依据。见evals/api_observations.json。正常回答与下述不足停止已有实测，补后成功回答/上游模型异常的真实HTTP路径仍待，不将两个业务案例当作T1全部完成。
@@ -71,7 +88,7 @@ GET /health与POST /retrieve为第一小步。启动生命周期沿用create_emb
 
 新增`eval_rag.py`，复用已有检查/一次补充/回答流程，保存预期行为对照、实际答案/原文/引用、调用尝试数及耗时。3张起步题卡分别由用户实际运行：Q002直接回答（检查1/回答1，5.74秒）、Q012补后回答（2/1，12.94秒）、N001补后仍不足停止（2/0，7.94秒）。每题耗时不含模型/索引准备。完整报告链接与口径见[三题运行记录](evals/rag_seed_observations.md)。
 
-三题均为已有开发或不足控制例；“预期行为符合”只比较最终回答/停止状态。答案内容与引用语义评分尚未自动完成，报告review仍为空，token_usage尚未采集；不能把三次单题1/1写成独立测试准确率。正式开发/冻结/不足题组仍待扩充。
+三题均为已有开发或不足控制例，早期报告的token_usage为null。“预期行为符合”比较最终回答/停止状态，答案内容和引用语义由复核者对照原文判断。当前35题卡及检索对照见[20题开发组](evals/dev20_full_comparison.md)和[10题留出组](evals/holdout10_full_comparison.md)。2026-11-14新增响应Token用量采集，离线检查通过，用户随后运行Q016验证正常路径，真实输入2050、输出94、合计2144 Token。
 
 ## 11/7 正式索引接入检查和回答入口
 
@@ -489,7 +506,11 @@ BM25 k3随后用户实际15/15，报告 [dev15-v2 BM25结果](evals/results/bm25
 
 `evals/rag_cases.json`先保存已有的两道开发例与一道资料不足控制题，20开发/10冻结/5不足的正式题组尚待扩充。参考事实与依据留在评估层，运行问答时只传入问题和实际检索原文。
 
-`eval_rag.py`默认仅展示题卡，显式`--run`才请求模型。复用`check_evidence.py`的`run_checked_rag`，保存检查结果、补充路径、答案、引用编号、调用尝试数和逐题耗时。每题结束保存，错误单独记录，已完成题目保留。模型用量尚未采集，报告中的`token_usage`为null。
+`eval_rag.py`默认展示题卡，显式`--run`请求模型。复用`check_evidence.py`的`run_checked_rag`，保存检查结果、补充路径、答案、引用编号、调用尝试数和逐题耗时。每题结束保存，错误单独记录，已完成题目保留。
+
+2026-11-14新增Token采集。共用请求函数从收到的响应中读取prompt_tokens、completion_tokens、total_tokens，每次调用追加到本题run.model_usage。评估层将各次用量汇总到token_usage，记录attempted_calls、responses_received和complete。缺响应或缺字段时，合计为null、complete为false，已有逐次记录仍保存在model_usage中。已收到但正文/格式校验失败的响应，其用量在校验前记录。该改动通过隔离假客户端和网络拦截检查。
+
+用户实际Q016运行的两次响应分别为1135/72/1207和915/22/937，汇总输入2050、输出94、合计2144，complete为true。检查1次、回答1次，耗时约5.10秒，答案两类输入齐备并引用C002。[真实运行报告](evals/results/rag_runs_dev_20261114T083021278972Z.json) 缺用量或调用失败等分支目前为离线验证。
 
 仓库根目录、已有环境下运行一道开发题的示例：
 

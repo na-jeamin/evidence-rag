@@ -1,0 +1,1808 @@
+{
+  "created_at_utc": "2026-11-14T05:45:32.175330+00:00",
+  "scope": "按预标注来源和原句计算命中、首次排名及必需依据组覆盖，语义支持与答案完整性另行复核。",
+  "configuration": {
+    "corpus": "full",
+    "retriever": "hybrid",
+    "k": 3,
+    "cases_file": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\rag_cases_full.json",
+    "split": "dev",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "preprocess_func": "tokenize",
+    "candidate_k_per_route": 6,
+    "rank_constant": 60,
+    "tie_break": "同分保留首次出现顺序，Dense先",
+    "document_count": 21,
+    "chunk_count": 498,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "case_count": 20,
+  "hit_count": 19,
+  "hit_rate_at_k": 0.95,
+  "mrr_at_k": 0.725,
+  "all_evidence_groups_hit_rate_at_k": 0.9,
+  "cases_snapshot": [
+    {
+      "id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "reference_answer": "保留相邻块的部分上下文，缓解语义割裂、保持上下文连续性。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "每个块之间重叠10个字符，以缓解语义割裂"
+        },
+        {
+          "source": "03_get_start_rag.md",
+          "quote": "并通过重叠来减少上下文信息的丢失。"
+        }
+      ],
+      "note": "复用已见开发问题，完整语料接受03_get_start_rag.md与05_text_chunking.md中支持重叠目的的原句，块编号以报告为准。",
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "通过重叠保持上下文连续性、缓解语义割裂"
+      ],
+      "annotation_note": "2026-11-14助手复核实际返回C061，确认其减少上下文信息丢失的原句支持问题，补为可接受依据。"
+    },
+    {
+      "id": "Q002",
+      "split": "dev",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "expected_status": "answered",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "reference_facts": [
+        "文档来源",
+        "页码",
+        "作者"
+      ],
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ],
+      "annotation_note": "沿用已运行的开发案例。"
+    },
+    {
+      "id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "reference_answer": "向量归一化后，两者等价。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在向量归一化后，点积等价于余弦相似度。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "向量归一化后点积等价于余弦相似度"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q004",
+      "question": "一套RAG流程刚开始处理资料时，数据加载属于第几个步骤？",
+      "reference_answer": "数据加载是整个流水线的第一步。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "**数据加载**是整个流水线的第一步"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "数据加载是整个流水线的第一步"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q005",
+      "question": "文中面向RAG和AI微调、负责非结构化资料预处理的专业文档库叫什么？",
+      "reference_answer": "Unstructured。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "**Unstructured** [^1]是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "Unstructured"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q006",
+      "question": "自动识别出PDF文件后，partition会把处理转交给哪个专用函数？",
+      "reference_answer": "partition_pdf。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "如PDF文件会调用`partition_pdf`"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "partition_pdf"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q007",
+      "question": "已经知道文档是PDF时，partition的哪个参数可以指定MIME类型并跳过自动格式检测？",
+      "reference_answer": "content_type，例如指定application/pdf。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "`content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "content_type参数"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q008",
+      "question": "把超出输入长度限制的文本块交给嵌入模型，会造成什么问题？",
+      "reference_answer": "文本块会被截断，导致信息丢失，向量无法完整代表原文语义。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "超长文本被截断",
+        "信息丢失",
+        "向量无法完整代表原文语义"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q009",
+      "question": "不按固定字数，而根据内容主题发生变化的位置切开，属于哪种分块方法？",
+      "reference_answer": "语义分块，在语义主题显著变化的地方切分。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "语义分块（Semantic Chunking）是一种更智能的方法，这种方法不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "语义分块按语义主题变化切分"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q010",
+      "question": "递归字符分块按段落切完仍然太长，接着会怎样处理这个大块？",
+      "reference_answer": "继续应用下一优先级分隔符，例如句号，直到块满足大小限制。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求。"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "**有剩余分隔符**: 递归调用 `_split_text` 继续分割"
+        }
+      ],
+      "annotation_note": "dev15-v2补充C033/C032中同样有效的原文依据；v1自动False遗漏支持性表述。只补标注，不改问题/检索/匹配规则，其他方法须用同版标注比较。",
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "继续使用更细粒度的分隔符",
+        "递归切分直到满足大小限制"
+      ]
+    },
+    {
+      "id": "Q011",
+      "question": "按单个句子检索时，SentenceWindowNodeParser把前后的上下文存在哪里？",
+      "reference_answer": "在每个句子节点的元数据中保存前后相邻N个句子，组成上下文窗口。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "句子节点的元数据中保存前后相邻N个句子"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q012",
+      "split": "dev",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "expected_status": "answered",
+      "reference_answer": "应该使用同一个嵌入模型将问题转换成向量。",
+      "reference_facts": [
+        "查询问题使用与资料相同的嵌入模型编码"
+      ],
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        },
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+        }
+      ],
+      "annotation_note": "沿用已运行的开发案例及已确认的替代依据。"
+    },
+    {
+      "id": "Q013",
+      "question": "用向量之间的直线距离比较语义时，距离越大还是越小表示更相似？",
+      "reference_answer": "欧氏距离越小，语义越相似。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "欧氏距离越小越相似"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q014",
+      "question": "把文档块编码成向量并存入向量库，属于离线准备还是在线问题检索阶段？",
+      "reference_answer": "离线索引构建阶段。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "离线索引构建阶段"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q015",
+      "question": "“苹果”分别指公司和水果时，为什么静态词向量难以区分这两种意思？",
+      "reference_answer": "静态词嵌入对同一个词使用与上下文无关的固定向量，无法处理一词多义；两个语境中的苹果向量相同。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在“苹果公司发布了新手机”和“我吃了一个苹果”中，“苹果”的词向量是完全相同的"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "静态词向量与上下文无关",
+        "公司和水果语境中的苹果使用相同词向量"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q016",
+      "split": "dev",
+      "question": "RAG的生成阶段，生成模块会接收哪两类输入？",
+      "expected_status": "answered",
+      "reference_answer": "检索阶段返回的相关文档片段，以及用户的原始问题。",
+      "reference_facts": [
+        "检索到的相关文档片段",
+        "用户的原始问题"
+      ],
+      "evidence_options": [
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "接收检索阶段送来的相关文档片段以及用户的原始问题。"
+        }
+      ],
+      "annotation_note": "2026-11-14用户抽查确认原句支持文档片段和用户问题两个参考要点。系统实际答案的完整性待运行后复核。"
+    },
+    {
+      "id": "Q017",
+      "split": "dev",
+      "question": "提示词工程、RAG和微调，在是否修改模型参数上有什么区别？",
+      "expected_status": "answered",
+      "reference_answer": "提示词工程和RAG均不修改模型权重，微调会修改模型参数。",
+      "reference_facts": [
+        "提示词工程和RAG不修改模型权重",
+        "微调会修改模型参数"
+      ],
+      "evidence_options": [
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "提示工程和 RAG 完全不改变模型权重，而微调则直接修改模型参数。"
+        }
+      ],
+      "annotation_note": "2026-11-14用户抽查确认原句支持提示词工程/RAG不改权重及微调修改参数两个参考要点。系统实际答案待运行后复核。"
+    },
+    {
+      "id": "Q018",
+      "split": "dev",
+      "question": "RRF融合主要依据各检索系统给出的原始分数，还是文档排名？",
+      "expected_status": "answered",
+      "reference_answer": "依据文档在各检索结果列表中的排名。",
+      "reference_facts": [
+        "RRF依据各路排名"
+      ],
+      "evidence_options": [
+        {
+          "source": "11_hybrid_search.md",
+          "quote": "只关心每个文档在各自结果集中的**排名**。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "Q019",
+      "split": "dev",
+      "question": "Cross-Encoder重排怎样组织查询和候选文档的模型输入？",
+      "expected_status": "answered",
+      "reference_answer": "把查询和每个候选文档拼接为一个输入，交给模型评分。",
+      "reference_facts": [
+        "查询与每个候选文档拼接成一个输入"
+      ],
+      "evidence_options": [
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "将查询（Query）和每个候选文档（Document）**拼接**成一个单一的输入"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "Q020",
+      "split": "dev",
+      "question": "在线向量检索时应使用什么嵌入模型编码问题？用欧氏距离比较时，距离怎样变化表示更相似？",
+      "expected_status": "answered",
+      "reference_answer": "问题使用与资料相同的嵌入模型编码；欧氏距离越小越相似。",
+      "reference_facts": [
+        "问题和资料使用同一个嵌入模型",
+        "欧氏距离越小越相似"
+      ],
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        },
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+        },
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "同一个嵌入模型",
+          "evidence_options": [
+            {
+              "source": "06_vector_embedding.md",
+              "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+            },
+            {
+              "source": "01_RAG_intro.md",
+              "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+            }
+          ]
+        },
+        {
+          "reference_fact": "较小的欧氏距离",
+          "evidence_options": [
+            {
+              "source": "06_vector_embedding.md",
+              "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C061",
+          "C104",
+          "C096",
+          "C226",
+          "C435",
+          "C125"
+        ],
+        "bm25_ids": [
+          "C061",
+          "C126",
+          "C181",
+          "C020",
+          "C111",
+          "C113"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 11,
+        "rrf_scores": {
+          "C061": 0.03278688524590164,
+          "C104": 0.016129032258064516,
+          "C096": 0.015873015873015872,
+          "C226": 0.015625,
+          "C435": 0.015384615384615385,
+          "C125": 0.015151515151515152,
+          "C126": 0.016129032258064516,
+          "C181": 0.015873015873015872,
+          "C020": 0.015625,
+          "C111": 0.015384615384615385,
+          "C113": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C061",
+          "C104",
+          "C126",
+          "C096",
+          "C181",
+          "C226",
+          "C020",
+          "C435",
+          "C111",
+          "C125",
+          "C113"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C061",
+          "source": "03_get_start_rag.md",
+          "page_content": "- **默认分隔符与语义保留**: 按顺序尝试使用一系列预设的分隔符 `[\"\\n\\n\" (段落), \"\\n\" (行), \" \" (空格), \"\" (字符)]` 来递归分割文本。这种策略的目的是尽可能保持段落、句子和单词的完整性，因为它们通常是语义上最相关的文本单元，直到文本块达到目标大小。\n    - **保留分隔符**: 默认情况下 (`keep_separator=True`)，分隔符本身会被保留在分割后的文本块中。\n    - **默认块大小与重叠**: 使用其基类 `TextSplitter` 中定义的默认参数 `chunk_size=4000`（块大小）和 `chunk_overlap=200`（块重叠）。这些参数确保文本块符合预定的大小限制，并通过重叠来减少上下文信息的丢失。\n    ```python\n    text_splitter = RecursiveCharacterTextSplitter()\n    texts = text_splitter.split_documents(docs)\n    ```"
+        },
+        {
+          "chunk_id": "C104",
+          "source": "05_text_chunking.md",
+          "page_content": "chunks = text_splitter.split_documents(docs)\n\nprint(f\"文本被切分为 {len(chunks)} 个块。\\n\")\nprint(\"--- 前5个块内容示例 ---\")\nfor i, chunk in enumerate(chunks[:5]):\n    print(\"=\" * 60)\n    # chunk 是一个 Document 对象，需要访问它的 .page_content 属性来获取文本\n    print(f'块 {i+1} (长度: {len(chunk.page_content)}): \"{chunk.page_content}\"')\n```\n\n这种方法的主要优势在于实现简单、处理速度快且计算开销小。劣势在于可能会在语义边界处切断文本，影响内容的完整性和连贯性。实际的固定大小分块实现（如LangChain的 `CharacterTextSplitter`）通常会结合分隔符来减少这种问题，在段落边界处优先切分，只有在必要时才会强制按大小切断。因此，这种方法在日志分析、数据预处理等场景中仍有其应用价值。"
+        },
+        {
+          "chunk_id": "C126",
+          "source": "05_text_chunking.md",
+          "page_content": "（2）**灵活的转换流水线**: 用户可以构建一个灵活的流水线，例如先用 `MarkdownNodeParser` 按章节切分文档，再对每个章节节点应用 `SentenceSplitter` 进行更细粒度的句子级切分。每个节点都携带丰富的元数据，记录着其来源和上下文关系。\n\n（3）**良好的互操作性**: LlamaIndex 提供了 `LangchainNodeParser`，可以方便地将任何 LangChain 的 `TextSplitter` 封装成 LlamaIndex 的节点解析器，无缝集成到其处理流程中。\n\n### 4.3 ChunkViz：简易的可视化分块工具\n\n在本文开头部分展示的分块图就是通过 [**ChunkViz**](https://chunkviz.up.railway.app/) 生成的。可以将你的文档、分块配置作为输入，用不同的颜色块展示每个 chunk 的边界和重叠部分，方便快速理解分块逻辑。\n\n## 参考文献"
+        }
+      ]
+    },
+    {
+      "case_id": "Q002",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C076",
+          "C368",
+          "C075",
+          "C241",
+          "C119",
+          "C240"
+        ],
+        "bm25_ids": [
+          "C076",
+          "C299",
+          "C075",
+          "C294",
+          "C241",
+          "C085"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 9,
+        "rrf_scores": {
+          "C076": 0.03278688524590164,
+          "C368": 0.016129032258064516,
+          "C075": 0.031746031746031744,
+          "C241": 0.031009615384615385,
+          "C119": 0.015384615384615385,
+          "C240": 0.015151515151515152,
+          "C299": 0.016129032258064516,
+          "C294": 0.015625,
+          "C085": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C076",
+          "C075",
+          "C241",
+          "C368",
+          "C299",
+          "C294",
+          "C119",
+          "C240",
+          "C085"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C076",
+          "source": "04_data_load.md",
+          "page_content": "文档加载器在 RAG 的数据管道中一般需要完成三个核心任务，一是解析不同格式的原始文档，将 PDF、Word、Markdown 等内容提取为可处理的纯文本，二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据，三是把文本和元数据整理成统一的数据结构，方便后续进行切分、向量化和入库，其整体流程与传统数据工程中的抽取、转换、加载相似，目标都是把杂乱的原始文档清洗并对齐为适合检索和建模的标准化语料。\n\n### 1.2 当前主流RAG文档加载器"
+        },
+        {
+          "chunk_id": "C075",
+          "source": "04_data_load.md",
+          "page_content": "# 第一节 数据加载\n\n虽然本节内容在实际应用中非常重要，但是由于各种文档加载器的迭代更新，以及各类 AI 应用的不同需求，具体选择需要根据实际情况。本节仅作简单引入，但请务必**重视数据加载**环节，**“垃圾进，垃圾出 (Garbage In, Garbage Out)”** ——高质量输入是高质量输出的前提。\n\n## 一、文档加载器\n\n### 1.1 主要功能\n\nRAG 系统中，**数据加载**是整个流水线的第一步，也是不可或缺的一步。文档加载器负责将各种格式的非结构化文档（如PDF、Word、Markdown、HTML等）转换为程序可以处理的结构化数据。数据加载的质量会直接影响后续的索引构建、检索效果和最终的生成质量。"
+        },
+        {
+          "chunk_id": "C241",
+          "source": "10_index_optimization.md",
+          "page_content": "*   文件名\n*   文档创建日期\n*   章节标题\n*   作者\n*   任何自定义的分类标签\n\n![结构化索引](./images/3_5_1.webp)\n\n实际上，在第二章“文本分块”中介绍的**基于文档结构的分块**方法，就是实现结构化索引的一种前置步骤。例如，在使用 `MarkdownHeaderTextSplitter` 时，分块器会自动将Markdown文档的各级标题（如 `Header 1`, `Header 2` 等）提取并存入每个文本块的元数据中。这些标题信息就是非常有价值的结构化数据，可以直接用于后续的元数据过滤。\n\n通过这种方式，可以在检索时实现“元数据过滤”和“向量搜索”的结合。例如，当用户查询“请总结一下2023年第二季度财报中关于AI的论述”时，系统可以：\n\n（1）**元数据预过滤**：首先通过元数据筛选，只在 `document_type == '财报'`、`year == 2023` 且 `quarter == 'Q2'` 的文档子集中进行搜索。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 3,
+      "reciprocal_rank": 0.3333333333333333,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C364",
+          "C219",
+          "C389",
+          "C153",
+          "C129",
+          "C384"
+        ],
+        "bm25_ids": [
+          "C129",
+          "C167",
+          "C219",
+          "C364",
+          "C154",
+          "C292"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 9,
+        "rrf_scores": {
+          "C364": 0.032018442622950824,
+          "C219": 0.03200204813108039,
+          "C389": 0.015873015873015872,
+          "C153": 0.015625,
+          "C129": 0.03177805800756621,
+          "C384": 0.015151515151515152,
+          "C167": 0.016129032258064516,
+          "C154": 0.015384615384615385,
+          "C292": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C364",
+          "C219",
+          "C129",
+          "C167",
+          "C389",
+          "C153",
+          "C154",
+          "C384",
+          "C292"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C364",
+          "source": "14_query_rewriting.md",
+          "page_content": "```python\ndef route(info):\n    # 1. 对用户查询进行嵌入\n    query_embedding = embeddings.embed_query(info[\"query\"])\n    \n    # 2. 计算与各路由提示的余弦相似度\n    similarity_scores = cosine_similarity([query_embedding], route_prompt_embeddings)[0]\n    \n    # 3. 找到最相似的路由名称\n    chosen_route_index = np.argmax(similarity_scores)\n    chosen_route_name = route_names[chosen_route_index]\n    \n    # 4. 获取并调用对应的处理链，返回结果\n    chosen_chain = route_map[chosen_route_name]\n    return chosen_chain.invoke(info)\n```\n\n**第四步：组合并调用**"
+        },
+        {
+          "chunk_id": "C219",
+          "source": "09_milvus.md",
+          "page_content": "这段输出展示了与图文组合查询最相似的5个**实体 (Entity)**。`distance` 字段代表了**余弦相似度**，值越接近 1 表示越相似。可以看到，`Top 1` 结果正是查询图片本身，其相似度得分最高（0.9411），这说明了检索的有效性。其余结果也都是龙的图片，并按相似度从高到低精确排列。\n\n> **为什么查询图片本身，其余弦相似度不是 1.0 而是 0.9411 呢？**\n> 在插入数据时，数据库里存放的是通过 `encode_image` 得到的**纯图像嵌入向量**（只包含视觉特征）；而在检索时，输入的查询向量是通过 `encode_query` 生成的**图文联合嵌入向量**（融合了文本“一条龙”的信息和图像的特征）。由于查询向量被文本语义进行了“偏置”，所以它与数据库中的纯视觉图像向量之间会有细微的特征差异。\n\n### 4.6 可视化与清理\n\n最后，将检索到的图片路径用于可视化，生成一张直观的结果对比图。在完成所有操作后，应该释放 Milvus 中的资源，包括从内存中卸载 Collection 和删除整个 Collection。"
+        },
+        {
+          "chunk_id": "C129",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        }
+      ]
+    },
+    {
+      "case_id": "Q004",
+      "question": "一套RAG流程刚开始处理资料时，数据加载属于第几个步骤？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C076",
+          "C075",
+          "C016",
+          "C018",
+          "C293",
+          "C057"
+        ],
+        "bm25_ids": [
+          "C426",
+          "C076",
+          "C275",
+          "C123",
+          "C075",
+          "C096"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C076": 0.03252247488101534,
+          "C075": 0.0315136476426799,
+          "C016": 0.015873015873015872,
+          "C018": 0.015625,
+          "C293": 0.015384615384615385,
+          "C057": 0.015151515151515152,
+          "C426": 0.01639344262295082,
+          "C275": 0.015873015873015872,
+          "C123": 0.015625,
+          "C096": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C076",
+          "C075",
+          "C426",
+          "C016",
+          "C275",
+          "C018",
+          "C123",
+          "C293",
+          "C057",
+          "C096"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C076",
+          "source": "04_data_load.md",
+          "page_content": "文档加载器在 RAG 的数据管道中一般需要完成三个核心任务，一是解析不同格式的原始文档，将 PDF、Word、Markdown 等内容提取为可处理的纯文本，二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据，三是把文本和元数据整理成统一的数据结构，方便后续进行切分、向量化和入库，其整体流程与传统数据工程中的抽取、转换、加载相似，目标都是把杂乱的原始文档清洗并对齐为适合检索和建模的标准化语料。\n\n### 1.2 当前主流RAG文档加载器"
+        },
+        {
+          "chunk_id": "C075",
+          "source": "04_data_load.md",
+          "page_content": "# 第一节 数据加载\n\n虽然本节内容在实际应用中非常重要，但是由于各种文档加载器的迭代更新，以及各类 AI 应用的不同需求，具体选择需要根据实际情况。本节仅作简单引入，但请务必**重视数据加载**环节，**“垃圾进，垃圾出 (Garbage In, Garbage Out)”** ——高质量输入是高质量输出的前提。\n\n## 一、文档加载器\n\n### 1.1 主要功能\n\nRAG 系统中，**数据加载**是整个流水线的第一步，也是不可或缺的一步。文档加载器负责将各种格式的非结构化文档（如PDF、Word、Markdown、HTML等）转换为程序可以处理的结构化数据。数据加载的质量会直接影响后续的索引构建、检索效果和最终的生成质量。"
+        },
+        {
+          "chunk_id": "C426",
+          "source": "18_system_evaluation.md",
+          "page_content": "## 二、评估工作流\n\n从指标对象看，RAG评估可以拆成 **检索评估** 和 **响应评估**；从工程过程看，还需要把目标、数据、实验、诊断和回归串成闭环。只计算一次平均分，通常无法回答“为什么变好或变差”以及“下一步应该改哪里”。\n\n### 2.1 从目标到回归的评估闭环\n\n一套可复用的RAG评估流程通常包含以下七个步骤："
+        }
+      ]
+    },
+    {
+      "case_id": "Q005",
+      "question": "文中面向RAG和AI微调、负责非结构化资料预处理的专业文档库叫什么？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C001",
+          "C076",
+          "C002",
+          "C454",
+          "C008",
+          "C160"
+        ],
+        "bm25_ids": [
+          "C083",
+          "C074",
+          "C075",
+          "C009",
+          "C256",
+          "C001"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 11,
+        "rrf_scores": {
+          "C001": 0.031544957774465976,
+          "C076": 0.016129032258064516,
+          "C002": 0.015873015873015872,
+          "C454": 0.015625,
+          "C008": 0.015384615384615385,
+          "C160": 0.015151515151515152,
+          "C083": 0.01639344262295082,
+          "C074": 0.016129032258064516,
+          "C075": 0.015873015873015872,
+          "C009": 0.015625,
+          "C256": 0.015384615384615385
+        },
+        "all_ranked_ids": [
+          "C001",
+          "C083",
+          "C076",
+          "C074",
+          "C002",
+          "C075",
+          "C454",
+          "C009",
+          "C008",
+          "C256",
+          "C160"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C001",
+          "source": "01_RAG_intro.md",
+          "page_content": "# 第一节 RAG 简介\n\n## 一、什么是 RAG？\n\n### 1.1 核心定义\n\n从本质上讲，RAG（Retrieval-Augmented Generation）是一种旨在解决大语言模型（LLM）“知其然不知其所以然”问题的技术范式。它的核心是将模型内部学到的“**参数化知识**”（模型权重中固化的、模糊的“记忆”），与来自外部知识库的“**非参数化知识**”（精准、可随时更新的外部数据）相结合。其运作逻辑就是在 LLM 生成文本前，先通过检索机制从外部知识库中动态获取相关信息，并将这些“参考资料”融入生成过程，从而提升输出的准确性和时效性 [^1] [^2] [^3]。\n\n> 💡 **一句话总结**：RAG 就是让 LLM 学会了“开卷考试”，它既能利用自己学到的知识，也能随时查阅外部资料。\n\n### 1.2 技术原理\n\n那么，RAG 系统是如何实现“参数化知识”与“非参数化知识”的结合呢？如图 1-1 所示，其架构主要通过两个阶段来完成这一过程："
+        },
+        {
+          "chunk_id": "C083",
+          "source": "04_data_load.md",
+          "page_content": "## 二、Unstructured文档处理库\n\n### 2.1 Unstructured 的核心优势\n\n**Unstructured** [^1]是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。提供了统一的接口来处理多种文档格式，是目前应用较广泛的文档加载解决方案之一。Unstructured 在格式支持和内容解析方面具有明显优势，它一方面支持 PDF、Word、Excel、HTML、Markdown 等多种文档格式，并通过统一的 API 接口避免为不同格式分别编写代码，另一方面可以自动识别标题、段落、表格、列表等文档结构，同时保留相应的元数据信息。\n\n<div align=\"center\">\n  <img src=\"./images/2_1_1.png\" width=\"80%\" alt=\"Unstructured 官网界面\">\n  <p>图 2-1 Unstructured 官网界面</p>\n</div>\n\n### 2.2 支持的文档元素类型\n\nUnstructured 能够识别和分类以下文档元素 [^2]："
+        },
+        {
+          "chunk_id": "C076",
+          "source": "04_data_load.md",
+          "page_content": "文档加载器在 RAG 的数据管道中一般需要完成三个核心任务，一是解析不同格式的原始文档，将 PDF、Word、Markdown 等内容提取为可处理的纯文本，二是在解析过程中同时抽取文档来源、页码、作者等关键信息作为元数据，三是把文本和元数据整理成统一的数据结构，方便后续进行切分、向量化和入库，其整体流程与传统数据工程中的抽取、转换、加载相似，目标都是把杂乱的原始文档清洗并对齐为适合检索和建模的标准化语料。\n\n### 1.2 当前主流RAG文档加载器"
+        }
+      ]
+    },
+    {
+      "case_id": "Q006",
+      "question": "自动识别出PDF文件后，partition会把处理转交给哪个专用函数？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C094",
+          "C093",
+          "C392",
+          "C371",
+          "C397",
+          "C105"
+        ],
+        "bm25_ids": [
+          "C094",
+          "C091",
+          "C093",
+          "C090",
+          "C421",
+          "C083"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C094": 0.03278688524590164,
+          "C093": 0.03200204813108039,
+          "C392": 0.015873015873015872,
+          "C371": 0.015625,
+          "C397": 0.015384615384615385,
+          "C105": 0.015151515151515152,
+          "C091": 0.016129032258064516,
+          "C090": 0.015625,
+          "C421": 0.015384615384615385,
+          "C083": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C094",
+          "C093",
+          "C091",
+          "C392",
+          "C371",
+          "C090",
+          "C397",
+          "C421",
+          "C105",
+          "C083"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C094",
+          "source": "04_data_load.md",
+          "page_content": "`partition`函数使用自动文件类型检测，内部会根据文件类型路由到对应的专用函数（如PDF文件会调用`partition_pdf`）。如果需要更专业的PDF处理，可以直接使用`from unstructured.partition.pdf import partition_pdf`，它提供更多PDF特有的参数选项，如OCR语言设置、图像提取、表格结构推理等高级功能，同时性能更优。\n\n> 在实际应用中，针对 pdf 的处理，目前更多选用的是 PaddleOCR、MinerU 等模型或工具。\n\n## 练习\n\n- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。\n\n## 参考文献\n\n[^1]: [*Unstructured Open-Source Documentation*](https://docs.unstructured.io/open-source/)"
+        },
+        {
+          "chunk_id": "C093",
+          "source": "04_data_load.md",
+          "page_content": "**partition 函数参数解析：**\n\n- `filename`: 文档文件路径，支持本地文件路径；\n- `content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测；\n- `file`: 可选参数，文件对象，与 filename 二选一使用；\n- `url`: 可选参数，远程文档 URL，支持直接处理网络文档；\n- `include_page_breaks`: 布尔值，是否在输出中包含页面分隔符；\n- `strategy`: 处理策略，可选 \"auto\"、\"fast\"、\"hi_res\" 等；\n- `encoding`: 文本编码格式，默认自动检测。"
+        },
+        {
+          "chunk_id": "C091",
+          "source": "04_data_load.md",
+          "page_content": "```python\nfrom unstructured.partition.auto import partition\n\n# PDF文件路径\npdf_path = \"../../data/C2/pdf/rag.pdf\"\n\n# 使用Unstructured加载并解析PDF文档\nelements = partition(\n    filename=pdf_path,\n    content_type=\"application/pdf\"\n)\n\n# 打印解析结果\nprint(f\"解析完成: {len(elements)} 个元素, {sum(len(str(e)) for e in elements)} 字符\")\n\n# 统计元素类型\nfrom collections import Counter\ntypes = Counter(e.category for e in elements)\nprint(f\"元素类型: {dict(types)}\")"
+        }
+      ]
+    },
+    {
+      "case_id": "Q007",
+      "question": "已经知道文档是PDF时，partition的哪个参数可以指定MIME类型并跳过自动格式检测？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C094",
+          "C093",
+          "C378",
+          "C352",
+          "C188",
+          "C392"
+        ],
+        "bm25_ids": [
+          "C093",
+          "C094",
+          "C091",
+          "C248",
+          "C224",
+          "C189"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C094": 0.03252247488101534,
+          "C093": 0.03252247488101534,
+          "C378": 0.015873015873015872,
+          "C352": 0.015625,
+          "C188": 0.015384615384615385,
+          "C392": 0.015151515151515152,
+          "C091": 0.015873015873015872,
+          "C248": 0.015625,
+          "C224": 0.015384615384615385,
+          "C189": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C094",
+          "C093",
+          "C378",
+          "C091",
+          "C352",
+          "C248",
+          "C188",
+          "C224",
+          "C392",
+          "C189"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C094",
+          "source": "04_data_load.md",
+          "page_content": "`partition`函数使用自动文件类型检测，内部会根据文件类型路由到对应的专用函数（如PDF文件会调用`partition_pdf`）。如果需要更专业的PDF处理，可以直接使用`from unstructured.partition.pdf import partition_pdf`，它提供更多PDF特有的参数选项，如OCR语言设置、图像提取、表格结构推理等高级功能，同时性能更优。\n\n> 在实际应用中，针对 pdf 的处理，目前更多选用的是 PaddleOCR、MinerU 等模型或工具。\n\n## 练习\n\n- 使用`partition_pdf`替换当前`partition`函数并分别尝试用`hi_res`和`ocr_only`进行解析，观察输出结果有何变化。\n\n## 参考文献\n\n[^1]: [*Unstructured Open-Source Documentation*](https://docs.unstructured.io/open-source/)"
+        },
+        {
+          "chunk_id": "C093",
+          "source": "04_data_load.md",
+          "page_content": "**partition 函数参数解析：**\n\n- `filename`: 文档文件路径，支持本地文件路径；\n- `content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测；\n- `file`: 可选参数，文件对象，与 filename 二选一使用；\n- `url`: 可选参数，远程文档 URL，支持直接处理网络文档；\n- `include_page_breaks`: 布尔值，是否在输出中包含页面分隔符；\n- `strategy`: 处理策略，可选 \"auto\"、\"fast\"、\"hi_res\" 等；\n- `encoding`: 文本编码格式，默认自动检测。"
+        },
+        {
+          "chunk_id": "C378",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "LangChain 内置了多种 `DocumentCompressor`：\n\n*   `LLMChainExtractor`: 这是最直接的压缩方式。它会遍历每个文档，并利用一个 LLM Chain 来判断并提取出其中与查询相关的部分。这是一种“内容提取”。\n*   `LLMChainFilter`: 这种压缩器同样使用 LLM，但它做的是“文档过滤”。它会判断整个文档是否与查询相关，如果相关，则保留整个文档；如果不相关，则直接丢弃。\n*   `EmbeddingsFilter`: 这是一种更快速、成本更低的过滤方法。它会计算查询和每个文档的嵌入向量之间的相似度，只保留那些相似度超过预设阈值的文档。\n\n### 2.2 自定义重排器与压缩管道\n\n在前面我们就提到根据实际应用，需要自己进行一些功能的实现。这里以 ColBERT 为例，展示如何集成未被官方支持的功能。\n\n整个探索和实现过程如下："
+        }
+      ]
+    },
+    {
+      "case_id": "Q008",
+      "question": "把超出输入长度限制的文本块交给嵌入模型，会造成什么问题？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C097",
+          "C096",
+          "C098",
+          "C099",
+          "C120",
+          "C146"
+        ],
+        "bm25_ids": [
+          "C096",
+          "C097",
+          "C128",
+          "C098",
+          "C142",
+          "C099"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 8,
+        "rrf_scores": {
+          "C097": 0.03252247488101534,
+          "C096": 0.03252247488101534,
+          "C098": 0.03149801587301587,
+          "C099": 0.030776515151515152,
+          "C120": 0.015384615384615385,
+          "C146": 0.015151515151515152,
+          "C128": 0.015873015873015872,
+          "C142": 0.015384615384615385
+        },
+        "all_ranked_ids": [
+          "C097",
+          "C096",
+          "C098",
+          "C099",
+          "C128",
+          "C120",
+          "C142",
+          "C146"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C097",
+          "source": "05_text_chunking.md",
+          "page_content": "-   **大语言模型 (LLM)**: 负责根据检索到的上下文生成答案。LLM同样有上下文窗口限制（尽管通常比嵌入模型大得多，从几千到上百万token不等）。检索到的所有文本块，连同用户问题和提示词，都必须能被放入这个窗口中。如果单个块过大，可能会导致只能容纳少数几个相关的块，限制了LLM回答问题时可参考的信息广度。\n\n因此，分块是确保文本能够被两个模型完整、有效处理的基础。\n\n### 2.2 为何“块”不是越大越好\n\n假设嵌入模型最多能处理 8192 个 token，是否应该把块切得尽可能大（比如8000个token）呢？答案是否定的。**块的大小并非越大越好**，过大的块会严重影响RAG系统的性能。\n\n#### 2.2.1 嵌入过程中的信息损失\n\n大多数嵌入模型都基于 Transformer 编码器。其工作流程大致如下："
+        },
+        {
+          "chunk_id": "C096",
+          "source": "05_text_chunking.md",
+          "page_content": "# 第二节 文本分块\n\n## 一、理解文本分块\n\n文本分块（Text Chunking）是构建 RAG 流程的关键步骤。它的原理是将加载后的长篇文档，切分成更小、更易于处理的单元。这些被切分出的文本块，是后续向量检索和模型处理的**基本单位**。\n\n![文本分块示意图](./images/2_2_1.webp)\n\n## 二、文本分块重要性\n\n### 2.1 满足模型上下文限制\n\n将文本分块的首要原因，是为了适应 RAG 系统中两个核心组件的硬性限制：\n\n-   **嵌入模型 (Embedding Model)**: 负责将文本块转换为向量。这类模型有严格的输入长度上限。例如，许多常用的嵌入模型（如 `bge-base-zh-v1.5`）的上下文窗口为512个token。任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。因此，文本块的大小**必须**小于等于嵌入模型的上下文窗口。"
+        },
+        {
+          "chunk_id": "C098",
+          "source": "05_text_chunking.md",
+          "page_content": "#### 2.2.1 嵌入过程中的信息损失\n\n大多数嵌入模型都基于 Transformer 编码器。其工作流程大致如下：\n\n- **分词 (Tokenization)**: 将输入的文本块分解成一个个 token。\n- **向量化 (Vectorization)**: Transformer 为**每个 token** 生成一个高维向量表示。\n- **池化 (Pooling)**: 通过某种方法（如取 `[CLS]` 位的向量、对所有token向量求平均 `mean pooling` 等），将所有 token 的向量**压缩**成一个**单一的向量**，这个向量代表了整个文本块的语义。\n\n> `[CLS]` 是BERT等Transformer模型在输入文本开头添加的特殊标记，它通过自注意力机制动态聚合整个序列的上下文信息，其最终向量被训练用作代表全局语义的嵌入。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q009",
+      "question": "不按固定字数，而根据内容主题发生变化的位置切开，属于哪种分块方法？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C120",
+          "C122",
+          "C111",
+          "C126",
+          "C104",
+          "C118"
+        ],
+        "bm25_ids": [
+          "C111",
+          "C101",
+          "C100",
+          "C102",
+          "C118",
+          "C016"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C120": 0.01639344262295082,
+          "C122": 0.016129032258064516,
+          "C111": 0.032266458495966696,
+          "C126": 0.015625,
+          "C104": 0.015384615384615385,
+          "C118": 0.030536130536130537,
+          "C101": 0.016129032258064516,
+          "C100": 0.015873015873015872,
+          "C102": 0.015625,
+          "C016": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C111",
+          "C118",
+          "C120",
+          "C122",
+          "C101",
+          "C100",
+          "C126",
+          "C102",
+          "C104",
+          "C016"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C111",
+          "source": "05_text_chunking.md",
+          "page_content": "### 3.3 语义分块\n\n语义分块（Semantic Chunking）是一种更智能的方法，这种方法不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。其核心是：**在语义主题发生显著变化的地方进行切分**。这使得每个分块都具有高度的内部语义一致性。LangChain 提供了 `langchain_experimental.text_splitter.SemanticChunker` 来实现这一功能。\n\n**实现原理**\n\n`SemanticChunker` 的工作流程可以概括为以下几个步骤：\n\n（1）**句子分割 (Sentence Splitting)**：首先，使用标准的句子分割规则（例如，基于句号、问号、感叹号）将输入文本拆分成一个句子列表。"
+        },
+        {
+          "chunk_id": "C118",
+          "source": "05_text_chunking.md",
+          "page_content": "针对结构清晰的 Markdown 文档，利用其标题层级进行分块是一种高效且保留了丰富语义的方法。LangChain 提供了 `MarkdownHeaderTextSplitter` 来处理。\n\n- **实现原理**: 该分块器的主要逻辑是“先按标题分组，再按需细分”。\n    1.  **定义分割规则**: 用户首先需要提供一个标题层级的映射关系，例如 `[ (\"#\", \"Header 1\"), (\"##\", \"Header 2\") ]`，告诉分块器 `#` 是一级标题，`##` 是二级标题。\n    2.  **内容聚合**: 分块器会遍历整个文档，将每个标题下的所有内容（直到下一个同级或更高级别的标题出现前）聚合在一起。每个聚合后的内容块都会被赋予一个包含其完整标题路径的元数据。"
+        },
+        {
+          "chunk_id": "C120",
+          "source": "05_text_chunking.md",
+          "page_content": "- **局限性与组合使用**: 单纯按标题分割可能会导致一个问题：某个章节下的内容可能非常长，远超模型能处理的上下文窗口。为了解决这个问题，`MarkdownHeaderTextSplitter` 可以与其它分块器（如 `RecursiveCharacterTextSplitter`）**组合使用**。具体流程是：\n    - 第一步，使用 `MarkdownHeaderTextSplitter` 将文档按标题分割成若干个大的、带有元数据的逻辑块。\n    - 第二步，对这些逻辑块再应用 `RecursiveCharacterTextSplitter`，将其进一步切分为符合 `chunk_size` 要求的小块。由于这个过程是在第一步之后进行的，所有最终生成的小块都会**继承**来自第一步的标题元数据。\n\n- **RAG应用优势**: 这种两阶段的分块方法，既保留了文档的宏观逻辑结构（通过元数据），又确保了每个块的大小适中，是处理结构化文档进行RAG的理想方案。\n\n## 四、其他开源框架中的分块策略\n\n### 4.1 Unstructured：基于文档元素的智能分块"
+        }
+      ]
+    },
+    {
+      "case_id": "Q010",
+      "question": "递归字符分块按段落切完仍然太长，接着会怎样处理这个大块？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C107",
+          "C106",
+          "C105",
+          "C110",
+          "C102",
+          "C120"
+        ],
+        "bm25_ids": [
+          "C110",
+          "C107",
+          "C105",
+          "C120",
+          "C101",
+          "C060"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 8,
+        "rrf_scores": {
+          "C107": 0.03252247488101534,
+          "C106": 0.016129032258064516,
+          "C105": 0.031746031746031744,
+          "C110": 0.032018442622950824,
+          "C102": 0.015384615384615385,
+          "C120": 0.030776515151515152,
+          "C101": 0.015384615384615385,
+          "C060": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C107",
+          "C110",
+          "C105",
+          "C120",
+          "C106",
+          "C102",
+          "C101",
+          "C060"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C107",
+          "source": "05_text_chunking.md",
+          "page_content": "（3）**最终处理**: 将剩余的暂存片段合并成最后的块\n\n**实现细节**：\n- **批处理机制**: 先收集所有合格片段（`_good_splits`），遇到超长片段时才触发合并操作。\n- **递归终止条件**: 关键在于 `if not new_separators` 判断。当分隔符用尽时（`new_separators` 为空），停止递归，直接保留超长片段。确保算法不会无限递归。\n\n**与固定大小分块的关键差异**：\n- 固定大小分块遇到超长段落时只能发出警告并保留。\n- 递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求。\n\n具体示例如下：\n\n```python\nfrom langchain.text_splitter import RecursiveCharacterTextSplitter\nfrom langchain_community.document_loaders import TextLoader\n\nloader = TextLoader(\"../../data/C2/txt/蜂医.txt\")\ndocs = loader.load()"
+        },
+        {
+          "chunk_id": "C110",
+          "source": "05_text_chunking.md",
+          "page_content": "```python\n# 针对代码文档的优化分隔符\nsplitter = RecursiveCharacterTextSplitter.from_language(\n    language=Language.PYTHON,  # 支持Python、Java、C++等\n    chunk_size=500,\n    chunk_overlap=50\n)\n```\n\n递归字符分块的原理是采用一组有层次结构的分隔符（如段落、句子、单词）进行递归分割，旨在有效平衡语义完整性与块大小控制。在 `RecursiveCharacterTextSplitter` 的实现中，该分块器首先尝试使用最高优先级的分隔符（如段落标记）来切分文本。如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。这种分层处理的机制，能够在尽可能保持高级语义结构完整性的同时，有效控制块大小。\n\n### 3.3 语义分块"
+        },
+        {
+          "chunk_id": "C105",
+          "source": "05_text_chunking.md",
+          "page_content": "### 3.2 递归字符分块\n\n在前面的章节中，已经尝试了使用 `RecursiveCharacterTextSplitter` 的默认配置来处理文档分块。现在让我们深入了解 `RecursiveCharacterTextSplitter` 的实现。这种分块器通过分隔符层级递归处理，相对与固定大小分块，改善了超长文本的处理效果。\n\n**算法流程**：\n（1）**寻找有效分隔符**: 从分隔符列表中从前到后遍历，找到第一个在当前文本中**存在**的分隔符。如果都不存在，使用最后一个分隔符（通常是空字符串 `\"\"`）。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q011",
+      "question": "按单个句子检索时，SentenceWindowNodeParser把前后的上下文存在哪里？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C125",
+          "C397",
+          "C377",
+          "C230",
+          "C223",
+          "C225"
+        ],
+        "bm25_ids": [
+          "C125",
+          "C230",
+          "C228",
+          "C223",
+          "C231",
+          "C112"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 9,
+        "rrf_scores": {
+          "C125": 0.03278688524590164,
+          "C397": 0.016129032258064516,
+          "C377": 0.015873015873015872,
+          "C230": 0.031754032258064516,
+          "C223": 0.031009615384615385,
+          "C225": 0.015151515151515152,
+          "C228": 0.015873015873015872,
+          "C231": 0.015384615384615385,
+          "C112": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C125",
+          "C230",
+          "C223",
+          "C397",
+          "C377",
+          "C228",
+          "C231",
+          "C225",
+          "C112"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C125",
+          "source": "05_text_chunking.md",
+          "page_content": "-   `SentenceWindowNodeParser`: 这是一种巧妙的方法。该方法将文档切分成单个的句子，但在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子（即“窗口”）。这使得在检索时，可以先用单个句子的嵌入进行精确匹配，然后将包含上下文“窗口”的完整文本送给LLM，极大地提升了上下文的质量。\n-   **常规型**: 如 `TokenTextSplitter`, `SentenceSplitter` 等，提供基于Token数量或句子边界的常规切分方法。"
+        },
+        {
+          "chunk_id": "C230",
+          "source": "10_index_optimization.md",
+          "page_content": "# 4. 执行查询并对比结果\nquery = \"What are the concerns surrounding the AMOC?\"\nprint(f\"查询: {query}\\n\")\n\nprint(\"--- 句子窗口检索结果 ---\")\nwindow_response = sentence_query_engine.query(query)\nprint(f\"回答: {window_response}\\n\")\n\nprint(\"--- 常规检索结果 ---\")\nbase_response = base_query_engine.query(query)\nprint(f\"回答: {base_response}\\n\")\n```\n\n（1）**构建句子窗口索引**：这一步利用了 `SentenceWindowNodeParser`。它将文档解析为以单个句子为单位的 `Node`，同时将包含上下文的“窗口”文本（默认为前后各3个句子）存储在每个 `Node` 的元数据中。这一步是实现“为检索精确性而索引小块”思想的关键。"
+        },
+        {
+          "chunk_id": "C223",
+          "source": "10_index_optimization.md",
+          "page_content": "### 1.1 主要思路\n\n句子窗口检索的思想可以概括为：**为检索精确性而索引小块，为上下文丰富性而检索大块**。\n\n其工作流程如下：\n\n（1）**索引阶段**：在构建索引时，文档被分割成**单个句子**。每个句子都作为一个独立的“节点（Node）”存入向量数据库。同时，每个句子节点都会在元数据（metadata）中存储其**上下文窗口**，即该句子原文中的前N个和后N个句子。这个窗口内的文本不会被索引，仅仅是作为元数据存储。\n\n（2）**检索阶段**：当用户发起查询时，系统会在所有**单一句子节点**上执行相似度搜索。因为句子是表达完整语义的最小单位，所以这种方式可以非常精确地定位到与用户问题最相关的核心信息。\n\n（3）**后处理阶段**：在检索到最相关的句子节点后，系统会使用一个名为 `MetadataReplacementPostProcessor` 的后处理模块。该模块会读取到检索到的句子节点的元数据，并用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q012",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "labeled_evidence_hit": false,
+      "first_labeled_evidence_rank": null,
+      "reciprocal_rank": 0.0,
+      "all_evidence_groups_hit": false,
+      "route_details": {
+        "dense_ids": [
+          "C368",
+          "C306",
+          "C138",
+          "C150",
+          "C361",
+          "C063"
+        ],
+        "bm25_ids": [
+          "C353",
+          "C097",
+          "C002",
+          "C008",
+          "C154",
+          "C131"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 12,
+        "rrf_scores": {
+          "C368": 0.01639344262295082,
+          "C306": 0.016129032258064516,
+          "C138": 0.015873015873015872,
+          "C150": 0.015625,
+          "C361": 0.015384615384615385,
+          "C063": 0.015151515151515152,
+          "C353": 0.01639344262295082,
+          "C097": 0.016129032258064516,
+          "C002": 0.015873015873015872,
+          "C008": 0.015625,
+          "C154": 0.015384615384615385,
+          "C131": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C368",
+          "C353",
+          "C306",
+          "C097",
+          "C138",
+          "C002",
+          "C150",
+          "C008",
+          "C361",
+          "C154",
+          "C063",
+          "C131"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C368",
+          "source": "14_query_rewriting.md",
+          "page_content": "[^4]: [*使用假设性文档嵌入（HyDE）改进信息检索和 RAG*](https://zilliz.com.cn/blog/improve-rag-and-information-retrieval-with-hyde-hypothetical-document-embeddings).\n\n[^5]: [*How to route between sub-chains*](https://python.langchain.com/docs/how_to/routing/).\n\n[^6]: [*LangChain Expression Language*](https://python.langchain.com/docs/concepts/lcel/).\n\n[^7]: [*LlamaIndex Routing*](https://docs.llamaindex.ai/en/stable/module_guides/querying/router/)."
+        },
+        {
+          "chunk_id": "C353",
+          "source": "14_query_rewriting.md",
+          "page_content": "![HyDE](./images/4_4_2.webp)\n\nHyDE 通过一种巧妙的方式来“绕过”这个问题：它不直接使用用户的原始查询，而是先利用一个生成式大语言模型（LLM）来生成一个“假设性”的、能够完美回答该查询的文档。然后，HyDE 将这个内容详实的假设性文档进行向量化，用其生成的向量去数据库中寻找与之最相似的真实文档。HyDE 的工作流程可以分为三个步骤：\n\n（1）**生成**：当接收到用户查询时，首先调用一个生成式 LLM（例如，GPT-3.5）。提示该模型根据查询生成一个详细的、可能是理想答案的文档。这个文档不必完全符合事实，但它必须在语义上与一个好的答案高度相关。\n\n（2）**编码**：将上一步生成的假设性文档输入到一个对比编码器（如 Contriever）中，将其转换为一个高维向量嵌入。这个向量在语义上代表了一个“理想答案”的位置。\n\n（3）**检索**：使用这个假设性文档的向量，在向量数据库中执行相似性搜索，找出与这个“理想答案”最接近的真实文档。这些被检索出的文档将作为最终的上下文信息。"
+        },
+        {
+          "chunk_id": "C306",
+          "source": "12_query_construction.md",
+          "page_content": "> **提示**：在代码中可以看到 `temperature` 参数被设置为 `0`。这个值是用于控制模型输出的随机性。值越高（如 0.8），输出越随机、越有创意；值越低，输出越确定、越集中。设置为 `0` 可以让模型的输出变得完全确定，即对于相同的输入，总是生成完全相同的输出。在自查询这种需要精确地将自然语言转换为结构化查询的场景下，可以确保转换结果的稳定和可复现。\n\n**输出结果：**"
+        }
+      ]
+    },
+    {
+      "case_id": "Q013",
+      "question": "用向量之间的直线距离比较语义时，距离越大还是越小表示更相似？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C129",
+          "C261",
+          "C138",
+          "C112",
+          "C148",
+          "C137"
+        ],
+        "bm25_ids": [
+          "C129",
+          "C112",
+          "C137",
+          "C191",
+          "C261",
+          "C189"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 8,
+        "rrf_scores": {
+          "C129": 0.03278688524590164,
+          "C261": 0.0315136476426799,
+          "C138": 0.015873015873015872,
+          "C112": 0.031754032258064516,
+          "C148": 0.015384615384615385,
+          "C137": 0.031024531024531024,
+          "C191": 0.015625,
+          "C189": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C129",
+          "C112",
+          "C261",
+          "C137",
+          "C138",
+          "C191",
+          "C148",
+          "C189"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C129",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        },
+        {
+          "chunk_id": "C112",
+          "source": "05_text_chunking.md",
+          "page_content": "（1）**句子分割 (Sentence Splitting)**：首先，使用标准的句子分割规则（例如，基于句号、问号、感叹号）将输入文本拆分成一个句子列表。\n\n（2）**上下文感知嵌入 (Context-Aware Embedding)**：这是 `SemanticChunker` 的一个关键设计。该分块器不是对每个句子独立进行嵌入，而是通过 `buffer_size` 参数（默认为1）来捕捉上下文信息。对于列表中的每一个句子，这种方法会将其与前后各 `buffer_size` 个句子组合起来，然后对这个临时的、更长的组合文本进行嵌入。这样，每个句子最终得到的嵌入向量就融入了其上下文的语义。\n\n（3）**计算语义距离 (Distance Calculation)**：计算每对**相邻**句子的嵌入向量之间的余弦距离。这个距离值量化了两个句子之间的语义差异——距离越大，表示语义关联越弱，跳跃越明显。"
+        },
+        {
+          "chunk_id": "C261",
+          "source": "11_hybrid_search.md",
+          "page_content": "### 1.2 密集向量\n\n密集向量，也常被称为“语义向量”，是通过深度学习模型学习到的数据（如文本、图像）的低维、稠密的浮点数表示。这些向量旨在将原始数据映射到一个连续的、充满意义的“语义空间”中来捕捉“语义”或“概念”。在理想的语义空间中，向量之间的距离和方向代表了它们所表示概念之间的关系。一个经典的例子是 `vector('国王') - vector('男人') + vector('女人')` 的计算结果在向量空间中非常接近 `vector('女王')`，这表明模型学会了“性别”和“皇室”这两个维度的抽象概念。它的代表包括 Word2Vec、GloVe、以及所有基于 Transformer 的模型（如 BERT、GPT）生成的嵌入（Embeddings）。\n\n其主要优点是能够理解同义词、近义词和上下文关系，泛化能力强，在语义搜索任务中表现卓越。但缺点也同样明显：可解释性差（向量中的每个维度通常没有具体的物理意义），需要大量数据和算力进行模型训练，且对于未登录词（OOV）[^1]的处理相对困难。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q014",
+      "question": "把文档块编码成向量并存入向量库，属于离线准备还是在线问题检索阶段？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 3,
+      "reciprocal_rank": 0.3333333333333333,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C066",
+          "C160",
+          "C352",
+          "C017",
+          "C099",
+          "C293"
+        ],
+        "bm25_ids": [
+          "C130",
+          "C002",
+          "C066",
+          "C223",
+          "C017",
+          "C209"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C066": 0.032266458495966696,
+          "C160": 0.016129032258064516,
+          "C352": 0.015873015873015872,
+          "C017": 0.031009615384615385,
+          "C099": 0.015384615384615385,
+          "C293": 0.015151515151515152,
+          "C130": 0.01639344262295082,
+          "C002": 0.016129032258064516,
+          "C223": 0.015625,
+          "C209": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C066",
+          "C017",
+          "C130",
+          "C160",
+          "C002",
+          "C352",
+          "C223",
+          "C099",
+          "C293",
+          "C209"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C066",
+          "source": "03_get_start_rag.md",
+          "page_content": "- **定义用户查询**: 设置一个具体的用户问题字符串。\n    ```python\n    question = \"文中举了哪些例子？\"\n    ```\n- **在向量存储中查询相关文档**: 使用向量存储的`similarity_search`方法，根据用户问题在索引中查找最相关的 `k` (此处示例中 `k=3`) 个文本块。\n    ```python\n    retrieved_docs = vectorstore.similarity_search(question, k=3)\n    ```\n- **准备上下文**: 将检索到的多个文本块的页面内容 (`doc.page_content`) 合并成一个单一的字符串，并使用双换行符 (`\"\\n\\n\"`) 分隔各个块，形成最终的上下文信息 (`docs_content`) 供大语言模型参考。\n    ```python\n    docs_content = \"\\n\\n\".join(doc.page_content for doc in retrieved_docs)\n    ```"
+        },
+        {
+          "chunk_id": "C017",
+          "source": "01_RAG_intro.md",
+          "page_content": "（1）**数据准备与清洗**：这是系统的地基。我们需要将 PDF、Word 等多源异构数据标准化，并采用合理的**分块策略**（如按语义段落切分而非固定字符数），避免信息在切割中支离破碎。\n\n（2）**索引构建**：将切分好的文本通过**嵌入模型**转化为向量，并存入数据库。可以在此阶段关联**元数据**（如来源、页码），这对后续的精确引用很有帮助。\n\n（3）**检索策略优化**：不要依赖单一的向量搜索。可以采用**混合检索**（向量+关键词）等方式来提升召回率，并引入**重排序**模型对检索结果进行二次精选，确保 LLM 看到的都是精华。\n\n（4）**生成与提示工程**：最后，设计一套清晰的 **Prompt 模板**，引导 LLM 基于检索到的上下文回答用户问题，并明确要求模型“不知道就说不知道”，防止幻觉。\n\n### 3.3 新手友好方案"
+        },
+        {
+          "chunk_id": "C130",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 1.2 Embedding 在 RAG 中的作用\n\n在RAG流程中，Embedding 扮演着无可替代的重要角色。\n\n#### 1.2.1 语义检索的基础\n\nRAG 的“检索”环节通常以基于 Embedding 的语义搜索为核心。通用流程如下：\n（1）**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。\n\n（2）**在线查询检索**：当用户提出问题时，使用**同一个** Embedding 模型将用户的问题也转换为一个向量。\n\n（3）**相似度计算**：在向量数据库中，计算“问题向量”与所有“文档块向量”的相似度。\n\n（4）**召回上下文**：选取相似度最高的 Top-K 个文档块，作为补充的上下文信息，与原始问题一同送给大语言模型（LLM）生成最终答案。\n\n#### 1.2.2 决定检索质量的关键"
+        }
+      ]
+    },
+    {
+      "case_id": "Q015",
+      "question": "“苹果”分别指公司和水果时，为什么静态词向量难以区分这两种意思？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C132",
+          "C263",
+          "C180",
+          "C261",
+          "C115",
+          "C191"
+        ],
+        "bm25_ids": [
+          "C132",
+          "C133",
+          "C456",
+          "C008",
+          "C263",
+          "C262"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C132": 0.03278688524590164,
+          "C263": 0.0315136476426799,
+          "C180": 0.015873015873015872,
+          "C261": 0.015625,
+          "C115": 0.015384615384615385,
+          "C191": 0.015151515151515152,
+          "C133": 0.016129032258064516,
+          "C456": 0.015873015873015872,
+          "C008": 0.015625,
+          "C262": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C132",
+          "C263",
+          "C133",
+          "C180",
+          "C456",
+          "C261",
+          "C008",
+          "C115",
+          "C191",
+          "C262"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C132",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 2.1 静态词嵌入：上下文无关的表示\n\n- **代表模型**：Word2Vec (2013), GloVe (2014)\n- **主要原理**：为词汇表中的每个单词生成一个固定的、与上下文无关的向量。例如，`Word2Vec` 通过 Skip-gram 和 CBOW 架构，利用局部上下文窗口学习词向量，并验证了向量运算的语义能力（如 `国王 - 男人 + 女人 ≈ 王后`）。`GloVe` 则融合了全局词-词共现矩阵的统计信息。\n- **局限性**：无法处理一词多义问题。在“苹果公司发布了新手机”和“我吃了一个苹果”中，“苹果”的词向量是完全相同的，这限制了其在复杂语境下的语义表达能力。\n\n### 2.2 动态上下文嵌入"
+        },
+        {
+          "chunk_id": "C263",
+          "source": "11_hybrid_search.md",
+          "page_content": "2.  **坐标列表 (Coordinate list - COO):**\n    这种方式通常用一个元组 `(维度, [索引列表], [值列表])` 来表示。上面的向量可以表示为：\n    ```\n    (8, [3, 7], [5, 9])\n    ```\n    这种格式在 `SciPy` 等科学计算库中非常常见。\n\n假设在一个包含5万个词的词汇表中，“西红柿”在第88位，“炒”在第666位，“蛋”在第999位，它们的BM25权重分别是1.2、0.8、1.5。那么它的稀疏表示（采用字典格式）就是：\n```json\n// {索引: 权重}\n{\n  \"88\": 1.2,\n  \"666\": 0.8,\n  \"999\": 1.5\n}\n```\n如果采用坐标列表（COO）格式，它会是这样：\n```\n(50000, [88, 666, 999], [1.2, 0.8, 1.5])\n```\n这两种格式都清晰地记录了文档的关键信息，但它们的局限性也很明显：如果我们搜索“番茄炒鸡蛋”，由于“番茄”和“西红柿”是不同的词条（索引不同），模型将无法理解它们的语义相似性。\n\n**密集向量表示:**"
+        },
+        {
+          "chunk_id": "C133",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 2.2 动态上下文嵌入\n\n2017年，`Transformer` 架构的诞生带来了自注意力机制（Self-Attention），它允许模型在生成一个词的向量时，动态地考虑句子中所有其他词的影响。基于此，2018年 `BERT` 模型利用 `Transformer` 的编码器，通过掩码语言模型（MLM）等自监督任务进行预训练，生成了深度上下文相关的嵌入。同一个词在不同语境中会生成不同的向量，这有效解决了静态嵌入的一词多义难题。\n\n### 2.3 RAG 对嵌入技术的新要求\n\n在开篇我们就提到了 RAG 框架的提出[^1]，是为了解决大型语言模型 **知识固化**（内部知识难以更新）和 **幻觉**（生成的内容可能不符合事实且无法溯源）的问题。它通过“检索-生成”范式，动态地为 LLM 注入外部知识。这一过程的核心是 **语义检索**，很大程度上依赖于高质量的向量嵌入。\n\n后续 RAG 的兴起对嵌入技术提出了更高、更具体的要求："
+        }
+      ]
+    },
+    {
+      "case_id": "Q016",
+      "question": "RAG的生成阶段，生成模块会接收哪两类输入？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C002",
+          "C133",
+          "C057",
+          "C134",
+          "C001",
+          "C098"
+        ],
+        "bm25_ids": [
+          "C002",
+          "C223",
+          "C414",
+          "C339",
+          "C322",
+          "C413"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 11,
+        "rrf_scores": {
+          "C002": 0.03278688524590164,
+          "C133": 0.016129032258064516,
+          "C057": 0.015873015873015872,
+          "C134": 0.015625,
+          "C001": 0.015384615384615385,
+          "C098": 0.015151515151515152,
+          "C223": 0.016129032258064516,
+          "C414": 0.015873015873015872,
+          "C339": 0.015625,
+          "C322": 0.015384615384615385,
+          "C413": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C002",
+          "C133",
+          "C223",
+          "C057",
+          "C414",
+          "C134",
+          "C339",
+          "C001",
+          "C322",
+          "C098",
+          "C413"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C002",
+          "source": "01_RAG_intro.md",
+          "page_content": "### 1.2 技术原理\n\n那么，RAG 系统是如何实现“参数化知识”与“非参数化知识”的结合呢？如图 1-1 所示，其架构主要通过两个阶段来完成这一过程：\n\n（1）**检索阶段：寻找“非参数化知识”**\n-   **知识向量化**：**嵌入模型（Embedding Model）** 充当了“连接器”的角色。它将外部知识库编码为向量索引（Index），存入**向量数据库**。\n-   **语义召回**：当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化，并通过**相似度搜索（Similarity Search）**，从海量数据中精准锁定与问题最相关的文档片段。\n\n（2）**生成阶段：融合两种知识**\n-   **上下文整合**：**生成模块**接收检索阶段送来的相关文档片段以及用户的原始问题。\n-   **指令引导生成**：该模块会遵循预设的 **Prompt** 指令，将上下文与问题有效整合，并引导 LLM（如 DeepSeek）进行可控的、有理有据的文本生成。"
+        },
+        {
+          "chunk_id": "C133",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 2.2 动态上下文嵌入\n\n2017年，`Transformer` 架构的诞生带来了自注意力机制（Self-Attention），它允许模型在生成一个词的向量时，动态地考虑句子中所有其他词的影响。基于此，2018年 `BERT` 模型利用 `Transformer` 的编码器，通过掩码语言模型（MLM）等自监督任务进行预训练，生成了深度上下文相关的嵌入。同一个词在不同语境中会生成不同的向量，这有效解决了静态嵌入的一词多义难题。\n\n### 2.3 RAG 对嵌入技术的新要求\n\n在开篇我们就提到了 RAG 框架的提出[^1]，是为了解决大型语言模型 **知识固化**（内部知识难以更新）和 **幻觉**（生成的内容可能不符合事实且无法溯源）的问题。它通过“检索-生成”范式，动态地为 LLM 注入外部知识。这一过程的核心是 **语义检索**，很大程度上依赖于高质量的向量嵌入。\n\n后续 RAG 的兴起对嵌入技术提出了更高、更具体的要求："
+        },
+        {
+          "chunk_id": "C223",
+          "source": "10_index_optimization.md",
+          "page_content": "### 1.1 主要思路\n\n句子窗口检索的思想可以概括为：**为检索精确性而索引小块，为上下文丰富性而检索大块**。\n\n其工作流程如下：\n\n（1）**索引阶段**：在构建索引时，文档被分割成**单个句子**。每个句子都作为一个独立的“节点（Node）”存入向量数据库。同时，每个句子节点都会在元数据（metadata）中存储其**上下文窗口**，即该句子原文中的前N个和后N个句子。这个窗口内的文本不会被索引，仅仅是作为元数据存储。\n\n（2）**检索阶段**：当用户发起查询时，系统会在所有**单一句子节点**上执行相似度搜索。因为句子是表达完整语义的最小单位，所以这种方式可以非常精确地定位到与用户问题最相关的核心信息。\n\n（3）**后处理阶段**：在检索到最相关的句子节点后，系统会使用一个名为 `MetadataReplacementPostProcessor` 的后处理模块。该模块会读取到检索到的句子节点的元数据，并用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q017",
+      "question": "提示词工程、RAG和微调，在是否修改模型参数上有什么区别？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C008",
+          "C009",
+          "C142",
+          "C001",
+          "C002",
+          "C447"
+        ],
+        "bm25_ids": [
+          "C008",
+          "C009",
+          "C344",
+          "C074",
+          "C438",
+          "C355"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C008": 0.03278688524590164,
+          "C009": 0.03225806451612903,
+          "C142": 0.015873015873015872,
+          "C001": 0.015625,
+          "C002": 0.015384615384615385,
+          "C447": 0.015151515151515152,
+          "C344": 0.015873015873015872,
+          "C074": 0.015625,
+          "C438": 0.015384615384615385,
+          "C355": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C008",
+          "C009",
+          "C142",
+          "C344",
+          "C001",
+          "C074",
+          "C002",
+          "C438",
+          "C447",
+          "C355"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C008",
+          "source": "01_RAG_intro.md",
+          "page_content": "> “离线”指提前完成的数据预处理工作（如索引构建）；“在线”指用户发起请求后的实时处理流程。\n\n## 二、为什么要使用 RAG？\n\n### 2.1 技术选型：RAG vs. 微调\n\n在选择具体的技术路径时，一个重要的考量是成本与效益的平衡。通常，我们应优先选择对模型改动最小、成本最低的方案，所以技术选型路径往往遵循的顺序是**提示词工程（Prompt Engineering） -> 检索增强生成 -> 微调（Fine-tuning）**。\n\n我们可以从两个维度来理解这些技术的区别。如图 1-3 所示，**横轴代表“LLM 优化”**，即对模型本身进行多大程度的修改。从左到右，优化的程度越来越深，其中提示工程和 RAG 完全不改变模型权重，而微调则直接修改模型参数。**纵轴代表“上下文优化”**，是对输入给模型的信息进行多大程度的增强。从下到上，增强的程度越来越高，其中提示工程只是优化提问方式，而 RAG 则通过引入外部知识库，极大地丰富了上下文信息。"
+        },
+        {
+          "chunk_id": "C009",
+          "source": "01_RAG_intro.md",
+          "page_content": "<div align=\"center\">\n  <img src=\"./images/1_1_3.svg\" width=\"60%\" alt=\"技术选型路径\" />\n  <p>图 1-3 选型路径图</p>\n</div>\n\n基于此，我们的选择路径就清晰了：\n- **先尝试提示工程**：通过精心设计提示词来引导模型，适用于任务简单、模型已有相关知识的场景。\n- **再选择 RAG**：如果模型缺乏特定或实时知识而无法回答，则使用 RAG，通过外挂知识库为其提供上下文信息。\n- **最后考虑微调**：当目标是改变模型“如何做”（行为/风格/格式）而不是“知道什么”（知识）时，微调是最终且最合适的选择。例如，让模型学会严格遵循某种独特的输出格式、模仿特定人物的对话风格，或者将极其复杂的指令“蒸馏”进模型权重中。\n\nRAG 的出现填补了通用模型与专业领域之间的鸿沟，它在解决如表 1-2 所示 LLM 局限时尤其有效："
+        },
+        {
+          "chunk_id": "C142",
+          "source": "06_vector_embedding.md",
+          "page_content": "- **任务 (Task)** ：对于 RAG 应用，需要重点关注模型在 `Retrieval` (检索) 任务下的排名。\n- **语言 (Language)** ：模型是否支持你的业务数据所使用的语言？对于中文 RAG，应选择明确支持中文或多语言的模型。\n- **模型大小 (Size)** ：模型越大，通常性能越好，但对硬件（显存）的要求也越高，推理速度也越慢。需要根据你的部署环境和性能要求来权衡。\n- **维度 (Dimensions)** ：向量维度越高，能编码的信息越丰富，但也会占用更多的存储空间和计算资源。\n- **最大 Token 数 (Max Tokens)** ：这决定了模型能处理的文本长度上限。这个参数是你设计文本分块（Chunking）策略时必须考虑的重要依据，块大小不应超过此限制。\n- **得分与机构 (Score & Publisher)** ：结合模型的得分排名和其发布机构的声誉进行初步筛选。知名机构发布的模型通常质量更有保障。"
+        }
+      ]
+    },
+    {
+      "case_id": "Q018",
+      "question": "RRF融合主要依据各检索系统给出的原始分数，还是文档排名？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 2,
+      "reciprocal_rank": 0.5,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C369",
+          "C265",
+          "C266",
+          "C429",
+          "C253",
+          "C392"
+        ],
+        "bm25_ids": [
+          "C265",
+          "C369",
+          "C266",
+          "C431",
+          "C375",
+          "C370"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 9,
+        "rrf_scores": {
+          "C369": 0.03252247488101534,
+          "C265": 0.03252247488101534,
+          "C266": 0.031746031746031744,
+          "C429": 0.015625,
+          "C253": 0.015384615384615385,
+          "C392": 0.015151515151515152,
+          "C431": 0.015625,
+          "C375": 0.015384615384615385,
+          "C370": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C369",
+          "C265",
+          "C266",
+          "C429",
+          "C431",
+          "C253",
+          "C375",
+          "C392",
+          "C370"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C369",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "# 第五节 检索进阶\n\n在基础的 RAG 流程中，依赖向量相似度从知识库中检索信息。不过，这种方法存在一些固有的局限性，例如最相关的文档不总是在检索结果的顶端，以及语义理解的偏差等。为了构建更强大、更精准的生产级 RAG 应用，需要引入更高级的检索技术。\n\n![retrieval](images/4_5_1.webp)\n\n## 一、重排序 (Re-ranking)\n\n### 1.1 RRF (Reciprocal Rank Fusion)\n\n我们在 [**混合检索章节**](./11_hybrid_search.md) 中已经接触过 RRF。它是一种简单而有效的**零样本**重排方法，不依赖于任何模型训练，而是纯粹基于文档在多个不同检索器（例如，一个稀疏检索器和一个密集检索器）结果列表中的**排名**来计算最终分数。\n\n一个文档如果在多个检索结果中都排名靠前，那么它很可能更重要。RRF 通过计算排名的倒数来为文档打分，有效融合了不同检索策略的优势。但是如果只考虑排名信息，会忽略原始的相似度分数，可能丢失部分有用信息。"
+        },
+        {
+          "chunk_id": "C265",
+          "source": "11_hybrid_search.md",
+          "page_content": "- **主要目标**：解决单一检索技术的局限性。例如，关键词检索无法理解语义，而向量检索则可能忽略掉必须精确匹配的关键词（如产品型号、函数名等）。混合检索旨在同时利用稀疏向量的**精确性**和密集向量的**泛化性**，以应对复杂多变的搜索需求。\n\n### 2.1 技术原理与融合方法\n\n混合检索通常并行执行两种检索算法，然后将两组异构的结果集融合成一个统一的排序列表。以下是两种主流的融合策略：\n\n#### 2.1.1 倒数排序融合 (Reciprocal Rank Fusion, RRF)\n\nRRF 不关心不同检索系统的原始得分，只关心每个文档在各自结果集中的**排名**。其思想是：一个文档在不同检索系统中的排名越靠前，它的最终得分就越高。\n\n其计分公式为：\n\n$$ RRF_{score}(d) = \\sum_{i=1}^{k} \\frac{1}{rank_i(d) + c} $$"
+        },
+        {
+          "chunk_id": "C266",
+          "source": "11_hybrid_search.md",
+          "page_content": "其计分公式为：\n\n$$ RRF_{score}(d) = \\sum_{i=1}^{k} \\frac{1}{rank_i(d) + c} $$\n\n其中：\n- $d$ 是待评分的文档。\n- $k$ 是检索系统的数量（这里是2，即稀疏和密集）。\n- $rank_i(d)$ 是文档 $d$ 在第 $i$ 个检索系统中的排名。\n- $c$ 是一个常数（通常设为60），用于降低排名靠前文档的相对权重，实现更稳健的排名融合。\n\n#### 2.1.2 加权线性组合\n\n这种方法需要先将不同检索系统的得分进行归一化（例如，统一到 0-1 区间），然后通过一个权重参数 `α` 来进行线性组合。\n\n$$ Hybrid_{score} = \\alpha \\cdot Dense_{score} + (1 - \\alpha) \\cdot Sparse_{score} $$\n\n通过调整 `α` 的值，可以灵活地控制语义相似性与关键词匹配在最终排序中的贡献比例。例如，在电商搜索中，可以调高关键词的权重；而在智能问答中，则可以侧重于语义。\n\n### 2.2 优势与局限"
+        }
+      ]
+    },
+    {
+      "case_id": "Q019",
+      "question": "Cross-Encoder重排怎样组织查询和候选文档的模型输入？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": true,
+      "route_details": {
+        "dense_ids": [
+          "C371",
+          "C372",
+          "C374",
+          "C392",
+          "C379",
+          "C050"
+        ],
+        "bm25_ids": [
+          "C371",
+          "C373",
+          "C372",
+          "C375",
+          "C370",
+          "C429"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 10,
+        "rrf_scores": {
+          "C371": 0.03278688524590164,
+          "C372": 0.03200204813108039,
+          "C374": 0.015873015873015872,
+          "C392": 0.015625,
+          "C379": 0.015384615384615385,
+          "C050": 0.015151515151515152,
+          "C373": 0.016129032258064516,
+          "C375": 0.015625,
+          "C370": 0.015384615384615385,
+          "C429": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C371",
+          "C372",
+          "C373",
+          "C374",
+          "C392",
+          "C375",
+          "C379",
+          "C370",
+          "C050",
+          "C429"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C371",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "示例格式:\n文档 1: <文档1的摘要>\n文档 2: <文档2的摘要>\n...\n文档 10: <文档10的摘要>\n\n问题: <用户的问题>\n\n回答:\nDoc: 9, Relevance: 7\nDoc: 3, Relevance: 4\nDoc: 7, Relevance: 3\n```\n\n### 1.3 Cross-Encoder 重排\n\nCross-Encoder（交叉编码器）能提供出色的重排精度[^2]。它的工作原理是将查询（Query）和每个候选文档（Document）**拼接**成一个单一的输入（例如，`[CLS] query [SEP] document [SEP]`），然后将这个整体输入到一个预训练的 Transformer 模型（如 BERT）中，模型最终会输出一个单一的分数（通常在 0 到 1 之间），这个分数直接代表了文档与查询的**相关性**。\n\n> 注：**[SEP]** 是在 BERT 这类基于 Transformer 架构的模型中，用于分隔不同文本片段（如查询和文档）的特殊标记。"
+        },
+        {
+          "chunk_id": "C372",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "> 注：**[SEP]** 是在 BERT 这类基于 Transformer 架构的模型中，用于分隔不同文本片段（如查询和文档）的特殊标记。\n\n<div align=\"center\">\n<img src=\"./images/4_5_3.svg\" alt=\"cross-encoder\" width=\"600\">\n</div>\n\n上图清晰地展示了 Cross-Encoder 的工作流程：\n1.  **初步检索**：搜索引擎首先从知识库中召回一个初始的文档列表（例如，前 50 篇）。\n2.  **逐一评分**：对于列表中的**每一篇**文档，系统都将其与原始查询**配对**，然后发送给 Cross-Encoder 模型。\n3.  **独立推理**：模型对每个“查询-文档”对进行一次完整的、独立的推理计算，得出一个精确的相关性分数。\n4.  **返回重排结果**：系统根据这些新的分数对文档列表进行重新排序，并将最终结果返回给用户。\n\n这个流程凸显了其高精度的来源（同时分析查询和文档），也解释了其高延迟的原因（需要N次独立的模型推理）。"
+        },
+        {
+          "chunk_id": "C373",
+          "source": "15_advanced_retrieval_techniques.md",
+          "page_content": "这个流程凸显了其高精度的来源（同时分析查询和文档），也解释了其高延迟的原因（需要N次独立的模型推理）。\n\n常见的 Cross-Encoder 模型包括 `ms-marco-MiniLM-L-12-v2`、`ms-marco-TinyBERT-L-2-v2` 等。\n\n### 1.4 ColBERT 重排\n\nColBERT（Contextualized Late Interaction over BERT）是一种创新的重排模型，它在 Cross-Encoder 的高精度和双编码器（Bi-Encoder）的高效率之间取得了平衡[^3]。采用了一种“**后期交互**”机制。\n\n其工作流程如下："
+        }
+      ]
+    },
+    {
+      "case_id": "Q020",
+      "question": "在线向量检索时应使用什么嵌入模型编码问题？用欧氏距离比较时，距离怎样变化表示更相似？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 3,
+      "reciprocal_rank": 0.3333333333333333,
+      "all_evidence_groups_hit": false,
+      "route_details": {
+        "dense_ids": [
+          "C138",
+          "C148",
+          "C361",
+          "C137",
+          "C189",
+          "C098"
+        ],
+        "bm25_ids": [
+          "C129",
+          "C137",
+          "C112",
+          "C169",
+          "C154",
+          "C191"
+        ],
+        "candidate_count_before": 12,
+        "unique_count": 11,
+        "rrf_scores": {
+          "C138": 0.01639344262295082,
+          "C148": 0.016129032258064516,
+          "C361": 0.015873015873015872,
+          "C137": 0.031754032258064516,
+          "C189": 0.015384615384615385,
+          "C098": 0.015151515151515152,
+          "C129": 0.01639344262295082,
+          "C112": 0.015873015873015872,
+          "C169": 0.015625,
+          "C154": 0.015384615384615385,
+          "C191": 0.015151515151515152
+        },
+        "all_ranked_ids": [
+          "C137",
+          "C138",
+          "C129",
+          "C148",
+          "C361",
+          "C112",
+          "C169",
+          "C189",
+          "C154",
+          "C098",
+          "C191"
+        ]
+      },
+      "retrieved_docs": [
+        {
+          "chunk_id": "C137",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 3.2 效果增强策略\n\n虽然 MLM 和 NSP 赋予了模型强大的基础语义理解能力，但为了在检索任务中表现更佳，现代嵌入模型通常会引入更具针对性的训练策略。\n\n- **度量学习 (Metric Learning)** ：\n    - **思想**：直接以“相似度”作为优化目标。\n    - **方法**：收集大量相关的文本对（例如，（问题，答案）、（新闻标题，正文））。训练的目标是优化向量空间中的**相对距离**：让“正例对”的向量表示在空间中被“拉近”，而“负例对”的向量表示被“推远”。关键在于优化排序关系，而非追求绝对的相似度值（如 1 或 0），因为过度追求极端值可能导致模型过拟合。"
+        },
+        {
+          "chunk_id": "C138",
+          "source": "06_vector_embedding.md",
+          "page_content": "- **对比学习 (Contrastive Learning)** ：\n    - **思想**：在向量空间中，将相似的样本“拉近”，将不相似的样本“推远”。\n    - **方法**：构建一个三元组（Anchor, Positive, Negative）。其中，Anchor 和 Positive 是相关的（例如，同一个问题的两种不同问法），Anchor 和 Negative 是不相关的。训练的目标是让 `distance(Anchor, Positive)` 尽可能小，同时让 `distance(Anchor, Negative)` 尽可能大。\n\n## 四、嵌入模型选型指南\n\n理论已经了解，那么该如何选择最适合你项目的嵌入模型？\n\n### 4.1 从 MTEB 排行榜开始"
+        },
+        {
+          "chunk_id": "C129",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        }
+      ]
+    }
+  ],
+  "generation_called": false
+}

@@ -1,0 +1,782 @@
+{
+  "schema_version": 1,
+  "annotation_version": "rag-full-v2-draft",
+  "status": "draft_for_review",
+  "holdout_status": "frozen",
+  "corpus_manifest": "reference/corpus21_manifest.json",
+  "scope": "固定21篇/498块资料上的35题评估草稿，20开发、10留出、5资料不足。",
+  "target_counts": {
+    "dev": 20,
+    "holdout": 10,
+    "insufficient": 5
+  },
+  "split_policy": "旧15题及已运行Q016/Q017均列开发组。H001-H010为新准备留出题，冻结状态待确认。N001为已见控制例，其余不足题按资料范围标注。",
+  "evidence_rule": "evidence_options用于检查至少一条标注原句命中及首次排名。存在evidence_groups时，每组均包含回答必需的信息，全部组覆盖需逐组检查。原句存在性与答案语义支撑按各自证据记录。",
+  "annotation_note": "助手根据固定语料标注，全部正例原句已在来源和已保存块中定位；用户已抽查确认Q016/Q017。新增语义标注及资料不足控制题待抽查。",
+  "cases": [
+    {
+      "id": "Q001",
+      "question": "文本切分为什么要设置重叠？",
+      "reference_answer": "保留相邻块的部分上下文，缓解语义割裂、保持上下文连续性。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过重叠机制（`chunk_overlap`）保持上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "通过 `chunk_overlap` 参数在块之间保持内容重叠，确保上下文连续性"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "每个块之间重叠10个字符，以缓解语义割裂"
+        },
+        {
+          "source": "03_get_start_rag.md",
+          "quote": "并通过重叠来减少上下文信息的丢失。"
+        }
+      ],
+      "note": "复用已见开发问题，完整语料接受03_get_start_rag.md与05_text_chunking.md中支持重叠目的的原句，块编号以报告为准。",
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "通过重叠保持上下文连续性、缓解语义割裂"
+      ],
+      "annotation_note": "2026-11-14助手复核实际返回C061，确认其减少上下文信息丢失的原句支持问题，补为可接受依据。"
+    },
+    {
+      "id": "Q002",
+      "split": "dev",
+      "question": "文档加载器除了提取正文，还会抽取哪些信息作为元数据？",
+      "expected_status": "answered",
+      "reference_answer": "文档来源、页码、作者等信息。",
+      "reference_facts": [
+        "文档来源",
+        "页码",
+        "作者"
+      ],
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "同时抽取文档来源、页码、作者等关键信息作为元数据"
+        }
+      ],
+      "annotation_note": "沿用已运行的开发案例。"
+    },
+    {
+      "id": "Q003",
+      "question": "点积和余弦相似度在什么条件下等价？",
+      "reference_answer": "向量归一化后，两者等价。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在向量归一化后，点积等价于余弦相似度。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "向量归一化后点积等价于余弦相似度"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q004",
+      "question": "一套RAG流程刚开始处理资料时，数据加载属于第几个步骤？",
+      "reference_answer": "数据加载是整个流水线的第一步。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "**数据加载**是整个流水线的第一步"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "数据加载是整个流水线的第一步"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q005",
+      "question": "文中面向RAG和AI微调、负责非结构化资料预处理的专业文档库叫什么？",
+      "reference_answer": "Unstructured。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "**Unstructured** [^1]是一个专业的文档处理库，专门设计用于RAG和AI微调场景的非结构化数据预处理。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "Unstructured"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q006",
+      "question": "自动识别出PDF文件后，partition会把处理转交给哪个专用函数？",
+      "reference_answer": "partition_pdf。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "如PDF文件会调用`partition_pdf`"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "partition_pdf"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q007",
+      "question": "已经知道文档是PDF时，partition的哪个参数可以指定MIME类型并跳过自动格式检测？",
+      "reference_answer": "content_type，例如指定application/pdf。",
+      "evidence_options": [
+        {
+          "source": "04_data_load.md",
+          "quote": "`content_type`: 可选参数，指定MIME类型（如\"application/pdf\"），可绕过自动文件类型检测"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "content_type参数"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q008",
+      "question": "把超出输入长度限制的文本块交给嵌入模型，会造成什么问题？",
+      "reference_answer": "文本块会被截断，导致信息丢失，向量无法完整代表原文语义。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "任何超出此限制的文本块在输入时都会被截断，导致信息丢失，生成的向量也无法完整代表原文的语义。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "超长文本被截断",
+        "信息丢失",
+        "向量无法完整代表原文语义"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q009",
+      "question": "不按固定字数，而根据内容主题发生变化的位置切开，属于哪种分块方法？",
+      "reference_answer": "语义分块，在语义主题显著变化的地方切分。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "语义分块（Semantic Chunking）是一种更智能的方法，这种方法不依赖于固定的字符数或预设的分隔符，而是尝试根据文本的语义内涵来切分。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "语义分块按语义主题变化切分"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q010",
+      "question": "递归字符分块按段落切完仍然太长，接着会怎样处理这个大块？",
+      "reference_answer": "继续应用下一优先级分隔符，例如句号，直到块满足大小限制。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "如果切分后的块仍然过大，会继续对这个大块应用下一优先级分隔符（如句号），如此循环往复，直到块满足大小限制。"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求。"
+        },
+        {
+          "source": "05_text_chunking.md",
+          "quote": "**有剩余分隔符**: 递归调用 `_split_text` 继续分割"
+        }
+      ],
+      "annotation_note": "dev15-v2补充C033/C032中同样有效的原文依据；v1自动False遗漏支持性表述。只补标注，不改问题/检索/匹配规则，其他方法须用同版标注比较。",
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "继续使用更细粒度的分隔符",
+        "递归切分直到满足大小限制"
+      ]
+    },
+    {
+      "id": "Q011",
+      "question": "按单个句子检索时，SentenceWindowNodeParser把前后的上下文存在哪里？",
+      "reference_answer": "在每个句子节点的元数据中保存前后相邻N个句子，组成上下文窗口。",
+      "evidence_options": [
+        {
+          "source": "05_text_chunking.md",
+          "quote": "在每个句子节点（Node）的元数据中，会存储其前后相邻的N个句子"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "句子节点的元数据中保存前后相邻N个句子"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q012",
+      "split": "dev",
+      "question": "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？",
+      "expected_status": "answered",
+      "reference_answer": "应该使用同一个嵌入模型将问题转换成向量。",
+      "reference_facts": [
+        "查询问题使用与资料相同的嵌入模型编码"
+      ],
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        },
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+        }
+      ],
+      "annotation_note": "沿用已运行的开发案例及已确认的替代依据。"
+    },
+    {
+      "id": "Q013",
+      "question": "用向量之间的直线距离比较语义时，距离越大还是越小表示更相似？",
+      "reference_answer": "欧氏距离越小，语义越相似。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "欧氏距离越小越相似"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q014",
+      "question": "把文档块编码成向量并存入向量库，属于离线准备还是在线问题检索阶段？",
+      "reference_answer": "离线索引构建阶段。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**离线索引构建**：将知识库内文档切分后，使用 Embedding 模型将每个文档块（Chunk）转换为向量，存入专门的向量数据库中。"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "离线索引构建阶段"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q015",
+      "question": "“苹果”分别指公司和水果时，为什么静态词向量难以区分这两种意思？",
+      "reference_answer": "静态词嵌入对同一个词使用与上下文无关的固定向量，无法处理一词多义；两个语境中的苹果向量相同。",
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "在“苹果公司发布了新手机”和“我吃了一个苹果”中，“苹果”的词向量是完全相同的"
+        }
+      ],
+      "split": "dev",
+      "expected_status": "answered",
+      "reference_facts": [
+        "静态词向量与上下文无关",
+        "公司和水果语境中的苹果使用相同词向量"
+      ],
+      "annotation_note": "复用已见的15题检索开发集，根据固定21篇资料核对依据。"
+    },
+    {
+      "id": "Q016",
+      "split": "dev",
+      "question": "RAG的生成阶段，生成模块会接收哪两类输入？",
+      "expected_status": "answered",
+      "reference_answer": "检索阶段返回的相关文档片段，以及用户的原始问题。",
+      "reference_facts": [
+        "检索到的相关文档片段",
+        "用户的原始问题"
+      ],
+      "evidence_options": [
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "接收检索阶段送来的相关文档片段以及用户的原始问题。"
+        }
+      ],
+      "annotation_note": "2026-11-14用户抽查确认原句支持文档片段和用户问题两个参考要点。系统实际答案的完整性待运行后复核。"
+    },
+    {
+      "id": "Q017",
+      "split": "dev",
+      "question": "提示词工程、RAG和微调，在是否修改模型参数上有什么区别？",
+      "expected_status": "answered",
+      "reference_answer": "提示词工程和RAG均不修改模型权重，微调会修改模型参数。",
+      "reference_facts": [
+        "提示词工程和RAG不修改模型权重",
+        "微调会修改模型参数"
+      ],
+      "evidence_options": [
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "提示工程和 RAG 完全不改变模型权重，而微调则直接修改模型参数。"
+        }
+      ],
+      "annotation_note": "2026-11-14用户抽查确认原句支持提示词工程/RAG不改权重及微调修改参数两个参考要点。系统实际答案待运行后复核。"
+    },
+    {
+      "id": "Q018",
+      "split": "dev",
+      "question": "RRF融合主要依据各检索系统给出的原始分数，还是文档排名？",
+      "expected_status": "answered",
+      "reference_answer": "依据文档在各检索结果列表中的排名。",
+      "reference_facts": [
+        "RRF依据各路排名"
+      ],
+      "evidence_options": [
+        {
+          "source": "11_hybrid_search.md",
+          "quote": "只关心每个文档在各自结果集中的**排名**。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "Q019",
+      "split": "dev",
+      "question": "Cross-Encoder重排怎样组织查询和候选文档的模型输入？",
+      "expected_status": "answered",
+      "reference_answer": "把查询和每个候选文档拼接为一个输入，交给模型评分。",
+      "reference_facts": [
+        "查询与每个候选文档拼接成一个输入"
+      ],
+      "evidence_options": [
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "将查询（Query）和每个候选文档（Document）**拼接**成一个单一的输入"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "Q020",
+      "split": "dev",
+      "question": "在线向量检索时应使用什么嵌入模型编码问题？用欧氏距离比较时，距离怎样变化表示更相似？",
+      "expected_status": "answered",
+      "reference_answer": "问题使用与资料相同的嵌入模型编码；欧氏距离越小越相似。",
+      "reference_facts": [
+        "问题和资料使用同一个嵌入模型",
+        "欧氏距离越小越相似"
+      ],
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        },
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+        },
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "同一个嵌入模型",
+          "evidence_options": [
+            {
+              "source": "06_vector_embedding.md",
+              "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+            },
+            {
+              "source": "01_RAG_intro.md",
+              "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+            }
+          ]
+        },
+        {
+          "reference_fact": "较小的欧氏距离",
+          "evidence_options": [
+            {
+              "source": "06_vector_embedding.md",
+              "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H001",
+      "split": "holdout",
+      "question": "CLIP怎样分别处理图像和文本，让它们能够互相匹配？",
+      "expected_status": "answered",
+      "reference_answer": "采用图像编码器和文本编码器，将图像和文本映射到同一个共享向量空间。",
+      "reference_facts": [
+        "图像编码器和文本编码器",
+        "同一个共享向量空间"
+      ],
+      "evidence_options": [
+        {
+          "source": "07_multimodal_embedding.md",
+          "quote": "它采用**双编码器架构 (Dual-Encoder Architecture)**，包含一个图像编码器和一个文本编码器，分别将图像和文本映射到同一个共享的向量空间中。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H002",
+      "split": "holdout",
+      "question": "教程中的本地FAISS方案将索引和映射分别保存成什么扩展名的文件？",
+      "expected_status": "answered",
+      "reference_answer": "索引保存为.faiss文件，映射保存为.pkl文件。",
+      "reference_facts": [
+        ".faiss索引文件",
+        ".pkl映射文件"
+      ],
+      "evidence_options": [
+        {
+          "source": "08_vector_db.md",
+          "quote": "一个 `.faiss` 索引文件和一个 `.pkl` 映射文件"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H003",
+      "split": "holdout",
+      "question": "句子窗口检索找到句子节点后，MetadataReplacementPostProcessor怎样处理节点正文？",
+      "expected_status": "answered",
+      "reference_answer": "读取节点元数据，用其中的完整上下文窗口替换原来的单一句子内容。",
+      "reference_facts": [
+        "元数据中的完整上下文窗口替换单一句子内容"
+      ],
+      "evidence_options": [
+        {
+          "source": "10_index_optimization.md",
+          "quote": "用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H004",
+      "split": "holdout",
+      "question": "自查询检索器解析用户问题时，会得到哪两个用于检索的部分？",
+      "expected_status": "answered",
+      "reference_answer": "用于语义搜索的查询字符串，以及用于结构化过滤的元数据过滤器。",
+      "reference_facts": [
+        "查询字符串",
+        "元数据过滤器"
+      ],
+      "evidence_options": [
+        {
+          "source": "12_query_construction.md",
+          "quote": "**查询字符串（Query String）**：用于进行语义搜索的部分。\n    *   **元数据过滤器（Metadata Filter）**：从查询中提取出的结构化过滤条件。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H005",
+      "split": "holdout",
+      "question": "为了减少Text-to-SQL编造表名和字段，教程建议首先向模型提供什么数据库结构信息？",
+      "expected_status": "answered",
+      "reference_answer": "相关表的CREATE TABLE语句，帮助模型了解表名、列名、数据类型和外键关系。",
+      "reference_facts": [
+        "相关表的CREATE TABLE语句"
+      ],
+      "evidence_options": [
+        {
+          "source": "13_text2sql.md",
+          "quote": "我们需要向LLM提供数据库中相关表的 `CREATE TABLE` 语句。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H006",
+      "split": "holdout",
+      "question": "HyDE生成假设性文档后，怎样用它寻找真实资料？",
+      "expected_status": "answered",
+      "reference_answer": "将假设性文档向量化，再用该向量寻找最相似的真实文档。",
+      "reference_facts": [
+        "假设性文档向量化",
+        "用该向量检索相似真实文档"
+      ],
+      "evidence_options": [
+        {
+          "source": "14_query_rewriting.md",
+          "quote": "HyDE 将这个内容详实的假设性文档进行向量化，用其生成的向量去数据库中寻找与之最相似的真实文档。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H007",
+      "split": "holdout",
+      "question": "检索上下文压缩中的内容提取和文档过滤，分别怎样处理检索结果？",
+      "expected_status": "answered",
+      "reference_answer": "内容提取保留相关句子或段落，文档过滤丢弃不相关的整个文档。",
+      "reference_facts": [
+        "提取相关句子或段落",
+        "过滤不相关整个文档"
+      ],
+      "evidence_options": [
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "从文档中只抽出与查询相关的句子或段落。"
+        },
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "内容提取",
+          "evidence_options": [
+            {
+              "source": "15_advanced_retrieval_techniques.md",
+              "quote": "从文档中只抽出与查询相关的句子或段落。"
+            }
+          ]
+        },
+        {
+          "reference_fact": "文档过滤",
+          "evidence_options": [
+            {
+              "source": "15_advanced_retrieval_techniques.md",
+              "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H008",
+      "split": "holdout",
+      "question": "教程介绍的哪一种输出解析器结合Pydantic模型来定义和验证输出格式？",
+      "expected_status": "answered",
+      "reference_answer": "PydanticOutputParser。",
+      "reference_facts": [
+        "PydanticOutputParser"
+      ],
+      "evidence_options": [
+        {
+          "source": "16_formatted_generation.md",
+          "quote": "**PydanticOutputParser**：通过与 Pydantic 模型结合，可以实现对输出格式最严格的定义和验证。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H009",
+      "split": "holdout",
+      "question": "RAG评估三元组的三个维度，分别检查上下文、答案依据和用户问题之间的什么关系？",
+      "expected_status": "answered",
+      "reference_answer": "上下文相关性检查资料与问题是否相关；忠实度检查答案是否基于上下文；答案相关性检查是否直接完整回答问题。",
+      "reference_facts": [
+        "上下文相关性",
+        "忠实度",
+        "答案相关性"
+      ],
+      "evidence_options": [
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+        },
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "生成的答案是否完全基于所提供的上下文信息？"
+        },
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "上下文相关性",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+            }
+          ]
+        },
+        {
+          "reference_fact": "忠实度",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "生成的答案是否完全基于所提供的上下文信息？"
+            }
+          ]
+        },
+        {
+          "reference_fact": "答案相关性",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H010",
+      "split": "holdout",
+      "question": "按教程比较GraphRAG与Agentic RAG：前者在图中寻找什么，后者怎样决定检索次数？",
+      "expected_status": "answered",
+      "reference_answer": "GraphRAG寻找相关实体、关系、路径或子图；Agentic RAG自主决定动态多次检索。",
+      "reference_facts": [
+        "图中的实体关系路径或子图",
+        "自主决定动态检索次数"
+      ],
+      "evidence_options": [
+        {
+          "source": "20_kg_rag.md",
+          "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+        },
+        {
+          "source": "21_agentic_rag.md",
+          "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "图检索对象",
+          "evidence_options": [
+            {
+              "source": "20_kg_rag.md",
+              "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+            }
+          ]
+        },
+        {
+          "reference_fact": "检索次数控制",
+          "evidence_options": [
+            {
+              "source": "21_agentic_rag.md",
+              "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "N001",
+      "split": "insufficient",
+      "question": "这些教程的演示实验使用的电脑CPU完整型号是什么？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定演示实验电脑的CPU完整型号。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "沿用已有开发控制例，固定资料的CPU相关说明为运行配置或软件版本。"
+    },
+    {
+      "id": "N002",
+      "split": "insufficient",
+      "question": "这些教程对应的线上服务在2026年11月14日的真实日活用户数是多少？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定该日期线上服务的真实日活用户数。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为该日期线上服务的真实日活用户数，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    },
+    {
+      "id": "N003",
+      "split": "insufficient",
+      "question": "按这些教程部署的线上RAG服务，在2026年11月14日实测的P95响应延迟是多少毫秒？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定该日期线上服务的实测P95延迟。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为该日期线上服务的实测P95延迟，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    },
+    {
+      "id": "N004",
+      "split": "insufficient",
+      "question": "教程作者为这套演示实际支付的API账单总金额是多少元？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定这套演示的实际API账单金额。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为这套演示的实际API账单金额，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    },
+    {
+      "id": "N005",
+      "split": "insufficient",
+      "question": "这些教程演示电脑实际安装的内存条品牌和完整型号是什么？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定演示电脑内存条的品牌和完整型号。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为演示电脑内存条的品牌和完整型号，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    }
+  ],
+  "annotation_changes": [
+    {
+      "recorded_on": "2026-11-14",
+      "case_id": "Q001",
+      "reviewer": "assistant",
+      "reason": "完整语料中的有效替代依据漏标",
+      "added_evidence": {
+        "source": "03_get_start_rag.md",
+        "quote": "并通过重叠来减少上下文信息的丢失。"
+      }
+    }
+  ],
+  "holdout_freeze": {
+    "frozen_on": "2026-11-14",
+    "reviewer": "assistant",
+    "case_ids": [
+      "H001",
+      "H002",
+      "H003",
+      "H004",
+      "H005",
+      "H006",
+      "H007",
+      "H008",
+      "H009",
+      "H010"
+    ],
+    "cases_sha256": "d70505480f7372ab3913738a70234e89b1636d844e471eecbb72e9b263c89ddd",
+    "serialization": "json.dumps(cases, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')",
+    "review_note": "助手逐题对照固定原文及保存块中的依据，留出题尚未进行检索或问答评估。",
+    "retrieval_configuration": {
+      "corpus": "full",
+      "k": 3,
+      "strategies": [
+        "dense",
+        "bm25",
+        "hybrid"
+      ],
+      "hybrid_candidate_k_per_route": 6,
+      "rrf_constant": 60,
+      "chunk_size": 500,
+      "chunk_overlap": 100,
+      "embedding_model": "BAAI/bge-small-zh-v1.5"
+    }
+  }
+}

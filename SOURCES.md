@@ -1,5 +1,9 @@
 # 来源、固定版本与本地改动
 
+## T2分组评估与用量记录（2026-11-14）
+
+本地扩展eval_retrieval.py，沿用来源与原句匹配逻辑，增加首次命中排名、MRR、必需依据组覆盖及题卡分组选择。eval_rag.py与check_evidence.py增加逐次响应Token记录及逐题汇总，保留现有检索、检查、补充和回答入口。35题标注由助手依据固定all-in-rag语料整理，用户抽查Q016/Q017，原始运行由用户完成。初始冻结与事后补标口径、实际失败及4份助手内容抽查分别归档于evals目录。参考语料版本和许可沿用下文记录。
+
 ## T1 HTTP检索与问答适配
 
 api.py为本地新增HTTP适配。/retrieve复用已有索引格式与create_embeddings/similarity_search，/ask复用build_hybrid_candidates/run_checked_rag，固定Hybrid候选6/初始3和一次补充；未修改模型提示词、检索算法或证据校验规则。启动/关闭资源按FastAPI官方lifespan说明核对：https://fastapi.tiangolo.com/advanced/events/ 。模型配置路径只在服务端设置，HTTP不接受客户端任意文件路径。
@@ -14,7 +18,7 @@ review_rag.py为本地新增的离线报告读取与人工结论记录入口，�
 
 ## 完整问答评估记录起步（2026-11-08）
 
-eval_rag.py、rag_cases.json及run_checked_rag的结果记录为本地新增，复用已有检索、模型检查和回答逻辑，没有接入外部评估平台。起步题卡来自已有开发例/不足控制，Q012纳入01_RAG_intro.md的等价依据，不作为未见测试。当前仅比较预期行为、保留原文/回答以供复核，语义评分和用量采集待补；静态及隔离模拟检查不等于真实批量成绩。11/8用户已分别真实运行Q002/Q012/N001，新入口三条路径及原始报告见evals/rag_seed_observations.md，仅记为已知案例运行验证。
+eval_rag.py、rag_cases.json及run_checked_rag的结果记录为本地新增，复用已有检索、模型检查和回答逻辑。起步题卡来自已有开发例/不足控制，Q012纳入01_RAG_intro.md的等价依据。11/8用户已分别真实运行Q002/Q012/N001，新入口三条路径及原始报告见evals/rag_seed_observations.md。语义复核由复核者输入。2026-11-14新增从SDK响应采集Token并逐题汇总，通过隔离假客户端检查，用户真实Q016报告已验证两次响应汇总为2050输入/94输出/2144合计。字段结构对照本机openai SDK的CompletionUsage及官方Python Chat Completions文档，兼容服务以实际返回为准。[官方API字段](https://developers.openai.com/api/reference/python/resources/chat/subresources/completions/methods/create)
 
 ## 正式索引接完整流程（2026-11-07）
 

@@ -69,7 +69,10 @@ chunk_id必须来自本次原文，quote必须逐字复制该块正文的一段�
 请检查这些原文是否足够回答上面的用户问题。"""
 
 
-def request_model_text(prompt: str, env_file: Path, json_output: bool = False) -> str:
+def request_model_text(
+    prompt: str, env_file: Path, json_output: bool = False,
+    *, usage_records: list[dict] | None = None,
+) -> str:
     """共用模型客户端：发送文字，确认回复完整非空后返回正文字符串。"""
     from dotenv import dotenv_values
     from openai import OpenAI
@@ -99,6 +102,15 @@ def request_model_text(prompt: str, env_file: Path, json_output: bool = False) -
             extra_body={"thinking": {"type": "disabled"}},
         )
 
+    if usage_records is not None:
+        # 回复格式校验前记录实际收到的用量，格式错误也可能已产生消耗。
+        usage = getattr(response, "usage", None)
+        usage_records.append({
+            "prompt_tokens": getattr(usage, "prompt_tokens", None),
+            "completion_tokens": getattr(usage, "completion_tokens", None),
+            "total_tokens": getattr(usage, "total_tokens", None),
+        })
+
     if not response.choices:
         raise RuntimeError("模型没有返回候选回复。")
     choice = response.choices[0]
@@ -110,9 +122,11 @@ def request_model_text(prompt: str, env_file: Path, json_output: bool = False) -
     return raw_text
 
 
-def check_evidence(prompt: str, env_file: Path) -> EvidenceCheckResult:
+def check_evidence(
+    prompt: str, env_file: Path, *, usage_records: list[dict] | None = None,
+) -> EvidenceCheckResult:
     """调用共用客户端取得JSON正文，再按检查结果格式校验。"""
-    raw_text = request_model_text(prompt, env_file, json_output=True)
+    raw_text = request_model_text(prompt, env_file, json_output=True, usage_records=usage_records)
     try:
         # JSON文字→按我们定义的字段/类型校验→结果对象。
         return EvidenceCheckResult.model_validate_json(raw_text)
@@ -221,6 +235,7 @@ def run_checked_rag(
         "retrieved_docs": [doc.model_dump() for doc in retrieved_docs],
         "checks": [], "citation_ids": [], "supplemented": False,
         "check_calls": 0, "answer_calls": 0,
+        "model_usage": [],
     })
     print("[3/3] 将问题和原文交给build_check_prompt，接回请求文字。", flush=True)
     check_prompt = build_check_prompt(question, retrieved_docs)
@@ -232,7 +247,7 @@ def run_checked_rag(
 
     print("\n[检查] 将请求文字交给模型，此步骤消耗账号额度。", flush=True)
     run_record["check_calls"] += 1
-    result = check_evidence(check_prompt, env_file)
+    result = check_evidence(check_prompt, env_file, usage_records=run_record["model_usage"])
     run_record["checks"].append({
         "used_ids": [doc.metadata["chunk_id"] for doc in retrieved_docs],
         "result": result.model_dump(),
@@ -255,7 +270,7 @@ def run_checked_rag(
             print("补充后使用编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
             check_prompt = build_check_prompt(question, retrieved_docs)
             run_record["check_calls"] += 1
-            result = check_evidence(check_prompt, env_file)
+            result = check_evidence(check_prompt, env_file, usage_records=run_record["model_usage"])
             run_record["checks"].append({
                 "used_ids": [doc.metadata["chunk_id"] for doc in retrieved_docs],
                 "result": result.model_dump(),
@@ -287,7 +302,7 @@ def run_checked_rag(
     answer_prompt = build_answer_prompt(question, retrieved_docs)
     print("\n[回答] 将同一问题和当前原文交给模型，生成回答。", flush=True)
     run_record["answer_calls"] += 1
-    answer = request_model_text(answer_prompt, env_file)
+    answer = request_model_text(answer_prompt, env_file, usage_records=run_record["model_usage"])
     run_record["answer"] = answer
     cited_ids = validate_citation_ids(answer, retrieved_docs)
     run_record["citation_ids"] = cited_ids

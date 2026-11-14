@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "annotation_version": "generation-subset-v1",
+  "corpus_manifest": "reference/corpus21_manifest.json",
+  "source_cases_file": "evals/rag_cases_full.json",
+  "source_annotation_version": "rag-full-v3-draft",
+  "source_cases_sha256": "aa504396c143d987312a3a74ad78d3f205e0943db01f58fda18ec4b1f42c8048",
+  "scope": "固定10道可答题与5道资料不足题，用同题同配置比较关闭补充与开启一次补充的问答行为、调用和用量。",
+  "selection_note": "可答题复用H001-H010，这些问题已做过检索评估；不足题为N001-N005，N001已有开发控制经历。选择在本轮批量生成前确定。",
+  "planned_configuration": {
+    "strategy": "hybrid",
+    "k": 3,
+    "candidate_k": 6,
+    "recover_variants": [
+      false,
+      true
+    ]
+  },
+  "cases": [
+    {
+      "id": "H001",
+      "split": "holdout",
+      "question": "CLIP怎样分别处理图像和文本，让它们能够互相匹配？",
+      "expected_status": "answered",
+      "reference_answer": "采用图像编码器和文本编码器，将图像和文本映射到同一个共享向量空间。",
+      "reference_facts": [
+        "图像编码器和文本编码器",
+        "同一个共享向量空间"
+      ],
+      "evidence_options": [
+        {
+          "source": "07_multimodal_embedding.md",
+          "quote": "它采用**双编码器架构 (Dual-Encoder Architecture)**，包含一个图像编码器和一个文本编码器，分别将图像和文本映射到同一个共享的向量空间中。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H002",
+      "split": "holdout",
+      "question": "教程中的本地FAISS方案将索引和映射分别保存成什么扩展名的文件？",
+      "expected_status": "answered",
+      "reference_answer": "索引保存为.faiss文件，映射保存为.pkl文件。",
+      "reference_facts": [
+        ".faiss索引文件",
+        ".pkl映射文件"
+      ],
+      "evidence_options": [
+        {
+          "source": "08_vector_db.md",
+          "quote": "一个 `.faiss` 索引文件和一个 `.pkl` 映射文件"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H003",
+      "split": "holdout",
+      "question": "句子窗口检索找到句子节点后，MetadataReplacementPostProcessor怎样处理节点正文？",
+      "expected_status": "answered",
+      "reference_answer": "读取节点元数据，用其中的完整上下文窗口替换原来的单一句子内容。",
+      "reference_facts": [
+        "元数据中的完整上下文窗口替换单一句子内容"
+      ],
+      "evidence_options": [
+        {
+          "source": "10_index_optimization.md",
+          "quote": "用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H004",
+      "split": "holdout",
+      "question": "自查询检索器解析用户问题时，会得到哪两个用于检索的部分？",
+      "expected_status": "answered",
+      "reference_answer": "用于语义搜索的查询字符串，以及用于结构化过滤的元数据过滤器。",
+      "reference_facts": [
+        "查询字符串",
+        "元数据过滤器"
+      ],
+      "evidence_options": [
+        {
+          "source": "12_query_construction.md",
+          "quote": "**查询字符串（Query String）**：用于进行语义搜索的部分。\n    *   **元数据过滤器（Metadata Filter）**：从查询中提取出的结构化过滤条件。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H005",
+      "split": "holdout",
+      "question": "为了减少Text-to-SQL编造表名和字段，教程建议首先向模型提供什么数据库结构信息？",
+      "expected_status": "answered",
+      "reference_answer": "相关表的CREATE TABLE语句，帮助模型了解表名、列名、数据类型和外键关系。",
+      "reference_facts": [
+        "相关表的CREATE TABLE语句"
+      ],
+      "evidence_options": [
+        {
+          "source": "13_text2sql.md",
+          "quote": "我们需要向LLM提供数据库中相关表的 `CREATE TABLE` 语句。"
+        },
+        {
+          "source": "13_text2sql.md",
+          "quote": "DDL定义：完整的CREATE TABLE语句"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。 2026-11-14助手审核实际返回C336，补充其完整CREATE TABLE信息为有效替代依据。"
+    },
+    {
+      "id": "H006",
+      "split": "holdout",
+      "question": "HyDE生成假设性文档后，怎样用它寻找真实资料？",
+      "expected_status": "answered",
+      "reference_answer": "将假设性文档向量化，再用该向量寻找最相似的真实文档。",
+      "reference_facts": [
+        "假设性文档向量化",
+        "用该向量检索相似真实文档"
+      ],
+      "evidence_options": [
+        {
+          "source": "14_query_rewriting.md",
+          "quote": "HyDE 将这个内容详实的假设性文档进行向量化，用其生成的向量去数据库中寻找与之最相似的真实文档。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H007",
+      "split": "holdout",
+      "question": "检索上下文压缩中的内容提取和文档过滤，分别怎样处理检索结果？",
+      "expected_status": "answered",
+      "reference_answer": "内容提取保留相关句子或段落，文档过滤丢弃不相关的整个文档。",
+      "reference_facts": [
+        "提取相关句子或段落",
+        "过滤不相关整个文档"
+      ],
+      "evidence_options": [
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "从文档中只抽出与查询相关的句子或段落。"
+        },
+        {
+          "source": "15_advanced_retrieval_techniques.md",
+          "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "内容提取",
+          "evidence_options": [
+            {
+              "source": "15_advanced_retrieval_techniques.md",
+              "quote": "从文档中只抽出与查询相关的句子或段落。"
+            }
+          ]
+        },
+        {
+          "reference_fact": "文档过滤",
+          "evidence_options": [
+            {
+              "source": "15_advanced_retrieval_techniques.md",
+              "quote": "完全丢弃那些虽然被初步召回，但经过更精细判断后认为不相关的整个文档。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H008",
+      "split": "holdout",
+      "question": "教程介绍的哪一种输出解析器结合Pydantic模型来定义和验证输出格式？",
+      "expected_status": "answered",
+      "reference_answer": "PydanticOutputParser。",
+      "reference_facts": [
+        "PydanticOutputParser"
+      ],
+      "evidence_options": [
+        {
+          "source": "16_formatted_generation.md",
+          "quote": "**PydanticOutputParser**：通过与 Pydantic 模型结合，可以实现对输出格式最严格的定义和验证。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+    },
+    {
+      "id": "H009",
+      "split": "holdout",
+      "question": "RAG评估三元组的三个维度，分别检查上下文、答案依据和用户问题之间的什么关系？",
+      "expected_status": "answered",
+      "reference_answer": "上下文相关性检查资料与问题是否相关；忠实度检查答案是否基于上下文；答案相关性检查是否直接完整回答问题。",
+      "reference_facts": [
+        "上下文相关性",
+        "忠实度",
+        "答案相关性"
+      ],
+      "evidence_options": [
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+        },
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "生成的答案是否完全基于所提供的上下文信息？"
+        },
+        {
+          "source": "18_system_evaluation.md",
+          "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "上下文相关性",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+            }
+          ]
+        },
+        {
+          "reference_fact": "忠实度",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "生成的答案是否完全基于所提供的上下文信息？"
+            }
+          ]
+        },
+        {
+          "reference_fact": "答案相关性",
+          "evidence_options": [
+            {
+              "source": "18_system_evaluation.md",
+              "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H010",
+      "split": "holdout",
+      "question": "按教程比较GraphRAG与Agentic RAG：前者在图中寻找什么，后者怎样决定检索次数？",
+      "expected_status": "answered",
+      "reference_answer": "GraphRAG寻找相关实体、关系、路径或子图；Agentic RAG自主决定动态多次检索。",
+      "reference_facts": [
+        "图中的实体关系路径或子图",
+        "自主决定动态检索次数"
+      ],
+      "evidence_options": [
+        {
+          "source": "20_kg_rag.md",
+          "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+        },
+        {
+          "source": "21_agentic_rag.md",
+          "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+        },
+        {
+          "source": "20_kg_rag.md",
+          "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。 2026-11-14助手审核实际返回C464，补充局部子图与原文证据说明为图检索对象组的有效替代依据。",
+      "evidence_groups": [
+        {
+          "reference_fact": "图检索对象",
+          "evidence_options": [
+            {
+              "source": "20_kg_rag.md",
+              "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+            },
+            {
+              "source": "20_kg_rag.md",
+              "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+            }
+          ]
+        },
+        {
+          "reference_fact": "检索次数控制",
+          "evidence_options": [
+            {
+              "source": "21_agentic_rag.md",
+              "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "N001",
+      "split": "insufficient",
+      "question": "这些教程的演示实验使用的电脑CPU完整型号是什么？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定演示实验电脑的CPU完整型号。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "沿用已有开发控制例，固定资料的CPU相关说明为运行配置或软件版本。"
+    },
+    {
+      "id": "N002",
+      "split": "insufficient",
+      "question": "这些教程对应的线上服务在2026年11月14日的真实日活用户数是多少？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定该日期线上服务的真实日活用户数。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为该日期线上服务的真实日活用户数，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    },
+    {
+      "id": "N003",
+      "split": "insufficient",
+      "question": "按这些教程部署的线上RAG服务，在2026年11月14日实测的P95响应延迟是多少毫秒？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定该日期线上服务的实测P95延迟。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为该日期线上服务的实测P95延迟，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    },
+    {
+      "id": "N004",
+      "split": "insufficient",
+      "question": "教程作者为这套演示实际支付的API账单总金额是多少元？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定这套演示的实际API账单金额。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为这套演示的实际API账单金额，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    },
+    {
+      "id": "N005",
+      "split": "insufficient",
+      "question": "这些教程演示电脑实际安装的内存条品牌和完整型号是什么？",
+      "expected_status": "insufficient",
+      "reference_answer": "当前资料不足，无法确定演示电脑内存条的品牌和完整型号。",
+      "reference_facts": [],
+      "evidence_options": [],
+      "annotation_note": "助手依据固定教程资料范围准备的缺失信息控制题，目标事实为演示电脑内存条的品牌和完整型号，待抽查。示例配置或通用说明不能代替该事实的实际观测记录。"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "created_at_utc": "2026-11-14T04:34:59.916087+00:00",
+  "scope": "按预标注来源和原句计算命中、首次排名及必需依据组覆盖，语义支持与答案完整性另行复核。",
+  "configuration": {
+    "corpus": "full",
+    "retriever": "bm25",
+    "k": 3,
+    "cases_file": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\rag_cases_full.json",
+    "split": "dev",
+    "embedding_model": null,
+    "preprocess_func": "tokenize",
+    "candidate_k_per_route": null,
+    "rank_constant": null,
+    "tie_break": null,
+    "document_count": 21,
+    "chunk_count": 498,
+    "chunk_size": 500,
+    "chunk_overlap": 100
+  },
+  "case_count": 1,
+  "hit_count": 1,
+  "hit_rate_at_k": 1.0,
+  "mrr_at_k": 1.0,
+  "all_evidence_groups_hit_rate_at_k": 0.0,
+  "cases_snapshot": [
+    {
+      "id": "Q020",
+      "split": "dev",
+      "question": "在线向量检索时应使用什么嵌入模型编码问题？用欧氏距离比较时，距离怎样变化表示更相似？",
+      "expected_status": "answered",
+      "reference_answer": "问题使用与资料相同的嵌入模型编码；欧氏距离越小越相似。",
+      "reference_facts": [
+        "问题和资料使用同一个嵌入模型",
+        "欧氏距离越小越相似"
+      ],
+      "evidence_options": [
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+        },
+        {
+          "source": "01_RAG_intro.md",
+          "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+        },
+        {
+          "source": "06_vector_embedding.md",
+          "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+        }
+      ],
+      "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+      "evidence_groups": [
+        {
+          "reference_fact": "同一个嵌入模型",
+          "evidence_options": [
+            {
+              "source": "06_vector_embedding.md",
+              "quote": "使用**同一个** Embedding 模型将用户的问题也转换为一个向量。"
+            },
+            {
+              "source": "01_RAG_intro.md",
+              "quote": "当用户发起查询时，检索模块利用同样的嵌入模型将问题向量化"
+            }
+          ]
+        },
+        {
+          "reference_fact": "较小的欧氏距离",
+          "evidence_options": [
+            {
+              "source": "06_vector_embedding.md",
+              "quote": "**欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "Q020",
+      "question": "在线向量检索时应使用什么嵌入模型编码问题？用欧氏距离比较时，距离怎样变化表示更相似？",
+      "labeled_evidence_hit": true,
+      "first_labeled_evidence_rank": 1,
+      "reciprocal_rank": 1.0,
+      "all_evidence_groups_hit": false,
+      "route_details": null,
+      "retrieved_docs": [
+        {
+          "chunk_id": "C129",
+          "source": "06_vector_embedding.md",
+          "page_content": "![Embedding 过程示意图](./images/3_1_1.webp) \n\n#### 1.1.2 向量空间的语义表示\n\nEmbedding 的真正意义在于，它产生的向量不是随机数值的堆砌，而是对数据**语义**的数学编码。\n\n- **核心原则**：在 Embedding 构建的向量空间中，语义上相似的对象，其对应的向量在空间中的距离会更近；而语义上不相关的对象，它们的向量距离会更远。\n- **关键度量**：我们通常使用以下数学方法来衡量向量间的“距离”或“相似度”：\n    - **余弦相似度 (Cosine Similarity)** ：计算两个向量夹角的余弦值。值越接近 1，代表方向越一致，语义越相似。这是最常用的度量方式。\n    - **点积 (Dot Product)** ：计算两个向量的乘积和。在向量归一化后，点积等价于余弦相似度。\n    - **欧氏距离 (Euclidean Distance)** ：计算两个向量在空间中的直线距离。距离越小，语义越相似。\n\n### 1.2 Embedding 在 RAG 中的作用"
+        },
+        {
+          "chunk_id": "C137",
+          "source": "06_vector_embedding.md",
+          "page_content": "### 3.2 效果增强策略\n\n虽然 MLM 和 NSP 赋予了模型强大的基础语义理解能力，但为了在检索任务中表现更佳，现代嵌入模型通常会引入更具针对性的训练策略。\n\n- **度量学习 (Metric Learning)** ：\n    - **思想**：直接以“相似度”作为优化目标。\n    - **方法**：收集大量相关的文本对（例如，（问题，答案）、（新闻标题，正文））。训练的目标是优化向量空间中的**相对距离**：让“正例对”的向量表示在空间中被“拉近”，而“负例对”的向量表示被“推远”。关键在于优化排序关系，而非追求绝对的相似度值（如 1 或 0），因为过度追求极端值可能导致模型过拟合。"
+        },
+        {
+          "chunk_id": "C112",
+          "source": "05_text_chunking.md",
+          "page_content": "（1）**句子分割 (Sentence Splitting)**：首先，使用标准的句子分割规则（例如，基于句号、问号、感叹号）将输入文本拆分成一个句子列表。\n\n（2）**上下文感知嵌入 (Context-Aware Embedding)**：这是 `SemanticChunker` 的一个关键设计。该分块器不是对每个句子独立进行嵌入，而是通过 `buffer_size` 参数（默认为1）来捕捉上下文信息。对于列表中的每一个句子，这种方法会将其与前后各 `buffer_size` 个句子组合起来，然后对这个临时的、更长的组合文本进行嵌入。这样，每个句子最终得到的嵌入向量就融入了其上下文的语义。\n\n（3）**计算语义距离 (Distance Calculation)**：计算每对**相邻**句子的嵌入向量之间的余弦距离。这个距离值量化了两个句子之间的语义差异——距离越大，表示语义关联越弱，跳跃越明显。"
+        }
+      ]
+    }
+  ],
+  "generation_called": false
+}

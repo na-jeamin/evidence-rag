@@ -29,6 +29,26 @@ def save_report(report: dict, output_path: Path) -> None:
         temporary_path.unlink(missing_ok=True)
 
 
+def summarize_token_usage(run_record: dict) -> dict:
+    """汇总这道题的全部调用，缺少用量时将合计标为未知。"""
+    fields = ("prompt_tokens", "completion_tokens", "total_tokens")
+    samples = run_record.get("model_usage", [])
+    attempted_calls = run_record.get("check_calls", 0) + run_record.get("answer_calls", 0)
+    complete = len(samples) == attempted_calls
+    for sample in samples:
+        if any(sample.get(field) is None for field in fields):
+            complete = False
+    totals = {}
+    for field in fields:
+        totals[field] = sum(sample[field] for sample in samples) if complete else None
+    totals.update({
+        "attempted_calls": attempted_calls,
+        "responses_received": len(samples),
+        "complete": complete,
+    })
+    return totals
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="按题卡运行RAG，保存答案、引用、状态和耗时。")
     parser.add_argument("--cases", type=Path, default=PROJECT_DIR / "evals" / "rag_cases.json")
@@ -115,13 +135,16 @@ def main() -> None:
             row = {"case_id": case["id"], "expected_status": case["expected_status"],
                    "status_matches_expected": run_record["status"] == case["expected_status"],
                    "elapsed_seconds": elapsed, "run": run_record, "trace": trace.getvalue(),
-                   "token_usage": None,
+                   "token_usage": summarize_token_usage(run_record),
                    "review": {"answer_complete": None, "answer_supported": None, "citations_supported": None}}
             report["results"].append(row)
             save_report(report, output_path)
         print(f"{case['id']}：实际{run_record['status']}，预期行为符合={row['status_matches_expected']}，"
               f"检查尝试{run_record.get('check_calls', 0)}，回答尝试{run_record.get('answer_calls', 0)}，耗时{elapsed:.2f}秒",
               flush=True)
+        usage = row["token_usage"]
+        print(f"Token用量：输入{usage['prompt_tokens']}，输出{usage['completion_tokens']}，"
+              f"总计{usage['total_tokens']}，记录完整={usage['complete']}")
 
         if run_record.get("answer"):
             print("实际答案：", run_record["answer"])

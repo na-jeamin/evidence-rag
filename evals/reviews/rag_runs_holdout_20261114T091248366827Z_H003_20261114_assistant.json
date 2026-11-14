@@ -1,0 +1,117 @@
+{
+  "created_at_utc": "2026-11-14T09:24:09.418616+00:00",
+  "source_report": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\results\\rag_runs_holdout_20261114T091248366827Z.json",
+  "source_report_sha256": "45e13dd125834bbb3ef4de28673c03bdef0d70fff1ee58690eecf1abd60bc4e4",
+  "case_id": "H003",
+  "method": "manual_labels",
+  "reviewer": "assistant",
+  "review": {
+    "answer_complete": true,
+    "citations_supported": true,
+    "reason": "助手对照C223与C231，确认元数据窗口替换单句的参考要点齐备，两处引用明确支持处理步骤及传给模型的上下文。"
+  },
+  "case_snapshot": {
+    "id": "H003",
+    "split": "holdout",
+    "question": "句子窗口检索找到句子节点后，MetadataReplacementPostProcessor怎样处理节点正文？",
+    "expected_status": "answered",
+    "reference_answer": "读取节点元数据，用其中的完整上下文窗口替换原来的单一句子内容。",
+    "reference_facts": [
+      "元数据中的完整上下文窗口替换单一句子内容"
+    ],
+    "evidence_options": [
+      {
+        "source": "10_index_optimization.md",
+        "quote": "用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+      }
+    ],
+    "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。"
+  },
+  "run_snapshot": {
+    "question": "句子窗口检索找到句子节点后，MetadataReplacementPostProcessor怎样处理节点正文？",
+    "status": "answered",
+    "answer": "`MetadataReplacementPostProcessor` 会读取检索到的句子节点的元数据，并用元数据中存储的完整上下文窗口替换节点中原来的单一句子内容。具体来说，它从节点元数据中读取出预先存储的完整“窗口”文本，用它替换掉节点中原来的单个句子内容，使最终传递给大语言模型的是包含丰富上下文的完整文本段落，而非孤立句子。[C223][C231]",
+    "candidate_ids": [
+      "C223",
+      "C231",
+      "C228",
+      "C225",
+      "C482",
+      "C227"
+    ],
+    "retrieved_docs": [
+      {
+        "id": "9ebaa6eb-d04b-41fe-8a1c-0aa981562e2b",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\10_index_optimization.md",
+          "start_index": 379,
+          "chunk_id": "C223"
+        },
+        "page_content": "### 1.1 主要思路\n\n句子窗口检索的思想可以概括为：**为检索精确性而索引小块，为上下文丰富性而检索大块**。\n\n其工作流程如下：\n\n（1）**索引阶段**：在构建索引时，文档被分割成**单个句子**。每个句子都作为一个独立的“节点（Node）”存入向量数据库。同时，每个句子节点都会在元数据（metadata）中存储其**上下文窗口**，即该句子原文中的前N个和后N个句子。这个窗口内的文本不会被索引，仅仅是作为元数据存储。\n\n（2）**检索阶段**：当用户发起查询时，系统会在所有**单一句子节点**上执行相似度搜索。因为句子是表达完整语义的最小单位，所以这种方式可以非常精确地定位到与用户问题最相关的核心信息。\n\n（3）**后处理阶段**：在检索到最相关的句子节点后，系统会使用一个名为 `MetadataReplacementPostProcessor` 的后处理模块。该模块会读取到检索到的句子节点的元数据，并用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。",
+        "type": "Document"
+      },
+      {
+        "id": "aa937be1-f648-4d3a-af68-3570820523ba",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\10_index_optimization.md",
+          "start_index": 3881,
+          "chunk_id": "C231"
+        },
+        "page_content": "（2）**构建查询引擎与后处理**：查询引擎的构建是实现“为生成质量而扩展上下文”的关键。\n\n*   在创建 `sentence_query_engine` 时，配置中加入了一个重要的后处理器 `MetadataReplacementPostProcessor`。\n*   它的作用是：当检索器根据用户查询找到最相关的节点（也就是单个句子）后，这个后处理器会立即介入。\n*   它会从该节点的元数据中读取出预先存储的完整“窗口”文本，并用它**替换**掉节点中原来的单个句子内容。\n*   这样，最终传递给大语言模型的就不再是孤立的句子，而是包含丰富上下文的完整文本段落，从而确保了生成答案的质量和连贯性。\n\n我们向两个引擎提出的问题是：“关于大西洋经向翻转环流（AMOC），人们主要担忧什么？” (What are the concerns surrounding the AMOC?)。\n\n**代码输出如下：**\n```bash\n查询: What are the concerns surrounding the AMOC?",
+        "type": "Document"
+      },
+      {
+        "id": "282ce99e-8cf0-45d7-afbf-b918cbd382b9",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\10_index_optimization.md",
+          "start_index": 2525,
+          "chunk_id": "C228"
+        },
+        "page_content": "4.  **设置元数据排除项**：这是一个非常关键的细节。在填充完元数据后，代码会执行 `node.excluded_embed_metadata_keys.extend(...)` 和 `node.excluded_llm_metadata_keys.extend(...)`。这行代码的作用是告诉后续的嵌入模型和LLM，在处理这个节点时，**应当忽略** `\"window\"` 和 `\"original_text\"` 这两个元数据字段。这确保了只有单个句子的纯净文本被用于生成向量嵌入，从而保证了检索的高精度。而 `\"window\"` 字段仅供后续的 `MetadataReplacementPostProcessor` 使用。\n\n通过以上步骤，`SentenceWindowNodeParser` 最终返回一个 `TextNode` 列表。列表中的每个节点都代表一个独立的句子，其 `text` 属性用于精确检索，而其 `metadata` 中则“隐藏”了用于生成答案的丰富上下文窗口。",
+        "type": "Document"
+      }
+    ],
+    "checks": [
+      {
+        "used_ids": [
+          "C223",
+          "C231",
+          "C228"
+        ],
+        "result": {
+          "sufficient": true,
+          "reason": "原文明确说明 MetadataReplacementPostProcessor 会读取检索到的句子节点元数据中存储的完整上下文窗口，并用该窗口文本替换节点中原来的单个句子内容。",
+          "evidence": [
+            {
+              "chunk_id": "C223",
+              "quote": "该模块会读取到检索到的句子节点的元数据，并用元数据中存储的**完整上下文窗口**来替换节点中原来的单一句子内容。"
+            },
+            {
+              "chunk_id": "C231",
+              "quote": "它会从该节点的元数据中读取出预先存储的完整“窗口”文本，并用它**替换**掉节点中原来的单个句子内容。"
+            }
+          ]
+        }
+      }
+    ],
+    "citation_ids": [
+      "C223",
+      "C231"
+    ],
+    "supplemented": false,
+    "check_calls": 1,
+    "answer_calls": 1,
+    "model_usage": [
+      {
+        "prompt_tokens": 1076,
+        "completion_tokens": 144,
+        "total_tokens": 1220
+      },
+      {
+        "prompt_tokens": 856,
+        "completion_tokens": 90,
+        "total_tokens": 946
+      }
+    ]
+  }
+}

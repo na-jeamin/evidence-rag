@@ -1,0 +1,221 @@
+{
+  "created_at_utc": "2026-11-14T09:36:47.338361+00:00",
+  "source_report": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\results\\rag_runs_holdout_20261114T092828618465Z.json",
+  "source_report_sha256": "8f6ff2dcf399bcd32e813002197ccece04966a0a6a17bdd21681f4ee3d475a87",
+  "case_id": "H010",
+  "method": "manual_labels",
+  "reviewer": "assistant",
+  "review": {
+    "answer_complete": true,
+    "citations_supported": true,
+    "reason": "助手对照C464的局部子图/原文证据及C478的动态多次自主检索说明，确认两项参考信息齐备、两处引用支持对应说法。"
+  },
+  "case_snapshot": {
+    "id": "H010",
+    "split": "holdout",
+    "question": "按教程比较GraphRAG与Agentic RAG：前者在图中寻找什么，后者怎样决定检索次数？",
+    "expected_status": "answered",
+    "reference_answer": "GraphRAG寻找相关实体、关系、路径或子图；Agentic RAG自主决定动态多次检索。",
+    "reference_facts": [
+      "图中的实体关系路径或子图",
+      "自主决定动态检索次数"
+    ],
+    "evidence_options": [
+      {
+        "source": "20_kg_rag.md",
+        "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+      },
+      {
+        "source": "21_agentic_rag.md",
+        "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+      },
+      {
+        "source": "20_kg_rag.md",
+        "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+      }
+    ],
+    "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。 2026-11-14助手审核实际返回C464，补充局部子图与原文证据说明为图检索对象组的有效替代依据。",
+    "evidence_groups": [
+      {
+        "reference_fact": "图检索对象",
+        "evidence_options": [
+          {
+            "source": "20_kg_rag.md",
+            "quote": "在知识图谱中寻找相关的实体、关系、路径或子图。"
+          },
+          {
+            "source": "20_kg_rag.md",
+            "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+          }
+        ]
+      },
+      {
+        "reference_fact": "检索次数控制",
+        "evidence_options": [
+          {
+            "source": "21_agentic_rag.md",
+            "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+          }
+        ]
+      }
+    ]
+  },
+  "run_snapshot": {
+    "question": "按教程比较GraphRAG与Agentic RAG：前者在图中寻找什么，后者怎样决定检索次数？",
+    "status": "answered",
+    "answer": "GraphRAG在图中“先匹配全局/社区摘要，再下钻到局部子图与原文证据”[C464]；Agentic RAG的检索次数为“动态多次（自主决定）”，即由Agent自主决定，而非预定次数[C478]。",
+    "candidate_ids": [
+      "C464",
+      "C463",
+      "C477",
+      "C478",
+      "C491",
+      "C462"
+    ],
+    "retrieved_docs": [
+      {
+        "id": "c8348114-171d-48de-ac96-c1f973740a63",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\20_kg_rag.md",
+          "start_index": 3812,
+          "chunk_id": "C464"
+        },
+        "page_content": "### 3.1 GraphRAG (Microsoft)\n\nGraphRAG是一个重量级的框架，其核心思想是“先构建全局知识，再按需检索”[^1][^2]。典型流程：\n\n- 文本→三元组/子图构建→图谱（属性图）；\n- 采用社区检测（如Leiden）进行图划分，按层级生成全局/社区/局部摘要；\n- 查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；\n- 根据需要返回“全局观”与“证据路径”并行的双视角答案。\n\n该方法的优势是提供强全局感知与良好可解释性，适合探索性分析、全景总结与多跳问答；但前期构建与分层摘要成本较高，对数据持续变更的场景需设计批处理/增量更新与缓存策略。\n\n### 3.2 LightRAG\n\n针对 GraphRAG 的“重量”问题，LightRAG 旨在实现轻量、高效、易扩展[^3][^4]：\n\n- 核心思路常见为“双层检索”与“图增强索引”，以较低构建成本获得全局-局部兼顾的检索能力；\n- 更强调将结构信号嵌入到文本索引与重排中，弱化复杂的社区发现流程；\n- 适用于资源受限、快速迭代与在线更新场景。\n\n### 3.3 FRAG (Flexible RAG)",
+        "type": "Document"
+      },
+      {
+        "id": "55b3eabb-8657-4184-9443-9776f70bb564",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\20_kg_rag.md",
+          "start_index": 3518,
+          "chunk_id": "C463"
+        },
+        "page_content": "**混合型：** 同时使用图检索与文本检索，并对结果统一重排与融合：\n\n- 简单事实问答可优先图检索；叙事性/描述性问题可补充文本证据。\n- 对复杂查询，可先图上定位路径，再以路径节点为“导航枢纽”做针对性文档检索。\n\n优劣对比（概览）：\n\n- 知识驱动：高精度/高可解释，但覆盖与容错受限于图谱完备性。\n- 索引驱动：集成成本低，但显式推理弱、可解释性一般。\n- 混合型：综合表现更稳健，但系统复杂度与工程成本较高。\n\n## 三、前沿GraphRAG框架介绍（截至2025年）\n\n近年来，学术界和工业界涌现出一批具有代表性的GraphRAG框架，它们在架构设计和应用场景上各有侧重。\n\n### 3.1 GraphRAG (Microsoft)\n\nGraphRAG是一个重量级的框架，其核心思想是“先构建全局知识，再按需检索”[^1][^2]。典型流程：",
+        "type": "Document"
+      },
+      {
+        "id": "a6f432de-435d-43cb-9e02-26982d5f818d",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\21_agentic_rag.md",
+          "start_index": 2346,
+          "chunk_id": "C477"
+        },
+        "page_content": "**模式二：多Agent协作**。规划Agent分解问题，多个检索Agent并行检索不同来源，评判Agent评估质量，生成Agent合成答案。适用于超复杂任务。\n\n**模式三：Agent + 知识图谱协同**。Agent用`kg_query`查询知识图谱的实体关系，同时用`vector_search`检索非结构化文档，使两种RAG范式互补[^2]。\n\n> **实践要点**：不要为了Agentic而Agentic。简单问题用传统RAG即可，Agentic RAG的价值在于**需要多步推理、多源整合、动态决策**的复杂查询。\n\n---\n\n## 三、与传统RAG、Graph RAG的对比与协同\n\n### 3.1 三种范式核心差异",
+        "type": "Document"
+      },
+      {
+        "id": "338aa2e6-9a97-4139-af79-ac43fb951ef5",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\21_agentic_rag.md",
+          "start_index": 2611,
+          "chunk_id": "C478"
+        },
+        "page_content": "---\n\n## 三、与传统RAG、Graph RAG的对比与协同\n\n### 3.1 三种范式核心差异\n\n| 维度 | 传统 RAG | Graph RAG（§7.1） | Agentic RAG（本节） |\n|------|---------|-------------------|-------------------|\n| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |\n| **检索策略** | 固定（向量相似度） | 固定（图遍历+社区检测） | 动态（Agent自主选择） |\n| **反馈机制** | 无 | 有限 | 完整的反思-改写循环 |\n| **工具选择** | 无 | 受限 | 自主多工具选择 |\n| **适用问题** | 简单事实型 | 多跳关系推理 | 复杂多步、多源整合 |\n| **延迟/成本** | 低 | 中 | 较高 |\n\n### 3.2 三者协同：混合架构\n\n三种范式可以协同工作——最强大的企业级RAG系统往往是三者的融合：",
+        "type": "Document"
+      },
+      {
+        "id": "6d250faf-5a99-4e5f-9140-526d9a3904ec",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\21_agentic_rag.md",
+          "start_index": 7698,
+          "chunk_id": "C491"
+        },
+        "page_content": "**与第4章「检索优化」**：第4章的技术（Multi-Query、HyDE、查询路由）是Agentic RAG的**原子能力**——Agent用它来编排和执行，而非替代它。\n\n**与第6章「RAG评估」**：评估三元组（Context Relevance、Faithfulness、Answer Relevance）完全适用。Agentic RAG需要额外关注：检索效率（平均几轮达标）、决策准确性（是否过早停止或过度检索）、改写有效性（改写后质量是否显著提升）。\n\n**与§7.1「Graph RAG」**：两种互补的高级RAG范式。最强大的系统是二者的融合：Agent用`kg_query`调用知识图谱，需要结构化推理时走Graph RAG，需要灵活决策时走Agentic RAG。\n\n---\n\n## 六、总结",
+        "type": "Document"
+      },
+      {
+        "id": "ce193720-92c3-4c93-89be-43bf135403a2",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\20_kg_rag.md",
+          "start_index": 3065,
+          "chunk_id": "C462"
+        },
+        "page_content": "**增强生成** 是最后一步，将检索到的结构化知识（如相关实体的属性、实体间的关系路径、描述子图的文本摘要等）与原始查询一同注入到 LLM 提示（Prompt）中。实践要点：\n\n- 提示设计：明确要求模型引用“图证据”，并在回答中给出来源与路径（可作为可选的引用附录）。\n- 证据融合：将“结构化三元组/路径”与“原文片段”联合提供，兼顾事实性与文本细节。\n- 约束回答：对敏感领域（财务/医疗）可采用模板化输出与字段校验，减少幻觉。\n\n### 2.2 方法论分类\n\n根据综述性研究，现有的 GraphRAG 方法大致可以归为三类，反映了知识图谱与 RAG 结合深度的不同。\n\n**知识驱动型：** 检索过程主要或完全依赖于知识图谱。这类方法直接在图上进行查询与推理（如文本转 Cypher/Gremlin），适用于需要强逻辑约束与可解释性的任务。\n\n**索引驱动型：** 将知识图谱的结构信息融入到文本索引。例如用邻居实体/关系充当元数据特征、或将子图摘要拼接到文本后再向量化，以提升召回与重排效果。\n\n**混合型：** 同时使用图检索与文本检索，并对结果统一重排与融合：",
+        "type": "Document"
+      }
+    ],
+    "checks": [
+      {
+        "used_ids": [
+          "C464",
+          "C463",
+          "C477"
+        ],
+        "result": {
+          "sufficient": false,
+          "reason": "部分支持：原文说明GraphRAG查询时先匹配全局/社区摘要再下钻到局部子图与原文证据，但未明确回答“在图中寻找什么”这一具体对象；Agentic RAG部分仅提到多Agent并行检索、多步推理与动态决策，未说明其如何决定检索次数。缺少后者检索次数决策机制的直接依据。",
+          "evidence": [
+            {
+              "chunk_id": "C464",
+              "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+            },
+            {
+              "chunk_id": "C464",
+              "quote": "根据需要返回“全局观”与“证据路径”并行的双视角答案。"
+            },
+            {
+              "chunk_id": "C477",
+              "quote": "规划Agent分解问题，多个检索Agent并行检索不同来源，评判Agent评估质量，生成Agent合成答案。"
+            },
+            {
+              "chunk_id": "C477",
+              "quote": "Agentic RAG的价值在于**需要多步推理、多源整合、动态决策**的复杂查询。"
+            }
+          ]
+        }
+      },
+      {
+        "used_ids": [
+          "C464",
+          "C463",
+          "C477",
+          "C478",
+          "C491",
+          "C462"
+        ],
+        "result": {
+          "sufficient": true,
+          "reason": "原文明确说明GraphRAG查询时先匹配全局/社区摘要再下钻到局部子图与原文证据，并在对比表中指出Agentic RAG为动态多次检索且由Agent自主决定，可回答两问。",
+          "evidence": [
+            {
+              "chunk_id": "C464",
+              "quote": "查询时先匹配全局/社区摘要，再下钻到局部子图与原文证据；"
+            },
+            {
+              "chunk_id": "C478",
+              "quote": "| **检索次数** | 单次 | 单次/多次（预定） | 动态多次（自主决定） |"
+            },
+            {
+              "chunk_id": "C478",
+              "quote": "| **检索策略** | 固定（向量相似度） | 固定（图遍历+社区检测） | 动态（Agent自主选择） |"
+            }
+          ]
+        }
+      }
+    ],
+    "citation_ids": [
+      "C464",
+      "C478"
+    ],
+    "supplemented": true,
+    "check_calls": 2,
+    "answer_calls": 1,
+    "model_usage": [
+      {
+        "prompt_tokens": 1105,
+        "completion_tokens": 232,
+        "total_tokens": 1337
+      },
+      {
+        "prompt_tokens": 1835,
+        "completion_tokens": 186,
+        "total_tokens": 2021
+      },
+      {
+        "prompt_tokens": 1615,
+        "completion_tokens": 56,
+        "total_tokens": 1671
+      }
+    ]
+  }
+}

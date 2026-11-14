@@ -1,4 +1,4 @@
-"""Day 11：第一题或全部开发题的Dense/BM25/Hybrid标注依据检查。
+"""按题卡检查Dense/BM25/Hybrid的标注依据命中与首次命中排名。
 
 --inspect-only仅展示题目；Dense复用本地嵌入缓存，BM25不加载嵌入模型。
 --locate-evidence仅在所选资料的全部文本块中定位标注原句。
@@ -36,9 +36,33 @@ def has_labeled_evidence(case: dict, retrieved_docs: list) -> bool:
     return False
 
 
+def first_labeled_evidence_rank(case: dict, retrieved_docs: list) -> int | None:
+    """从第1名依次检查，返回首个包含标注依据的排名。"""
+    for rank, doc in enumerate(retrieved_docs, start=1):
+        # 沿用同一来源和原句匹配规则，排名对应本次返回顺序。
+        if has_labeled_evidence(case, [doc]):
+            return rank
+    return None
+
+
+def has_all_evidence_groups(case: dict, retrieved_docs: list) -> bool:
+    """逐组检查必需信息，任一组缺失就返回False。"""
+    groups = case.get("evidence_groups")
+    if groups is None:
+        # 旧题卡只有备选依据，沿用原来的任一原句匹配。
+        return has_labeled_evidence(case, retrieved_docs)
+    for group in groups:
+        if not has_labeled_evidence(group, retrieved_docs):
+            return False
+    return bool(groups)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Dense/BM25/Hybrid标注依据检查，默认Dense第一题。")
     parser.add_argument("--strategy", choices=["dense", "bm25", "hybrid"], default="dense", help="本次采用的检索方式。")
+    parser.add_argument("--cases", type=Path, default=CASES_PATH, help="题卡文件，默认沿用原检索开发题。")
+    parser.add_argument("--split", choices=["dev", "holdout"], help="按题卡分组选取可答题。")
+    parser.add_argument("--case-id", help="只选当前题卡/分组中的指定题号。")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--inspect-only", action="store_true", help="只读取展示题目，不检索。")
     mode.add_argument("--locate-evidence", action="store_true", help="只在全部文本块中定位已标注依据，保存对应编号。")
@@ -52,7 +76,13 @@ def main() -> None:
     if args.candidate_k <= 0:
         parser.error("--candidate-k 必须为正整数。")
 
-    cases = load_cases(CASES_PATH)
+    cases = load_cases(args.cases)
+    if args.split:
+        cases = [case for case in cases if case.get("split") == args.split]
+    if args.case_id:
+        cases = [case for case in cases if case["id"] == args.case_id]
+    if not cases:
+        parser.error("当前选择没有题目，请检查--cases、--split和--case-id。")
     print("加载评估题数：", len(cases))
 
     for case in cases:
@@ -73,6 +103,8 @@ def main() -> None:
     from inspect_chunks import CHUNK_SIZE, CHUNK_OVERLAP, prepare_chunks
 
     selected_cases = cases if args.all_cases else cases[:1]
+    if not args.locate_evidence and any(not case["evidence_options"] for case in selected_cases):
+        parser.error("检索命中/排名评估需要标注依据，请选择含依据的dev或holdout题组。")
     print(f"\n[1/3] 加载原资料、切分；本次检查{len(selected_cases)}题。", flush=True)
     docs = load_documents(CORPUS_DIRS[args.corpus])
     chunks = prepare_chunks(docs)
@@ -170,7 +202,10 @@ def main() -> None:
                 "rrf_scores": rrf_scores,
                 "all_ranked_ids": [doc.metadata["chunk_id"] for doc in ranked_docs],
             }
-        hit = has_labeled_evidence(case, retrieved_docs)
+        first_rank = first_labeled_evidence_rank(case, retrieved_docs)
+        hit = first_rank is not None
+        reciprocal_rank = 0.0 if first_rank is None else 1.0 / first_rank
+        all_groups_hit = has_all_evidence_groups(case, retrieved_docs)
         if hit:
             hit_count += 1  # 每题最多计1次，不按命中的块数计数。
 
@@ -180,11 +215,16 @@ def main() -> None:
             print("BM25候选：", route_details["bm25_ids"])
         print("返回编号：", [doc.metadata["chunk_id"] for doc in retrieved_docs])
         print("标注依据命中：", hit)
+        print("首次标注依据排名：", first_rank)
+        print("全部必需依据组命中：", all_groups_hit)
         # 完整正文保存进报告，控制台只显示摘要，便于逐题人工复核。
         results.append({
             "case_id": case["id"],
             "question": question,
             "labeled_evidence_hit": hit,
+            "first_labeled_evidence_rank": first_rank,
+            "reciprocal_rank": reciprocal_rank,
+            "all_evidence_groups_hit": all_groups_hit,
             "route_details": route_details,
             "retrieved_docs": [
                 {"chunk_id": doc.metadata["chunk_id"],
@@ -195,14 +235,23 @@ def main() -> None:
         })
 
     print(f"\n标注依据命中题数：{hit_count}/{len(selected_cases)}")
+    hit_rate = hit_count / len(selected_cases)
+    # 每道未命中的题按0计入分母，保持与命中题使用同一批题目。
+    mrr = sum(row["reciprocal_rank"] for row in results) / len(selected_cases)
+    print(f"标注依据Hit@{args.k}：{hit_rate:.4f}")
+    print(f"标注依据MRR@{args.k}：{mrr:.4f}")
+    all_group_hit_count = sum(row["all_evidence_groups_hit"] for row in results)
+    all_group_hit_rate = all_group_hit_count / len(selected_cases)
+    print(f"全部必需依据组命中题数：{all_group_hit_count}/{len(selected_cases)}")
     print("未命中的题仍需人工复核其他有效依据或标注遗漏。")
 
     # 保存本次题目/标注与实际返回原文，不覆盖以前的实验报告。
     now = datetime.now(timezone.utc)
     report = {
         "created_at_utc": now.isoformat(),
-        "scope": "标注依据命中题数，开发集检查；不是独立测试或生成答案准确率。",
+        "scope": "按预标注来源和原句计算命中、首次排名及必需依据组覆盖，语义支持与答案完整性另行复核。",
         "configuration": {"corpus": args.corpus, "retriever": args.strategy, "k": args.k,
+                          "cases_file": str(args.cases.resolve()), "split": args.split,
                           "embedding_model": "BAAI/bge-small-zh-v1.5" if args.strategy in ("dense", "hybrid") else None,
                           "preprocess_func": "tokenize" if args.strategy in ("bm25", "hybrid") else None,
                           "candidate_k_per_route": args.candidate_k if args.strategy == "hybrid" else None,
@@ -211,6 +260,8 @@ def main() -> None:
                           "document_count": len(docs), "chunk_count": len(chunks),
                           "chunk_size": CHUNK_SIZE, "chunk_overlap": CHUNK_OVERLAP},
         "case_count": len(selected_cases), "hit_count": hit_count,
+        "hit_rate_at_k": hit_rate, "mrr_at_k": mrr,
+        "all_evidence_groups_hit_rate_at_k": all_group_hit_rate,
         "cases_snapshot": selected_cases, "results": results,
         "generation_called": False,
     }

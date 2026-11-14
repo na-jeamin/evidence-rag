@@ -1,0 +1,161 @@
+{
+  "created_at_utc": "2026-11-14T09:24:09.423102+00:00",
+  "source_report": "D:\\tt\\agent\\projects\\evidence-rag\\evals\\results\\rag_runs_holdout_20261114T091248366827Z.json",
+  "source_report_sha256": "45e13dd125834bbb3ef4de28673c03bdef0d70fff1ee58690eecf1abd60bc4e4",
+  "case_id": "H009",
+  "method": "manual_labels",
+  "reviewer": "assistant",
+  "review": {
+    "answer_complete": true,
+    "citations_supported": true,
+    "reason": "助手对照C424的上下文相关性/忠实度及C425的答案相关性，三个参考维度齐备，引用对应相应关系。"
+  },
+  "case_snapshot": {
+    "id": "H009",
+    "split": "holdout",
+    "question": "RAG评估三元组的三个维度，分别检查上下文、答案依据和用户问题之间的什么关系？",
+    "expected_status": "answered",
+    "reference_answer": "上下文相关性检查资料与问题是否相关；忠实度检查答案是否基于上下文；答案相关性检查是否直接完整回答问题。",
+    "reference_facts": [
+      "上下文相关性",
+      "忠实度",
+      "答案相关性"
+    ],
+    "evidence_options": [
+      {
+        "source": "18_system_evaluation.md",
+        "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+      },
+      {
+        "source": "18_system_evaluation.md",
+        "quote": "生成的答案是否完全基于所提供的上下文信息？"
+      },
+      {
+        "source": "18_system_evaluation.md",
+        "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+      }
+    ],
+    "annotation_note": "助手依据固定语料标注，原句和块位置经离线核对，语义标注待抽查。各组均为必需信息；任一原句命中指标与全部组覆盖需分别统计。",
+    "evidence_groups": [
+      {
+        "reference_fact": "上下文相关性",
+        "evidence_options": [
+          {
+            "source": "18_system_evaluation.md",
+            "quote": "检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+          }
+        ]
+      },
+      {
+        "reference_fact": "忠实度",
+        "evidence_options": [
+          {
+            "source": "18_system_evaluation.md",
+            "quote": "生成的答案是否完全基于所提供的上下文信息？"
+          }
+        ]
+      },
+      {
+        "reference_fact": "答案相关性",
+        "evidence_options": [
+          {
+            "source": "18_system_evaluation.md",
+            "quote": "最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+          }
+        ]
+      }
+    ]
+  },
+  "run_snapshot": {
+    "question": "RAG评估三元组的三个维度，分别检查上下文、答案依据和用户问题之间的什么关系？",
+    "status": "answered",
+    "answer": "RAG评估三元组的三个维度分别检查：\n\n1. **上下文相关性**：检索到的上下文内容与用户查询（Query）之间的相关性，评估检索器性能[C424]。\n2. **忠实度/可信度**：生成的答案是否完全基于所提供的上下文信息，即答案与上下文之间的依据关系[C424]。\n3. **答案相关性**：最终生成的答案是否直接、完整且有效地回答了用户的原始问题，即答案与用户问题之间的关系[C425]。",
+    "candidate_ids": [
+      "C424",
+      "C425",
+      "C433",
+      "C423",
+      "C429",
+      "C434"
+    ],
+    "retrieved_docs": [
+      {
+        "id": "7cf038a4-bd1d-41e4-b84d-987b930fe1a7",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\18_system_evaluation.md",
+          "start_index": 263,
+          "chunk_id": "C424"
+        },
+        "page_content": "![RAG Triad](./images/6_1_1.webp)\n\n## 一、RAG评估三元组\n\n该架构包含以下三个维度，并在 **TruLens** [^1]等工具中有深入的应用：\n\n（1）**上下文相关性 (Context Relevance)**\n- **评估目标：** 检索器（Retriever）的性能。\n- **核心问题：** 检索到的上下文内容，是否与用户的查询（Query）高度相关？\n- **重要性：** 检索是RAG应用在响应用户查询时的第一步。如果检索回来的上下文充满了噪声或无关信息，那么无论后续的生成模型多么强大，都没法做出正确答案。\n\n（2）**忠实度 / 可信度 (Faithfulness / Groundedness)**\n- **评估目标：** 生成器的可靠性。\n- **核心问题：** 生成的答案是否完全基于所提供的上下文信息？\n- **重要性：** 这个维度主要在于量化LLM的“幻觉”程度。一个高忠实度的回答意味着模型严格遵守了上下文，没有捏造或歪曲事实。如果忠实度得分低，说明LLM在回答时“自由发挥”过度，引入了外部知识或不实信息。",
+        "type": "Document"
+      },
+      {
+        "id": "26c89d2c-99f9-41cb-a0d3-c6f9ffd6dae2",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\18_system_evaluation.md",
+          "start_index": 755,
+          "chunk_id": "C425"
+        },
+        "page_content": "（3）**答案相关性 (Answer Relevance)**\n- **评估目标：** 系统的端到端（End-to-End）表现。\n- **核心问题：** 最终生成的答案是否直接、完整且有效地回答了用户的原始问题？\n- **重要性：** 这是用户最直观的感受。一个答案可能完全基于上下文（高忠实度），但如果它答非所问，或者只回答了问题的一部分，那么这个答案的相关性就很低。例如，当用户问“法国在哪里，首都是哪里？”，如果答案只是“法国在西欧”，那么虽然忠实度高，但答案相关性很低。\n\n> 你可能觉得忠实度和答案相关性很相似，但它们的侧重点是不同的。忠实度更关注模型是否严格遵循了上下文，而答案相关性则更关注模型是否直接、完整且有效地回答了问题。\n\n通过对这三个维度进行评估，可以初步判断问题主要来自检索还是生成环节。\n\n> **需要注意：** RAG三元组是一种诊断视角，并不是完整的评估清单。实际项目通常还需要关注答案正确性与完整性、不可回答问题的拒答能力、鲁棒性，以及延迟、吞吐量和调用成本等系统指标。\n\n## 二、评估工作流",
+        "type": "Document"
+      },
+      {
+        "id": "b7274bbb-44b0-4743-8b1c-e3af0fc35201",
+        "metadata": {
+          "source": "D:\\tt\\agent\\projects\\evidence-rag\\data\\documents-full\\18_system_evaluation.md",
+          "start_index": 3448,
+          "chunk_id": "C433"
+        },
+        "page_content": "要计算上述所有指标，前提是拥有一个高质量的标注数据集，其中包含了查询和每个查询对应的“真实”相关文档。\n\n> **术语提示：** 本节的 `Precision@k` 和 `Recall@k` 是传统信息检索指标。Ragas中的 `ContextPrecision` 和 `ContextRecall` 虽然中文名称相近，但使用的是面向RAG上下文的评估方法，输入字段和计算过程并不相同，详见[第三节 Ragas实践](20_ragas_practice.md)。\n\n### 2.3 响应评估\n\n响应评估覆盖了RAG三元组中的 **忠实度** 和 **答案相关性**。此环节通常采用 **端到端** 的评估范式，因为它直接衡量用户感知的最终输出质量。无论采用何种评估方法，都主要围绕以下两个核心维度展开。\n\n#### 2.3.1 评估维度\n\n（1）**忠实度 / 可信度**：衡量生成的答案在多大程度上可以由给定的上下文所证实。一个完全忠实的答案，其所有内容都必须能在上下文中找到依据，以此避免模型产生“幻觉”。",
+        "type": "Document"
+      }
+    ],
+    "checks": [
+      {
+        "used_ids": [
+          "C424",
+          "C425",
+          "C433"
+        ],
+        "result": {
+          "sufficient": true,
+          "reason": "原文明确给出RAG三元组三个维度，并分别说明其核心问题：上下文与用户查询的相关性、答案是否基于上下文、答案是否回答用户原始问题，足以回答三维度分别检查的关系。",
+          "evidence": [
+            {
+              "chunk_id": "C424",
+              "quote": "**上下文相关性 (Context Relevance)**\n- **评估目标：** 检索器（Retriever）的性能。\n- **核心问题：** 检索到的上下文内容，是否与用户的查询（Query）高度相关？"
+            },
+            {
+              "chunk_id": "C424",
+              "quote": "**忠实度 / 可信度 (Faithfulness / Groundedness)**\n- **评估目标：** 生成器的可靠性。\n- **核心问题：** 生成的答案是否完全基于所提供的上下文信息？"
+            },
+            {
+              "chunk_id": "C425",
+              "quote": "**答案相关性 (Answer Relevance)**\n- **评估目标：** 系统的端到端（End-to-End）表现。\n- **核心问题：** 最终生成的答案是否直接、完整且有效地回答了用户的原始问题？"
+            }
+          ]
+        }
+      }
+    ],
+    "citation_ids": [
+      "C424",
+      "C424",
+      "C425"
+    ],
+    "supplemented": false,
+    "check_calls": 1,
+    "answer_calls": 1,
+    "model_usage": [
+      {
+        "prompt_tokens": 1161,
+        "completion_tokens": 248,
+        "total_tokens": 1409
+      },
+      {
+        "prompt_tokens": 941,
+        "completion_tokens": 98,
+        "total_tokens": 1039
+      }
+    ]
+  }
+}
