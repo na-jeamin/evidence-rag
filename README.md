@@ -1,5 +1,7 @@
 # Evidence RAG（建设中）
 
+首次查看可从[独立复现](#独立复现)进入安装、建索引、问答及HTTP演示。[固定15题问答对照](evals/generation_subset_comparison.md)保存当前效果、成本与失败记录，下文按学习阶段保留实现历史。
+
 ## T2评估收尾（2026-11-14）
 
 固定21篇资料、498块，切分配置为500/100。本轮准备35题，包含20道开发题、10道留出题、5道资料不足题，完成三路检索对照和固定15题的完整问答对照。代码与标注由助手辅助实现和审校，实际检索、问答运行由用户操作。
@@ -522,26 +524,55 @@ BM25 k3随后用户实际15/15，报告 [dev15-v2 BM25结果](evals/results/bm25
 
 ## 独立复现
 
-仓库克隆到任意目录后，在其根目录使用 Python 3.13：
+### 准备环境与模型缓存
+
+仓库克隆到任意目录后，在仓库根目录使用Python 3.13创建环境。以下版本来自现有学习环境，新机器完整安装仍待验证。
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -X utf8 inspect_documents.py
+.\.venv\Scripts\python.exe -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+.\.venv\Scripts\python.exe -m pip install -r requirements-api.txt
+.\.venv\Scripts\python.exe -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-zh-v1.5', device='cpu')"
 ```
 
-后续新增依赖和配置时同步更新本节。当前加载资料不需要 .env。
+requirements-api.txt通过已有依赖文件包含加载、切分、嵌入、BM25、模型客户端与API依赖。首次模型缓存准备会下载权重，后续create_embeddings使用本地缓存。首次配置时复制.env.example为.env，填写LLM_API_KEY、LLM_BASE_URL、LLM_MODEL_ID。默认客户端沿用已验证的DeepSeek兼容请求参数，其他供应商按实际支持情况核对。
 
-独立机器继续做检索时，由用户另行准备 CPU 环境和模型缓存（当前机器已满足，无需重复）：
+### 构建正式资料索引
+
+data/documents-full中的21篇Markdown随仓库保存，固定版本和逐文件摘要见reference/corpus21_manifest.json。索引在本机构建，默认路径为artifacts/indexes/full.json。
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
-.\.venv\Scripts\python.exe -m pip install -r requirements-retrieval.txt
-.\.venv\Scripts\python.exe -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-zh-v1.5', device='cpu')"
-.\.venv\Scripts\python.exe -X utf8 retrieve.py
+.\.venv\Scripts\python.exe -X utf8 .\inspect_chunks.py --corpus full
+.\.venv\Scripts\python.exe -X utf8 .\build_index.py --corpus full
 ```
 
-首次准备缓存会下载模型权重；retrieve.py 本身设置 local_files_only=True。新机器从零安装尚未单独验证，当前证据来自已有环境；此处不宣称完成新环境复现。
+当前固定配置为500/100，用户实际运行结果为21篇、498块，full.json保存498条向量、原文及metadata。已有索引在资料、切分和嵌入配置相同时可继续加载。
+
+### 三种问答分支演示
+
+以下从仓库根目录执行，三个命令均会实际请求模型。共用full.json、Hybrid每路6候选、初次3块及一次补充，使用本机.env。表格记录已有用户运行路径，检查模型的实际判断可能波动，每次以本次输出为准。
+
+| 问题 | 已有实际路径 | 检查/回答调用 | 原始证据 |
+| --- | --- | --- | --- |
+| 加载器抽取哪些元数据 | 初次足够并回答 | 1/1 | [Q002报告](evals/results/rag_runs_dev_20261108T123039223518Z.json) |
+| 问题是否使用同一嵌入模型 | 补充后足够并回答 | 2/1 | [Q012报告](evals/results/rag_runs_dev_20261108T144525508118Z.json) |
+| 演示电脑CPU完整型号 | 补充后仍不足，结束 | 2/0 | [N001报告](evals/results/rag_runs_insufficient_20261108T145440776132Z.json) |
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 .\check_evidence.py --index .\artifacts\indexes\full.json --strategy hybrid --candidate-k 6 --k 3 --check --recover --answer --question "文档加载器除了提取正文，还会抽取哪些信息作为元数据？"
+.\.venv\Scripts\python.exe -X utf8 .\check_evidence.py --index .\artifacts\indexes\full.json --strategy hybrid --candidate-k 6 --k 3 --check --recover --answer --question "在线提问时，问题应该用与资料相同的嵌入模型编码，还是可以随意换一个？"
+.\.venv\Scripts\python.exe -X utf8 .\check_evidence.py --index .\artifacts\indexes\full.json --strategy hybrid --candidate-k 6 --k 3 --check --recover --answer --question "这些教程的演示实验使用的电脑CPU完整型号是什么？"
+```
+
+### HTTP与评估入口
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn api:app --host 127.0.0.1 --port 8001
+```
+
+访问http://127.0.0.1:8001/docs，/retrieve返回检索原文，/ask执行完整问答。requests/ask_metadata.json和requests/ask_insufficient.json提供请求样例。现有HTTP实测覆盖正常回答及补后不足，补后成功回答的HTTP路径待验证。两项目同机运行时分别选择端口。
+
+批量评估入口与结果见本页T2小节，以及[开发组检索对照](evals/dev20_full_comparison.md)、[留出组检索对照](evals/holdout10_full_comparison.md)和[固定问答对照](evals/generation_subset_comparison.md)。源码、数据和参数可按以上说明准备，三条CLI分支已有用户运行证据，新机器全流程复现仍待验证。
 
 ## 来源与局限
 
